@@ -104,7 +104,7 @@ class Installer
     public static function postUpdate(Event $event = null)
     {
         // Copy new Pubvana Core files
-        self::recursiveCopy('vendor/enlivenapp/pubvana/pubvana', 'pubvana');
+        //self::recursiveCopy('vendor/enlivenapp/pubvana/pubvana', 'pubvana');
 
         // update translations
         self::installTranslations();
@@ -179,11 +179,8 @@ class Installer
      */
     private static function recursiveCopy($src, $dst)
     {
-        if(!is_dir($dst))
-        {
             mkdir($dst, 0755);
-        }
-      
+    
         $iterator = new \RecursiveIteratorIterator(
                             new \RecursiveDirectoryIterator($src, \RecursiveDirectoryIterator::SKIP_DOTS),
                             \RecursiveIteratorIterator::SELF_FIRST
