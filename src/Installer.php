@@ -22,6 +22,9 @@ class Installer
      */
     public static function postInstall(Event $event = null)
     {
+
+                throw new \RuntimeException(" Test Exception tossing ");
+
         // Copy Pubvana Core files
         self::recursiveCopy('vendor/enlivenapp/pubvana/pubvana', 'pubvana');
 
