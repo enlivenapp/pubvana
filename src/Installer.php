@@ -1,4 +1,8 @@
 <?php
+namespace Enlivenapp\Pubvana;
+
+use Composer\Script\Event;
+
 /**
  * Pubvana Composer Installer
  *
@@ -9,11 +13,6 @@
  * @copyright  2015 Kenji Suzuki
  * @link       https://github.com/enlivenapp/Pubvana-Composer-Installer
  */
-
-namespace Enlivenapp\Pubvana;
-
-use Composer\Script\Event;
-
 class Installer
 {
     /**
