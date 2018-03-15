@@ -31,13 +31,6 @@ class Installer
         // Copy files to project root
         copy('vendor/enlivenapp/pubvana/index.php', '/index.php');
         //copy('vendor/codeigniter/framework/.gitignore', '.gitignore');
-
-        // create needed directories
-        if(!is_dir('uploads'))
-        {
-            mkdir('uploads', 0755);
-        }
-        
         
         // Fix paths in index.php
         // we keep Codeigniter in the 

@@ -42,6 +42,7 @@ pubvana/logs/*
 
 # no local uploaded dev images
 uploads/*
+!uploads/index.html
 
 #composer stuff
 composer.lock
