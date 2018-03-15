@@ -169,7 +169,7 @@ class Installer
      */
     private static function recursiveCopy($src, $dst)
     {
-        mkdir($dst, 0755);
+       // mkdir($dst, 0755);
     
         $iterator = new \RecursiveIteratorIterator(
                             new \RecursiveDirectoryIterator($src, \RecursiveDirectoryIterator::SKIP_DOTS),
