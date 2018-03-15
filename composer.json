@@ -31,12 +31,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Enlivenapp\\Pubvana\\": "src/"
+            "Pubvana\\": "src/"
         }
     },
     "scripts" : {
         "post-create-project-cmd": [
-            "Enlivenapp\\Pubvana\\Installer::postInstall"
+            "Pubvana\\Installer::postInstall"
         ]
     }
 }

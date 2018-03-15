@@ -1,5 +1,5 @@
 <?php
-namespace Enlivenapp\Pubvana;
+namespace Pubvana;
 
 use Composer\Script\Event;
 
