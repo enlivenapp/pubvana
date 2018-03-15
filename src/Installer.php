@@ -33,11 +33,12 @@ class Installer
         //copy('vendor/codeigniter/framework/.gitignore', '.gitignore');
 
         // create needed directories
-        mkdir('uploads', 0755);
-        mkdir('pubvana/cache/', 0755);
-        mkdir('pubvana/cache/assets/', 0755);
-        mkdir('pubvana/cache/sessions', 0755);
-
+        if(!is_dir('uploads'))
+        {
+            mkdir('uploads', 0755);
+        }
+        
+        
         // Fix paths in index.php
         // we keep Codeigniter in the 
         // vendor dir for easier updating
@@ -178,8 +179,11 @@ class Installer
      */
     private static function recursiveCopy($src, $dst)
     {
-        mkdir($dst, 0755);
-        
+        if(!is_dir($dst))
+        {
+            mkdir($dst, 0755);
+        }
+      
         $iterator = new \RecursiveIteratorIterator(
                             new \RecursiveDirectoryIterator($src, \RecursiveDirectoryIterator::SKIP_DOTS),
                             \RecursiveIteratorIterator::SELF_FIRST
