@@ -100,7 +100,7 @@ class Installer
     }
 
 
-    public static postUpdate(Event $event = null)
+    public static function postUpdate(Event $event = null)
     {
         // Copy new Pubvana Core files
         self::recursiveCopy('vendor/enlivenapp/pubvana/pubvana', 'pubvana');
