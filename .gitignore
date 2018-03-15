@@ -31,18 +31,15 @@ pubvana/widgets/pubvana_featured_post/.DS_store
 
 # no stale dev cache
 pubvana/cache/*
-!pubvana/cache/index.html
 
 # no dev logs
 pubvana/logs/*
-!pubvana/logs/index.html
 
 # keep the .htaccess files is all directories
 !pubvana/*/.htaccess
 
 # no local uploaded dev images
 uploads/*
-!uploads/index.html
 
 #composer stuff
 composer.lock
