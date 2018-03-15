@@ -31,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Enlivenapp\\CodeIgniter\\": "src/"
+            "Enlivenapp\\Pubvana\\": "src/"
         }
     },
     "scripts" : {
