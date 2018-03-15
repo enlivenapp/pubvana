@@ -12,12 +12,12 @@
 	},
     "autoload": {
         "psr-4": {
-            "Enlivenapp\\Pubvana\\": "src/"
+            "Pubvana\\": "src/"
         }
     },
 	"scripts" : {
         "post-update-cmd": [
-            "Enlivenapp\\Pubvana\\Installer::postUpdate"
+            "Pubvana\\Installer::postUpdate"
         ]
     }
 }
