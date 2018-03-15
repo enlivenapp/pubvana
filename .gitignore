@@ -1,0 +1,73 @@
+# ugh…  Mac stuff
+.DS_Store
+
+# local install stuff
+.htaccess
+pubvana/config/config.php
+pubvana/config/database.php
+
+# Themes - only allow the defaults
+pubvana/themes/*
+!pubvana/default/*
+!pubvana/default_admin/*
+
+#no dev/premium widgets
+pubvana/widgets/*
+!pubvana/widgets/pubvana_login/*
+!pubvana/widgets/html/*
+!pubvana/widgets/pubvana_archives/*
+!pubvana/widgets/pubvana_categories/*
+!pubvana/widgets/pubvana_recent_posts/*
+!pubvana/widgets/pubvana_popular_posts/*
+!pubvana/widgets/pubvana_featured_post/*
+
+pubvana/widgets/pubvana_login/.DS_store
+pubvana/widgets/html/.DS_store
+pubvana/widgets/pubvana_archives/.DS_store
+pubvana/widgets/pubvana_categories/.DS_store
+pubvana/widgets/pubvana_recent_posts/.DS_store
+pubvana/widgets/pubvana_popular_posts/.DS_store
+pubvana/widgets/pubvana_featured_post/.DS_store
+
+# no stale dev cache
+pubvana/cache/*
+!pubvana/cache/index.html
+
+# no dev logs
+pubvana/logs/*
+!pubvana/logs/index.html
+
+# keep the .htaccess files is all directories
+!pubvana/*/.htaccess
+
+# no local uploaded dev images
+uploads/*
+
+#composer stuff
+composer.lock
+
+# CI stuff
+user_guide_src/build/*
+user_guide_src/cilexer/build/*
+user_guide_src/cilexer/dist/*
+user_guide_src/cilexer/pycilexer.egg-info/*
+
+# hide dev stuff.  use composer or download and install
+/vendor/
+/system/
+/bin/
+
+
+# IDE Files
+#-------------------------
+/nbproject/
+.idea/*
+
+## Sublime Text cache files
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+/tests/tests/
+/tests/results/

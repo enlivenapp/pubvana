@@ -1,0 +1,18 @@
+{
+	"description" : "Pubvana Application",
+	"require": {
+		"php": "^5.4 || ^7.0",
+            "codeigniter/framework": "^3.0",
+            "michelf/php-markdown": "^1.7",
+            "kenjis/codeigniter-cli": "^0.1.0",
+            "league/oauth2-client": "^2.2"
+	},
+	"require-dev": {
+		"mikey179/vfsStream": "1.1.*"
+	},
+	"scripts" : {
+        "post-update-cmd": [
+            "Enlivenapp\\Pubvana\\Installer::postUpdate"
+        ]
+    }
+}
