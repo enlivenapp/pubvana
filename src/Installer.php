@@ -25,9 +25,6 @@ class Installer
         // Copy Pubvana Core files
         self::recursiveCopy('vendor/enlivenapp/pubvana/pubvana', 'pubvana');
 
-        // Copy Pubvana Installer files
-        self::recursiveCopy('vendor/enlivenapp/pubvana/installer', 'installer');
-
         // Copy files to project root
         copy('vendor/enlivenapp/pubvana/index.php', '/index.php');
         //copy('vendor/codeigniter/framework/.gitignore', '.gitignore');
@@ -172,7 +169,7 @@ class Installer
      */
     private static function recursiveCopy($src, $dst)
     {
-            mkdir($dst, 0755);
+        mkdir($dst, 0755);
     
         $iterator = new \RecursiveIteratorIterator(
                             new \RecursiveDirectoryIterator($src, \RecursiveDirectoryIterator::SKIP_DOTS),
