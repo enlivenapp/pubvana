@@ -55,7 +55,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 # hide dev stuff.  use composer or download and install
 /vendor/
 /system/
-/bin/
 
 
 # IDE Files
