@@ -602,6 +602,15 @@ class Installer extends CI_Controller {
  		$buffer = '';
         $buffer_valid = false;
 
+        // PHP7 as mcrypt_create_iv is depreciated
+        if (function_exists('random_bytes')) {
+		  	$buffer = random_bytes($raw_salt_len);
+		  	if ($buffer) {
+		    	$buffer_valid = true;
+		  	}
+		}
+		
+		// BC for PHP5
         if (function_exists('mcrypt_create_iv') && !defined('PHALANGER')) {
             $buffer = mcrypt_create_iv($raw_salt_len, MCRYPT_DEV_URANDOM);
             if ($buffer) {
