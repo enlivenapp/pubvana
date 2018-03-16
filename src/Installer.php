@@ -97,10 +97,10 @@ class Installer
         //self::recursiveCopy('vendor/enlivenapp/pubvana/pubvana', 'pubvana');
 
         // update translations
-        self::installTranslations();
+        //self::installTranslations();
 
         // Show message
-        self::showUpdateMessage($event);
+       // self::showUpdateMessage($event);
 
     }
 
