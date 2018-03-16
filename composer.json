@@ -27,17 +27,8 @@
             "michelf/php-markdown": "^1.7",
             "kenjis/codeigniter-cli": "^0.1.0",
             "league/oauth2-client": "^2.2",
-            "Studio-42/elFinder": "^2.1"        
-    },
-    "autoload": {
-        "psr-4": {
-            "Enlivenapp\\Pubvana\\": "src/"
-        }
-    },
-    "scripts" : {
-        "post-create-project-cmd": [
-            "Enlivenapp\\Pubvana\\Installer::postInstall"
-        ]
+            "Studio-42/elFinder": "^2.1",
+            "enlivenapp/pubvana-core: dev-master"        
     }
 }
 
