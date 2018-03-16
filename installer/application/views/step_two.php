@@ -23,10 +23,10 @@
 		<div class="col-sm-6 container-bg">
 			<h4>Administrative User</h4>
 			<p class="text-center">
-				Enter the information you would like to use to log in to Open Blog. 
+				Enter the information you would like to use for the administrator account. 
 			</p>
 			<p class="text-justify"><b>Important Note:</b> This user has unrestricted access to the Blog and all settings. Please make sure you keep these 
-				credentials in a safe place and do not share them with anyone.
+				credentials in a safe place and do not share them with anyone. It is <em>NOT</em> recommended to use `admin` or `administrator` as your username.
 			</p>
 
 
@@ -92,7 +92,7 @@
 
 			<div class="row">
 				<div class="text-left" style="padding: 8px;">
-					<p><small><em>Note: </em>Please use a strong password or passphrase. Weak passwords with pet names, birthdays, 'l337' and even combinations of those
+					<p><small><em>Note: </em>Please use a strong password or passphrase. Weak passwords with pet names, birthdays, 'l337 Sp34k' and even combinations of those
 						can be fairly easily discovered.  Use a combination of upper and lower case characters, numbers, and special characters to help ensure you have a
 						very strong password. The minimum limit for your password is 8 characters and maximum is 255 characters.
 					</small></p>
@@ -103,7 +103,7 @@
 		
 	<div class="row" style="margin-top: 20px;">
 		<div class="col-sm-8 col-xs-12 col-sm-offset-2">
-			<p>If at any point you get stuck please ask your web hosting provider or <a href="http://open-blog.org" target="_blank">contact us</a> for support.</p>
+			<p>If at any point you get stuck please ask your web hosting provider or <a href="http://pubvana.org/contact" target="_blank">contact us</a> for support.</p>
 			<p>Clicking 'Continue' will begin the installation on your server.</p>
 
 			<p><?= form_submit('submit', 'Continue', 'class="btn btn-default btn-lg"') ?></p>

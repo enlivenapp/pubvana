@@ -21,5 +21,5 @@
     <body>
     <div class="container">
 		<div class="header"> 
-			<h1 class="sitename">Pubvana</h1>
+			<h1 class="sitename">Installing Pubvana CMS</h1>
 		</div>

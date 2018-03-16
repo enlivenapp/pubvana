@@ -39,7 +39,7 @@ class Installer extends CI_Controller {
 	public function index($lang = null)
 	{
 		$data = '';
-		// the beginnnings of localization
+		// the beginnings of localization
 		// TODO: actually sort & set the language
 		// file used
 		if ($lang)
@@ -86,17 +86,13 @@ class Installer extends CI_Controller {
 
 		// set server type options
 		$data['server_opts'] = [
-			'apache_wo' 	=> 'Apache (without mod_rewrite)',
 			'apache_w'		=> 'Apache (with mod_rewrite)',
+			'apache_wo' 	=> 'Apache (without mod_rewrite)',
 			'other'			=> 'Other (NGINX, Others without rewrite)'
 		];
 
 		$data['db_engine'] = [
-			'mysqli' 	=> 'MySQL/MariaDB',
-		//	'mssql'		=> 'MSSQL (Windows)',
-		//	'sqlite'	=> 'SQLite',
-		//	'sqlite3'	=> 'SQLite 3'
-
+			'mysqli' 	=> 'MySQL/MariaDB'
 		];
 
 		
@@ -531,7 +527,7 @@ class Installer extends CI_Controller {
 			'___DRIVER___'   	=> class_exists($this->session->db_engine) ? $this->session->db_engine : 'mysqli'
 		);
 
-		return $this->write_file_vars('../application/config/database.php', '../application/config//database.php.bak', $replace);
+		return $this->write_file_vars('../pubvana/config/database.php', '../pubvana/config//database.php.bak', $replace);
 	}
 
 
@@ -550,7 +546,7 @@ class Installer extends CI_Controller {
 		// Make random encryption key for each website
 		$encryption_key = random_string('sha1');
 
-		return $this->write_file_vars('../application/config/config.php', '../application/config/config.php.bak', array(
+		return $this->write_file_vars('../pubvana/config/config.php', '../pubvana/config/config.php.bak', array(
 																							'___BASE_URL___' => $this->session->base_url,
 																							'___INDEX_PAGE___' => $index_page,
 																							'___ENCRYPTION_KEY___' => $encryption_key,
