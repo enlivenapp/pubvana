@@ -219,13 +219,6 @@ class Installer extends CI_Controller {
 	{
 		$this->set_base_url();
 
-		$this->load->library('migration');
-
-        if ($this->migration->latest() === FALSE)
-        {
-            show_error($this->migration->error_string());
-        }
-
 		$index = ($this->session->server != 'apache_w') ? '/index.php/' : '/';
 
 		$data['login_url'] = $this->session->base_url . $index . 'auth/login';

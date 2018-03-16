@@ -512,10 +512,7 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}users_groups` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` int(11) UNSIGNED NOT NULL,
   `group_id` mediumint(8) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uc_bp_users_groups` (`user_id`,`group_id`),
-  KEY `fk_bp_users_groups_users1_idx` (`user_id`),
-  KEY `fk_bp_users_groups_groups1_idx` (`group_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- split --
@@ -571,10 +568,3 @@ CREATE TABLE `{PREFIX}widget_instances` (
   `order` int(1) NOT NULL,
   `active` int(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
--- split --
-
-ALTER TABLE `{PREFIX}users_groups`
-  ADD CONSTRAINT `fk_bp_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `{PREFIX}groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_bp_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `{PREFIX}users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
