@@ -58,12 +58,13 @@ class Installer
         $io->write('==================================================');
         $io->write('<info>Congratulations! Pubvana has been installed!</info>');
         $io->write('<info>Web Installer: Go to your site in your web browser</info>');
+        $io->write('<info>More Information: https://pubvana.org</info>');
         $io->write('==================================================');
         $io->write('<info>Developers: Other third party libraries are available; type:</info>');
         $io->write('$ cd <pubvana_project_folder>');
         $io->write('$ php bin/install.php');
         $io->write('<info>The above command will show the help message.</info>');
-        $io->write('See <https://github.com/enlivenapp/Pubvana-Composer-Installer> for  more details');
+        $io->write('See <https://github.com/enlivenapp/pubvana> for  more details');
         $io->write('==================================================');
     }
 
