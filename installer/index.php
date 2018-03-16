@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
+ * Copyright (c) 2014 - 2016, British Columbia Institute of Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,36 +29,12 @@
  * @package	CodeIgniter
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
+ * @copyright	Copyright (c) 2014 - 2016, British Columbia Institute of Technology (http://bcit.ca/)
  * @license	http://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
  * @filesource
  */
-
-
-/* 
-	Sort out installation.
-	Majority of this code is
-	from the PyroCMS v2.2 community
-	index.php file.
-*/
-if ( ! file_exists('pubvana/config/database.php') || ! file_exists('pubvana/config/config.php') )
-{
-	// Make sure we've not already tried this
-	if (strpos($_SERVER['REQUEST_URI'], 'installer/'))
-	{
-		header('Status: 404');
-		exit('Open Blog is missing application/config/database.php or application/config/config.php and cannot find the installer folder. Please check permission to access these files or upload the installer folder.');
-	}
-	
-	// Otherwise go to installer
-	header('Location: '.rtrim($_SERVER['REQUEST_URI'], '/').'/installer/');
-	exit;
-}
-
-
-
 
 /*
  *---------------------------------------------------------------
@@ -121,7 +97,7 @@ switch (ENVIRONMENT)
  * This variable must contain the name of your "system" directory.
  * Set the path if it is not in the same directory as this file.
  */
-	$system_path = 'vendor/codeigniter/framework/system';
+	$system_path = '../vendor/codeigniter/framework/system';
 
 /*
  *---------------------------------------------------------------
@@ -138,7 +114,7 @@ switch (ENVIRONMENT)
  *
  * NO TRAILING SLASH!
  */
-	$application_folder = 'pubvana';
+	$application_folder = 'application';
 
 /*
  *---------------------------------------------------------------
