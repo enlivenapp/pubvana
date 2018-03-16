@@ -24,7 +24,7 @@ class Installer
     {
 
         // Run composer update
-        sself::composerUpdate();
+        self::composerUpdate();
 
         // install translations
         self::installTranslations();
