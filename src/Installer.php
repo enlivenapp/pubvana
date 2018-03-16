@@ -23,9 +23,11 @@ class Installer
     public static function postInstall(Event $event = null)
     {
         // Copy Pubvana Core files
+        echo "Copying files";
         self::recursiveCopy('vendor/enlivenapp/pubvana/pubvana', 'pubvana');
 
         // Copy files to project root
+         echo "index.php";
         copy('vendor/enlivenapp/pubvana/index.php', '/index.php');
         //copy('vendor/codeigniter/framework/.gitignore', '.gitignore');
         
@@ -46,12 +48,13 @@ class Installer
             $contents
         );
 
-
+echo "writing index.php";
         file_put_contents($file, $contents);
 
         // The config & db files are actually managed by the Pubvana installer, 
         // so we'll edit the config.php.bak file so it's correct for installation.
         // in the deleteSelf method below we remove the original files from CodeIgniter.
+        echo "config";
         $file = 'pubvana/config/config.php.bak';
 
         // Enable Composer Autoloader
@@ -68,25 +71,29 @@ class Installer
             '$config[\'subclass_prefix\'] = \'PV_\';',
             $contents
         );
-
+echo "writing config";
         file_put_contents($file, $contents);
 
         // Now that composer has done it's things,
         // we need to deal with how to update, so we
         // use another composer.json file for updates
         // rather than installing. 
+        echo "moving composerdist -> composerjson";
         copy('composer.json.dist', 'composer.json');
 
         // Run composer update
         //self::composerUpdate();
 
         // install translations
+        echo "translations";
         self::installTranslations();
 
         // Delete unneeded files
+        echo "deleting self";
         self::deleteSelf();
 
         // Show message
+        echo "show message";
         self::showMessage($event);
     }
 
