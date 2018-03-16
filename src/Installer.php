@@ -105,8 +105,6 @@ class Installer
         unlink(__FILE__);
         //rmdir('application');
         unlink('composer.json.dist');
-        unlink('pubvana/config/config.php');
-        unlink('pubvana/config/database.php');
     }
 
     /**
