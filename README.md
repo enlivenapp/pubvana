@@ -1,15 +1,20 @@
-# Pubvana Core
+# Pubvana
+
+### Blogging and Small business CMS
+
+Pubvana is a re-brand of Open Blog v3 (with added functionality).  See Change Log below
   	
 ## BETA - Do Not use in production -
-
-Core files for Pubvana
   		  
 #### Composer Installation
 
-* dev `composer create-project --stability dev enlivenapp/pubvana`   
+* Latest Stable - `composer create-project enlivenapp/pubvana [project folder]` 
+* Developers - `composer create-project --stability dev enlivenapp/pubvana [project folder]`   
 
-Pubvana is a Re-brand of Open Blog v3 with added functionality.  See Change Log below
 
+#### Download
+
+Visit https://pubvana.org/downloads to download the latest version of Pubvana to install on your self-hosted server.
 
 #### Change Log
 
@@ -31,9 +36,7 @@ v 1.0.0 (First Pubvana Release after Open Blog v3.0.0)
 * Admin theme now looks for [group_permission:name]\_hdr when showing the title in the admin area.
 * We now count (and can display) how many views a post has.  `post_count`
 
-
-
-#### New Widgets
+New Widgets(v1.0.0)
 
 * HTML - Add arbitrary HTML to your website
 * Login - Simple widget to login to your site
@@ -54,7 +57,7 @@ Widgets above are free and come installed.  A store will be created for other wi
 * Social login/registering
 * Author: info card/bio blip/etc
 
-#### Premium Widgets:
+#### Premium Widgets: Visit https://pubvana.org
 
 * Advanced Login
 * Gallery
