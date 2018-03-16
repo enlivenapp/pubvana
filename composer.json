@@ -28,7 +28,7 @@
             "kenjis/codeigniter-cli": "^0.1.0",
             "league/oauth2-client": "^2.2",
             "Studio-42/elFinder": "^2.1",
-            "enlivenapp/pubvana-core: dev-master"        
+            "enlivenapp/pubvana-core": "dev-master"        
     }
 }
 
