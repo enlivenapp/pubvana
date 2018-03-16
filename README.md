@@ -6,9 +6,9 @@ Core files for Pubvana
   		  
 #### Composer Installation
 
-`composer create-project --stability dev enlivenapp/pubvana`   
+* dev `composer create-project --stability dev enlivenapp/pubvana`   
 
-Pubvana is derived and Re-brand of Open Blog v3 with added functionality.  See Change Log
+Pubvana is a Re-brand of Open Blog v3 with added functionality.  See Change Log below
 
 
 #### Change Log
