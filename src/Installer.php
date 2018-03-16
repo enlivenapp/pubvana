@@ -23,7 +23,7 @@ class Installer
     public static function postInstall(Event $event = null)
     {
         // Copy Pubvana Core files
-        self::recursiveCopy('vendor/enlivenapp/pubvana/', 'pubvana');
+        self::recursiveCopy('vendor/enlivenapp/pubvana/', 'application');
 
         // Copy files to project root
         copy('vendor/enlivenapp/pubvana/index.php', '/index.php');
