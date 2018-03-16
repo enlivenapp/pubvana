@@ -22,7 +22,7 @@ class Installer
      */
     public static function postInstall(Event $event = null)
     {
-
+        self::recursiveCopy('vendor/enlivenapp/pubvana', 'pubvana');
         // Run composer update
         //lsself::composerUpdate();
 

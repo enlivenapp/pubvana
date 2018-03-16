@@ -35,7 +35,7 @@
         }
     },
     "scripts" : {
-        "post-install-cmd": [
+        "post-update-cmd": [
             "Enlivenapp\\Pubvana\\Installer::postInstall"
         ]
     }
