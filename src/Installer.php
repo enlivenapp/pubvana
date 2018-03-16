@@ -1,5 +1,5 @@
 <?php
-namespace Pubvana;
+namespace Enlivenapp\Pubvana;
 
 use Composer\Script\Event;
 
@@ -22,54 +22,6 @@ class Installer
      */
     public static function postInstall(Event $event = null)
     {
-        // Copy Pubvana Core files
-        self::recursiveCopy('vendor/enlivenapp/pubvana/', 'application');
-
-        // Copy files to project root
-        copy('vendor/enlivenapp/pubvana/index.php', '/index.php');
-        //copy('vendor/codeigniter/framework/.gitignore', '.gitignore');
-        
-        // Fix paths in index.php
-        // we keep Codeigniter in the 
-        // vendor dir for easier updating
-        $file = '/index.php';
-        $contents = file_get_contents($file);
-        $contents = str_replace(
-            '$application_folder = \'application\';',
-            '$application_folder = \'pubvana\';',
-            $contents
-        );
-
-        $contents = str_replace(
-            '$system_path = \'system\';',
-            '$system_path = \'vendor/codeigniter/framework/system\';',
-            $contents
-        );
-
-
-        file_put_contents($file, $contents);
-
-        // The config & db files are actually managed by the Pubvana installer, 
-        // so we'll edit the config.php.bak file so it's correct for installation.
-        // in the deleteSelf method below we remove the original files from CodeIgniter.
-        $file = 'pubvana/config/config.php.bak';
-
-        // Enable Composer Autoloader
-        $contents = file_get_contents($file);
-        $contents = str_replace(
-            '$config[\'composer_autoload\'] = FALSE;',
-            '$config[\'composer_autoload\'] = realpath(APPPATH . \'../vendor/autoload.php\');',
-            $contents
-        );
-
-        // change subclass_prefix
-        $contents = str_replace(
-            '$config[\'subclass_prefix\'] = \'MY_\';',
-            '$config[\'subclass_prefix\'] = \'PV_\';',
-            $contents
-        );
-
-        file_put_contents($file, $contents);
 
         // Now that composer has done it's things,
         // we need to deal with how to update, so we
@@ -78,7 +30,7 @@ class Installer
         copy('composer.json.dist', 'composer.json');
 
         // Run composer update
-        //self::composerUpdate();
+        self::composerUpdate();
 
         // install translations
         self::installTranslations();
@@ -93,14 +45,12 @@ class Installer
 
     public static function postUpdate(Event $event = null)
     {
-        // Copy new Pubvana Core files
-        //self::recursiveCopy('vendor/enlivenapp/pubvana/pubvana', 'pubvana');
 
         // update translations
-        //self::installTranslations();
+        self::installTranslations();
 
         // Show message
-       // self::showUpdateMessage($event);
+        self::showUpdateMessage($event);
 
     }
 
@@ -169,7 +119,6 @@ class Installer
      */
     private static function recursiveCopy($src, $dst)
     {   
-        print_r($dst);
         mkdir($dst, 0755);
     
         $iterator = new \RecursiveIteratorIterator(
@@ -179,9 +128,6 @@ class Installer
         
         foreach ($iterator as $file) {
             if ($file->isDir()) {
-                echo "failed here";
-                print_r($dst);
-                print_r($iterator->getSubPathName());
                 mkdir($dst . '/' . $iterator->getSubPathName());
             } else {
                 copy($file, $dst . '/' . $iterator->getSubPathName());
