@@ -169,6 +169,7 @@ class Installer
      */
     private static function recursiveCopy($src, $dst)
     {   
+        print_r($dst);
         mkdir($dst, 0755);
     
         $iterator = new \RecursiveIteratorIterator(
