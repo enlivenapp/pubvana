@@ -6,10 +6,6 @@
 pubvana/config/config.php
 pubvana/config/database.php
 
-# Themes - only allow the defaults
-pubvana/themes/*
-!pubvana/default/*
-!pubvana/default_admin/*
 
 #no dev/premium widgets
 pubvana/widgets/*
