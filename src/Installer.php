@@ -30,7 +30,7 @@ class Installer
         copy('composer.json.dist', 'composer.json');
 
         // Run composer update
-        self::composerUpdate();
+        //lsself::composerUpdate();
 
         // install translations
         self::installTranslations();
