@@ -5,7 +5,8 @@
             "codeigniter/framework": "^3.0",
             "michelf/php-markdown": "^1.7",
             "kenjis/codeigniter-cli": "^0.1.0",
-            "league/oauth2-client": "^2.2"
+            "league/oauth2-client": "^2.2",
+            "Studio-42/elFinder": "^2.1"  
 	},
 	"require-dev": {
 		"mikey179/vfsStream": "1.1.*"
