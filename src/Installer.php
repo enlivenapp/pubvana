@@ -103,9 +103,8 @@ class Installer
     private static function deleteSelf()
     {
         unlink(__FILE__);
-        //rmdir('src');
+        rmdir('application');
         unlink('composer.json.dist');
-        unlink('dot.htaccess');
         unlink('LICENSE.md');
         unlink('pubvana/config/config.php');
         unlink('pubvana/config/database.php');
