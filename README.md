@@ -4,7 +4,9 @@
 
 Core files for Pubvana
   		  
-#### Do NOT `require` this directly, instead: `composer require pubvana-composer-installer pubvana`
+#### Composer Installation
+
+`composer create-project --stability dev enlivenapp/pubvana`   
 
 Pubvana is derived and Re-brand of Open Blog v3 with added functionality.  See Change Log
 
