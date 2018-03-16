@@ -30,7 +30,9 @@ pubvana/widgets/pubvana_popular_posts/.DS_store
 pubvana/widgets/pubvana_featured_post/.DS_store
 
 # no stale dev cache
-pubvana/cache/*
+pubvana/cache/assets/*
+pubvana/cache/sessions/*
+!pubvana/cache/index.html
 !pubvana/cache/assets/index.html
 !pubvana/cache/sessions/index.html
 
