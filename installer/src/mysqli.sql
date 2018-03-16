@@ -1,12 +1,9 @@
 
--- --------------------------------------------------------
-
---
--- Table structure for table `categories`
---
-
 DROP TABLE IF EXISTS `{PREFIX}categories`;
-CREATE TABLE IF NOT EXISTS `{PREFIX}categories` (
+
+-- split --
+
+CREATE TABLE `{PREFIX}categories` (
   `id` int(11) NOT NULL,
   `name` varchar(60) DEFAULT NULL,
   `url_name` varchar(200) DEFAULT NULL,
@@ -22,6 +19,9 @@ INSERT INTO `{PREFIX}categories` (`id`, `name`, `url_name`, `description`) VALUE
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}comments`;
+
+-- split --
+
 CREATE TABLE `{PREFIX}comments` (
   `id` int(11) NOT NULL,
   `post_id` int(11) DEFAULT '0',
@@ -37,6 +37,9 @@ CREATE TABLE `{PREFIX}comments` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}contacts`;
+
+-- split --
+
 CREATE TABLE `{PREFIX}contacts` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(20) NOT NULL,
@@ -85,13 +88,16 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}groups_perms` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}group_permissions`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}group_permissions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `description` varchar(150) NOT NULL,
   `protected` int(1) NOT NULL DEFAULT '0',
   `form_name` varchar(50) NOT NULL,
-  `display_order` int(5) DEFAULT NULL
+  `display_order` int(5) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
@@ -117,6 +123,9 @@ INSERT INTO `{PREFIX}group_permissions` (`id`, `name`, `description`, `protected
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}languages`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}languages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `language` varchar(100) DEFAULT NULL,
@@ -154,6 +163,9 @@ INSERT INTO `{PREFIX}languages` (`id`, `language`, `abbreviation`, `author`, `au
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}links`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}links` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -191,6 +203,9 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}login_attempts` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}navigation`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}navigation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(50) DEFAULT NULL,
@@ -225,6 +240,9 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}notifications` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}pages`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(200) DEFAULT NULL,
@@ -250,6 +268,9 @@ INSERT INTO `{PREFIX}pages` (`id`, `title`, `url_title`, `author`, `date`, `cont
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}posts`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}posts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `author` int(11) NOT NULL DEFAULT '0',
@@ -280,6 +301,9 @@ INSERT INTO `{PREFIX}posts` (`id`, `author`, `date_posted`, `title`, `url_title`
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}posts_to_categories`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}posts_to_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `post_id` int(11) NOT NULL,
@@ -295,6 +319,9 @@ INSERT INTO `{PREFIX}posts_to_categories` (`id`, `post_id`, `category_id`) VALUE
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}redirects`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}redirects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `old_slug` varchar(200) NOT NULL,
@@ -307,6 +334,9 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}redirects` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}settings`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}settings` (
   `name` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
@@ -354,6 +384,9 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}settings` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}sidebar`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}sidebar` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
@@ -377,6 +410,9 @@ INSERT INTO `{PREFIX}sidebar` (`id`, `title`, `file`, `status`, `position`) VALU
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}social`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}social` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) DEFAULT NULL,
@@ -394,6 +430,9 @@ INSERT INTO `{PREFIX}social` (`id`, `name`, `url`, `enabled`) VALUES
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}templates`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -406,7 +445,7 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}templates` (
   `is_active` varchar(1) NOT NULL DEFAULT '0',
   `is_admin` varchar(1) NOT NULL DEFAULT '0',
   `version` varchar(10) NOT NULL DEFAULT '1.0.0',
-  `has_options` int(1) DEFAULT '0'
+  `has_options` int(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
@@ -419,6 +458,9 @@ INSERT INTO `{PREFIX}templates` (`id`, `name`, `description`, `author`, `author_
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}theme_options`;
+
+-- split --
+
 CREATE TABLE `{PREFIX}theme_options` (
   `id` int(11) UNSIGNED NOT NULL,
   `theme_id` int(11) NOT NULL,
@@ -463,6 +505,9 @@ INSERT INTO {PREFIX}users (`id`, `ip_address`, `username`, `password`, `salt`, `
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}users_groups`;
+
+-- split --
+
 CREATE TABLE IF NOT EXISTS `{PREFIX}users_groups` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` int(11) UNSIGNED NOT NULL,
@@ -481,6 +526,9 @@ INSERT INTO `{PREFIX}users_groups` (`id`, `user_id`, `group_id`) VALUES
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}widgets`;
+
+-- split --
+
 CREATE TABLE `{PREFIX}widgets` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -497,6 +545,9 @@ CREATE TABLE `{PREFIX}widgets` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}widget_areas`;
+
+-- split --
+
 CREATE TABLE `{PREFIX}widget_areas` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -506,6 +557,9 @@ CREATE TABLE `{PREFIX}widget_areas` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}widget_instances`;
+
+-- split --
+
 CREATE TABLE `{PREFIX}widget_instances` (
   `id` int(11) UNSIGNED NOT NULL,
   `widget_area_id` int(11) NOT NULL,
