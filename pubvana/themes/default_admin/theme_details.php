@@ -19,18 +19,18 @@
 		 do our best to switch on the currently
 		 supported language.
 		*/
-		public $name = 'Default Open Blog Admin Theme';
+		public $name = 'Default Pubvana Admin Theme';
 
 		/*
 		  The description of your theme.  
 		 */
-		public $description = 'The default admin theme for Open Blog';
+		public $description = 'The default Admin theme for Pubvana';
 
 		// The author of the theme.
 		public $author = 'Enliven Applications';
 
 		// the author's email address
-		public $author_email = 'info@open-blog.org';
+		public $author_email = 'info@pubvana.org';
 
 		/*
 			Is this theme a replacement for the default admin theme?

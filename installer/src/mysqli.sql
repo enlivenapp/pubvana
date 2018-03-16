@@ -71,11 +71,6 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}groups_perms` (
 
 -- split --
 
-INSERT INTO `{PREFIX}groups_perms` (`id`, `perms_id`, `group_id`) VALUES
-  (1, 1, 2);
-
--- split --
-
 DROP TABLE IF EXISTS `{PREFIX}group_permissions`;
 
 -- split --
@@ -126,25 +121,25 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}languages` (
 -- split --
 
 INSERT INTO `{PREFIX}languages` (`id`, `language`, `abbreviation`, `author`, `author_website`, `is_default`, `is_avail`) VALUES
-  (1, 'english', 'en', 'Enliven Applications', 'http://www.open-blog.org', '1', 1),
-  (2, 'indonesian', 'id', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (3, 'arabic', 'ar', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (4, 'bulgarian', 'bg', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (5, 'czech', 'cs', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (6, 'french', 'fr', 'Enliven Applications', 'http://www.open-blog.org', '0', 1),
-  (7, 'hungarian', 'hu', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (8, 'italian', 'it', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (9, 'latvian', 'lv', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (10, 'norwegian', 'no', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (11, 'polish', 'pl', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (12, 'portuguese', 'pt', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (13, 'simplified-chinese', 'zh-hans', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (14, 'slovak', 'sk', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (15, 'slovenian', 'sl', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (16, 'spanish', 'es', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (17, 'traditional-chinese', 'zh-hant', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (18, 'turkish', 'tr', 'Enliven Applications', 'http://www.open-blog.org', '0', 0),
-  (19, 'ukranian', 'uk', 'Enliven Applications', 'http://www.open-blog.org', '0', 0);
+  (1, 'english', 'en', 'Enliven Applications', 'https://pubvana.com', '1', 1),
+  (2, 'indonesian', 'id', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (3, 'arabic', 'ar', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (4, 'bulgarian', 'bg', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (5, 'czech', 'cs', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (6, 'french', 'fr', 'Enliven Applications', 'https://pubvana.com', '0', 1),
+  (7, 'hungarian', 'hu', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (8, 'italian', 'it', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (9, 'latvian', 'lv', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (10, 'norwegian', 'no', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (11, 'polish', 'pl', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (12, 'portuguese', 'pt', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (13, 'simplified-chinese', 'zh-hans', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (14, 'slovak', 'sk', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (15, 'slovenian', 'sl', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (16, 'spanish', 'es', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (17, 'traditional-chinese', 'zh-hant', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (18, 'turkish', 'tr', 'Enliven Applications', 'https://pubvana.com', '0', 0),
+  (19, 'ukranian', 'uk', 'Enliven Applications', 'https://pubvana.com', '0', 0);
 
 -- split --
 
@@ -166,8 +161,8 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}links` (
 -- split --
 
 INSERT INTO `{PREFIX}links` (`id`, `name`, `url`, `target`, `description`, `visible`, `position`) VALUES
-  (1, 'Open Blog', 'http://open-blog.org', '_blank', 'Open Blog', 'yes', 3),
-  (2, 'CodeIgniter', 'http://codeigniter.com', '_blank', 'CodeIgniter', 'yes', 2),
+  (1, 'Pubvana', 'http://pubvana.org', '_blank', 'Pubvana', 'yes', 3),
+  (2, 'Pubvana Hosting', 'http://pubvana.com', '_blank', 'Pubvana Hosting', 'yes', 2),
   (3, 'Enliven Applications', 'http://enlivenapp.com', '_blank', 'Enliven Applications', 'yes', 1);
 
 -- split --
@@ -244,7 +239,7 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}pages` (
 -- split --
 
 INSERT INTO `{PREFIX}pages` (`id`, `title`, `url_title`, `author`, `date`, `content`, `status`, `is_home`, `meta_title`, `meta_keywords`, `meta_description`) VALUES
-  (1, 'Welcome to Open Blog', 'welcome-to-open-blog', 1, '2016-12-22', '### Welcome\r\n\r\nIf you can see this page, this means Open Blog was successfully installed.\r\n\r\nIf you need help, don\'t hesitate and visit the Open Blog home page.\r\n\r\nSincerely,\r\n\r\nThe Open Blog team\r\n\r\n*Since this is just an example post, feel free to delete it.*', 'active', 1, 'Open Blog Home Page', 'Open, Blog, Open Blog', 'The Open Blog Homepage');
+  (1, 'Welcome to Pubvana', 'welcome-to-pubvana', 1, '2016-12-22', '### Welcome\r\n\r\nIf you can see this page, Pubvana was successfully installed.\r\n\r\nIf you need help, don\'t hesitate and visit the Pubvana website.\r\n\r\n*Since this is just an example post, feel free to delete it.*', 'active', 1, 'Pubvana Home Page', 'Pubvana, Blog, CMS, Website, personal, small business', 'The Pubvana Homepage');
 
 -- split --
 
@@ -273,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}posts` (
 -- split --
 
 INSERT INTO `{PREFIX}posts` (`id`, `author`, `date_posted`, `title`, `url_title`, `excerpt`, `content`, `feature_image`, `allow_comments`, `sticky`, `status`, `meta_title`, `meta_keywords`, `meta_description`) VALUES
-  (1, 1, '2016-12-21', 'Welcome to Open Blog', 'welcome-to-open-blog', 'Congratulations! If you can see this page, this means Open Blog was successfully installed. If you need help, don\'t hesitate and visit the Open Blog home page.\r\n', '#### Congratulations!\r\n\r\nIf you can see this page, this means Open Blog was successfully installed.\r\n\r\nIf you need help, don\'t hesitate and visit the Open Blog home page.\r\n\r\nSincerely,\r\n\r\nThe Open Blog team\r\n\r\n*Since this is just an example post, feel free to delete it.*', NULL ,'1', '0', 'published', 'Open Blog Home Page', 'Open, Blog, Open Blog', 'The Open Blog Homepage');
+  (1, 1, '2016-12-21', 'Welcome to Pubvana', 'welcome-to-pubvana', 'Congratulations! If you can see this page, Pubvana was successfully installed. If you need help, don\'t hesitate and visit the Pubvana website.\r\n', '#### Congratulations!\r\n\r\nIf you can see this page, Pubvana was successfully installed.\r\n\r\nIf you need help, don\'t hesitate and visit the Pubvana website.\r\n\r\n*Since this is just an example post, feel free to delete it.*', NULL ,'1', '0', 'published', 'Pubvana Home Page', 'Pubvana, Blog, CMS, Website, personal, small business', 'The Pubvana Homepage');
 
 -- split --
 
@@ -345,7 +340,7 @@ INSERT INTO `{PREFIX}settings` (`name`, `value`, `tab`, `field_type`, `options`,
   ('recaptcha_site_key', '', 'captcha', 'text', '', 0),
   ('sendmail_path', '/usr/sbin/sendmail', 'email', 'text', '', 0),
   ('server_email', '{USER-EMAIL}', 'email', 'text', '', 1),
-  ('site_name', 'Open Blog', 'general', 'text', '', 1),
+  ('site_name', 'Pubvana', 'general', 'text', '', 1),
   ('smtp_host', '', 'email', 'text', '', 0),
   ('smtp_pass', '', 'email', 'text', '', 0),
   ('smtp_port', '', 'email', 'text', '', 0),
@@ -423,8 +418,8 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}templates` (
 -- split --
 
 INSERT INTO `{PREFIX}templates` (`id`, `name`, `description`, `author`, `author_email`, `path`, `image`, `is_default`, `is_active`, `is_admin`, `version`) VALUES
-  (1, 'Default', 'The default theme for Open Blog', 'Enliven Applications', 'info@open-blog.org', 'default', 'default.png', '1', '1', '0', '1.0.0'),
-  (2, 'Default Admin', 'The default admin theme for Open Blog', 'Enliven Applications', 'info@open-blog.org', 'default_admin', 'default_admin.png', '1', '1', '1', '1.0.0');
+  (1, 'Default', 'The default theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default', 'default.png', '1', '1', '0', '1.0.0'),
+  (2, 'Default Admin', 'The default admin theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default_admin', 'default_admin.png', '1', '1', '1', '1.0.0');
 
 -- split --
 

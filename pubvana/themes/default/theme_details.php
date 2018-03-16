@@ -14,18 +14,18 @@
 		/* 
 		 Name of your theme. 
 		*/
-		public $name = 'Default Open Blog Theme';
+		public $name = 'Default Pubvana Theme';
 
 		/*
 		  The description of your theme.  
 		 */
-		public $description = 'The default theme for Open Blog';
+		public $description = 'The default theme for Pubvana';
 
 		// The author of the theme.
 		public $author = 'Enliven Applications';
 
 		// the author's email address
-		public $author_email = 'info@open-blog.org';
+		public $author_email = 'info@pubvana.org';
 
 		/*
 			Is this theme a replacement for the default admin theme?
