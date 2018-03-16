@@ -23,12 +23,6 @@ class Installer
     public static function postInstall(Event $event = null)
     {
 
-        // Now that composer has done it's things,
-        // we need to deal with how to update, so we
-        // use another composer.json file for updates
-        // rather than installing. 
-        copy('composer.json.dist', 'composer.json');
-
         // Run composer update
         //lsself::composerUpdate();
 
@@ -104,7 +98,6 @@ class Installer
     {
         unlink(__FILE__);
         //rmdir('application');
-        unlink('composer.json.dist');
     }
 
     /**

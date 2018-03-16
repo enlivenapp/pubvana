@@ -37,6 +37,9 @@
     "scripts" : {
         "post-create-project-cmd": [
             "Enlivenapp\\Pubvana\\Installer::postInstall"
+        ],
+        "post-update-cmd": [
+            "Enlivenapp\\Pubvana\\Installer::postUpdate"
         ]
     }
 }
