@@ -1,13 +1,16 @@
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
+
 DROP TABLE IF EXISTS `{PREFIX}categories`;
-
--- split --
-
-CREATE TABLE IF NOT EXISTS `{PREFIX}categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `{PREFIX}categories` (
+  `id` int(11) NOT NULL,
   `name` varchar(60) DEFAULT NULL,
   `url_name` varchar(200) DEFAULT NULL,
-  `description` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `description` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- split --
@@ -15,14 +18,12 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}categories` (
 INSERT INTO `{PREFIX}categories` (`id`, `name`, `url_name`, `description`) VALUES
   (1, 'Uncategorized', 'uncategorized', 'Uncategorized');
 
+
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}comments`;
-
--- split --
-
-CREATE TABLE IF NOT EXISTS `{PREFIX}comments` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `{PREFIX}comments` (
+  `id` int(11) NOT NULL,
   `post_id` int(11) DEFAULT '0',
   `user_id` int(11) DEFAULT NULL,
   `author` varchar(50) DEFAULT NULL,
@@ -30,8 +31,19 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}comments` (
   `author_ip` varchar(100) NOT NULL,
   `content` text,
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `modded` int(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
+  `modded` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- split --
+
+DROP TABLE IF EXISTS `{PREFIX}contacts`;
+CREATE TABLE `{PREFIX}contacts` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `sender_ip` varchar(50) NOT NULL,
+  `message` varchar(200) NOT NULL,
+  `send_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- split --
@@ -69,44 +81,42 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}groups_perms` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}group_permissions`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}group_permissions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `description` varchar(150) NOT NULL,
   `protected` int(1) NOT NULL DEFAULT '0',
   `form_name` varchar(50) NOT NULL,
+  `display_order` int(5) DEFAULT NULL
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 -- split --
 
-INSERT INTO `{PREFIX}group_permissions` (`id`, `name`, `description`, `protected`, `form_name`) VALUES
-  (1, 'users', 'Users', 1, ''),
-  (2, 'posts', 'Posts', 1, ''),
-  (3, 'pages', 'Pages', 1, ''),
-  (4, 'links', 'Links', 1, ''),
-  (5, 'social', 'Social', 1, ''),
-  (6, 'comments', 'Comments', 1, ''),
-  (7, 'navigation', 'Navigation', 1, ''),
-  (8, 'themes', 'Themes', 1, ''),
-  (9, 'settings', 'Settings', 1, ''),
-  (10, 'updates', 'Updates!', 1, ''),
-  (11, 'dashboard', 'Dashboard', 1, ''),
-  (12, 'cats', 'Categories', 1, ''),
-  (13, 'lang', 'Language', 1, '');
+INSERT INTO `{PREFIX}group_permissions` (`id`, `name`, `description`, `protected`, `form_name`, `display_order`) VALUES
+  (1, 'users', 'Users', 1, '', 14),
+  (2, 'posts', 'Posts', 1, '', 9),
+  (3, 'pages', 'Pages', 1, '', 8),
+  (4, 'links', 'Links', 1, '', 5),
+  (5, 'social', 'Social', 1, '', 11),
+  (6, 'comments', 'Comments', 1, '', 3),
+  (7, 'navigation', 'Navigation', 1, '', 7),
+  (8, 'themes', 'Themes', 1, '', 12),
+  (9, 'settings', 'Settings', 1, '', 10),
+  (10, 'updates', 'Updates', 1, '', 13),
+  (11, 'dashboard', 'Dashboard', 1, '', 1),
+  (12, 'cats', 'Categories', 1, '', 2),
+  (13, 'lang', 'Language', 1, '', 4),
+  (14, 'media', 'Media', 1, '', 6),
+  (15, 'widgets', 'Widgets', 1, '', 15);
 
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}languages`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}languages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `language` varchar(100) DEFAULT NULL,
@@ -144,9 +154,6 @@ INSERT INTO `{PREFIX}languages` (`id`, `language`, `abbreviation`, `author`, `au
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}links`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}links` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -165,6 +172,7 @@ INSERT INTO `{PREFIX}links` (`id`, `name`, `url`, `target`, `description`, `visi
   (2, 'Pubvana Hosting', 'http://pubvana.com', '_blank', 'Pubvana Hosting', 'yes', 2),
   (3, 'Enliven Applications', 'http://enlivenapp.com', '_blank', 'Enliven Applications', 'yes', 1);
 
+
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}login_attempts`;
@@ -179,12 +187,10 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}login_attempts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}navigation`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}navigation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(50) DEFAULT NULL,
@@ -192,14 +198,15 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}navigation` (
   `url` varchar(255) DEFAULT NULL,
   `external` enum('0','1') NOT NULL DEFAULT '0',
   `position` varchar(100) DEFAULT NULL,
+  `parent_id` int(5) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- split --
 
-INSERT INTO `{PREFIX}navigation` (`id`, `title`, `description`, `url`, `external`, `position`) VALUES
-  (1, 'Home', 'Home', '', '0', '0'),
-  (2, 'Welcome (page)', 'Welcome Page', 'pages/', '0', '1');
+INSERT INTO `{PREFIX}navigation` (`id`, `title`, `description`, `url`, `external`, `position`, `parent_id`) VALUES
+  (1, 'Home', 'Home', '', '0', '0', '0'),
+  (2, 'Welcome (page)', 'Welcome Page', 'pages/', '0', '1', '0');
 
 -- split --
 
@@ -218,9 +225,6 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}notifications` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}pages`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(200) DEFAULT NULL,
@@ -233,20 +237,19 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}pages` (
   `meta_title` varchar(200) NOT NULL,
   `meta_keywords` varchar(200) NOT NULL,
   `meta_description` varchar(200) NOT NULL,
+  `date_modified` date DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- split --
 
-INSERT INTO `{PREFIX}pages` (`id`, `title`, `url_title`, `author`, `date`, `content`, `status`, `is_home`, `meta_title`, `meta_keywords`, `meta_description`) VALUES
-  (1, 'Welcome to Pubvana', 'welcome-to-pubvana', 1, '2016-12-22', '### Welcome\r\n\r\nIf you can see this page, Pubvana was successfully installed.\r\n\r\nIf you need help, don\'t hesitate and visit the Pubvana website.\r\n\r\n*Since this is just an example post, feel free to delete it.*', 'active', 1, 'Pubvana Home Page', 'Pubvana, Blog, CMS, Website, personal, small business', 'The Pubvana Homepage');
+INSERT INTO `{PREFIX}pages` (`id`, `title`, `url_title`, `author`, `date`, `content`, `status`, `is_home`, `meta_title`, `meta_keywords`, `meta_description`, `date_modified`) VALUES
+  (1, 'Welcome to Pubvana', 'welcome-to-pubvana', 1, '2016-12-22', '### Welcome\r\n\r\nIf you can see this page, Pubvana was successfully installed.\r\n\r\nIf you need help, don\'t hesitate and visit the Pubvana website.\r\n\r\n*Since this is just an example post, feel free to delete it.*', 'active', 1, 'Pubvana Home Page', 'Pubvana, Blog, CMS, Website, personal, small business', 'The Pubvana Homepage', NULL);
+
 
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}posts`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}posts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `author` int(11) NOT NULL DEFAULT '0',
@@ -262,20 +265,21 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}posts` (
   `meta_title` varchar(200) NOT NULL,
   `meta_keywords` varchar(200) NOT NULL,
   `meta_description` varchar(200) NOT NULL,
+  `date_modified` date DEFAULT NULL,
+  `post_count` int(20) DEFAULT '0',
+  `featured` int(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- split --
 
-INSERT INTO `{PREFIX}posts` (`id`, `author`, `date_posted`, `title`, `url_title`, `excerpt`, `content`, `feature_image`, `allow_comments`, `sticky`, `status`, `meta_title`, `meta_keywords`, `meta_description`) VALUES
-  (1, 1, '2016-12-21', 'Welcome to Pubvana', 'welcome-to-pubvana', 'Congratulations! If you can see this page, Pubvana was successfully installed. If you need help, don\'t hesitate and visit the Pubvana website.\r\n', '#### Congratulations!\r\n\r\nIf you can see this page, Pubvana was successfully installed.\r\n\r\nIf you need help, don\'t hesitate and visit the Pubvana website.\r\n\r\n*Since this is just an example post, feel free to delete it.*', NULL ,'1', '0', 'published', 'Pubvana Home Page', 'Pubvana, Blog, CMS, Website, personal, small business', 'The Pubvana Homepage');
+INSERT INTO `{PREFIX}posts` (`id`, `author`, `date_posted`, `title`, `url_title`, `excerpt`, `content`, `feature_image`, `allow_comments`, `sticky`, `status`, `meta_title`, `meta_keywords`, `meta_description`, `date_modified`, `post_count`, `featured`) VALUES
+  (1, 1, '2018-03-16', 'Welcome to Pubvana', 'welcome-to-pubvana', 'Congratulations! If you can see this page, Pubvana was successfully installed. If you need help, don\'t hesitate and visit the Pubvana website.\r\n', '#### Congratulations!\r\n\r\nIf you can see this page, Pubvana was successfully installed.\r\n\r\nIf you need help, don\'t hesitate and visit the Pubvana website.\r\n\r\n*Since this is just an example post, feel free to delete it.*', NULL ,'1', '0', 'published', 'Pubvana Home Page', 'Pubvana, Blog, CMS, Website, personal, small business', 'The Pubvana Homepage', NULL, '0', '0');
+
 
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}posts_to_categories`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}posts_to_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `post_id` int(11) NOT NULL,
@@ -291,9 +295,6 @@ INSERT INTO `{PREFIX}posts_to_categories` (`id`, `post_id`, `category_id`) VALUE
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}redirects`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}redirects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `old_slug` varchar(200) NOT NULL,
@@ -306,9 +307,6 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}redirects` (
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}settings`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}settings` (
   `name` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
@@ -316,44 +314,46 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}settings` (
   `field_type` varchar(50) NOT NULL,
   `options` varchar(200) NOT NULL,
   `required` int(1) NOT NULL DEFAULT '1',
+  `order_by` int(5) DEFAULT '0',
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- split --
 
-INSERT INTO `{PREFIX}settings` (`name`, `value`, `tab`, `field_type`, `options`, `required`) VALUES
-  ('admin_email', '{USER-EMAIL}', 'email', 'text', '', 1),
-  ('allow_comments', '1', 'comments', 'dropdown', '1=yes|0=no', 1),
-  ('allow_registrations', 'true', 'users', 'dropdown', 'true=yes|false=no', 1),
-  ('base_controller', 'blog', 'general', 'dropdown', 'blog=blog|pages=pages', 1),
-  ('blog_description', 'A blog application written with CodeIgniter. Requires PHP and MySQL', 'general', 'text', '', 0),
-  ('category_list_limit', '10', 'limits', 'dropdown', '10=10|20=20|30=30', 1),
-  ('email_activation', 'true', 'users', 'dropdown', 'true=yes|false=no', 1),
-  ('links_per_box', '10', 'limits', 'dropdown', '10=10|20=20|30=30', 1),
-  ('manual_activation', 'false', 'users', 'dropdown', 'true=yes|false=no', 1),
-  ('mail_protocol', 'mail', 'email', 'dropdown', 'mail=mail|smtp=smtp|sendmail=sendmail', 1),
-  ('mod_non_user_comments', '1', 'comments', 'dropdown', '1=yes|0=no', 1),
-  ('mod_user_comments', '0', 'comments', 'dropdown', '1=yes|0=no', 1),
-  ('months_per_archive', '10', 'limits', 'dropdown', '10=10|20=20|30=30', 1),
-  ('posts_per_page', '10', 'limits', 'dropdown', '10=10|20=20|30=30', 1),
-  ('recaptcha_private_key', '', 'captcha', 'text', '', 0),
-  ('recaptcha_site_key', '', 'captcha', 'text', '', 0),
-  ('sendmail_path', '/usr/sbin/sendmail', 'email', 'text', '', 0),
-  ('server_email', '{USER-EMAIL}', 'email', 'text', '', 1),
-  ('site_name', 'Pubvana', 'general', 'text', '', 1),
-  ('smtp_host', '', 'email', 'text', '', 0),
-  ('smtp_pass', '', 'email', 'text', '', 0),
-  ('smtp_port', '', 'email', 'text', '', 0),
-  ('smtp_user', '', 'email', 'text', '', 0),
-  ('use_honeypot', '0', 'captcha', 'dropdown', '1=yes|0=no', 1),
-  ('use_recaptcha', '0', 'captcha', 'dropdown', '1=yes|0=no', 1);
+  INSERT INTO `{PREFIX}settings` (`name`, `value`, `tab`, `field_type`, `options`, `required`, `order_by`) VALUES
+('admin_email', '{USER-EMAIL}', 'email', 'text', '', 1, 0),
+('allow_comments', '1', 'comments', 'dropdown', '1=yes|0=no', 1, 1),
+('allow_registrations', 'true', 'users', 'dropdown', 'true=yes|false=no', 1, 0),
+('base_controller', 'blog', 'general', 'dropdown', 'blog=blog|pages=pages', 1, 0),
+('blog_description', 'Blogging and Small business CMS', 'general', 'text', '', 0, 0),
+('category_list_limit', '10', 'limits', 'dropdown', '10=10|20=20|30=30', 1, 0),
+('comment_system', 'local', 'comments', 'dropdown', 'local=Local|fb=Facebook', 1, 0),
+('email_activation', 'true', 'users', 'dropdown', 'true=yes|false=no', 1, 0),
+('facebook_id', '', 'comments', 'text', '', 0, 4),
+('gAnalyticsPropId', '', 'google', 'text', '', 0, 0),
+('links_per_box', '10', 'limits', 'dropdown', '10=10|20=20|30=30', 1, 0),
+('mail_protocol', 'mail', 'email', 'dropdown', 'mail=mail|smtp=smtp|sendmail=sendmail', 1, 0),
+('manual_activation', 'false', 'users', 'dropdown', 'true=yes|false=no', 1, 0),
+('mod_non_user_comments', '1', 'comments', 'dropdown', '1=yes|0=no', 1, 2),
+('mod_user_comments', '0', 'comments', 'dropdown', '1=yes|0=no', 1, 3),
+('months_per_archive', '10', 'limits', 'dropdown', '10=10|20=20|30=30', 1, 0),
+('posts_per_page', '10', 'limits', 'dropdown', '10=10|20=20|30=30', 1, 0),
+('recaptcha_private_key', '', 'google', 'text', '', 0, 0),
+('recaptcha_site_key', '', 'google', 'text', '', 0, 0),
+('sendmail_path', '/usr/sbin/sendmail', 'email', 'text', '', 0, 0),
+('server_email', '{USER-EMAIL}', 'email', 'text', '', 1, 0),
+('site_name', 'Pubvana', 'general', 'text', '', 1, 0),
+('smtp_crypto', 'tls', 'email', 'dropdown', 'tls=TLS|ssl=SSL', 0, 0),
+('smtp_host', '', 'email', 'text', '', 0, 0),
+('smtp_pass', '', 'email', 'text', '', 0, 0),
+('smtp_port', '', 'email', 'text', '', 0, 0),
+('smtp_user', '', 'email', 'text', '', 0, 0),
+('use_honeypot', '0', 'captcha', 'dropdown', '1=yes|0=no', 1, 0),
+('use_recaptcha', '0', 'google', 'dropdown', '1=yes|0=no', 1, 0);
 
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}sidebar`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}sidebar` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
@@ -377,9 +377,6 @@ INSERT INTO `{PREFIX}sidebar` (`id`, `title`, `file`, `status`, `position`) VALU
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}social`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}social` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) DEFAULT NULL,
@@ -397,9 +394,6 @@ INSERT INTO `{PREFIX}social` (`id`, `name`, `url`, `enabled`) VALUES
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}templates`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -412,14 +406,27 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}templates` (
   `is_active` varchar(1) NOT NULL DEFAULT '0',
   `is_admin` varchar(1) NOT NULL DEFAULT '0',
   `version` varchar(10) NOT NULL DEFAULT '1.0.0',
+  `has_options` int(1) DEFAULT '0'
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- split --
 
-INSERT INTO `{PREFIX}templates` (`id`, `name`, `description`, `author`, `author_email`, `path`, `image`, `is_default`, `is_active`, `is_admin`, `version`) VALUES
-  (1, 'Default', 'The default theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default', 'default.png', '1', '1', '0', '1.0.0'),
-  (2, 'Default Admin', 'The default admin theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default_admin', 'default_admin.png', '1', '1', '1', '1.0.0');
+INSERT INTO `{PREFIX}templates` (`id`, `name`, `description`, `author`, `author_email`, `path`, `image`, `is_default`, `is_active`, `is_admin`, `version`, `has_options`) VALUES
+(1, 'Default', 'The default theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default', 'default.png', '1', '0', '0', '1.0.0', 1),
+(2, 'Default Admin', 'The default Admin theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default_admin', 'default_admin.png', '1', '1', '1', '1.0.0', 0);
+
+-- split --
+
+DROP TABLE IF EXISTS `{PREFIX}theme_options`;
+CREATE TABLE `{PREFIX}theme_options` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `theme_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `value` varchar(200) NOT NULL,
+  `type` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- split --
 
@@ -450,15 +457,12 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}users` (
 
 -- split --
 
-INSERT INTO {PREFIX}users (id, ip_address, username, `password`, salt, email, activation_code, forgotten_password_code, forgotten_password_time, remember_code, created_on, last_login, active, first_name, last_name, company, phone) VALUES
+INSERT INTO {PREFIX}users (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
   (1, '127.0.0.1', '{USER-NAME}', '{PASSWORD}', '{SALT}', '{USER-EMAIL}', NULL, NULL, NULL, NULL, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, '{FIRST-NAME}', '{LAST-NAME}', NULL, NULL);
 
 -- split --
 
 DROP TABLE IF EXISTS `{PREFIX}users_groups`;
-
--- split --
-
 CREATE TABLE IF NOT EXISTS `{PREFIX}users_groups` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` int(11) UNSIGNED NOT NULL,
@@ -473,6 +477,47 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}users_groups` (
 
 INSERT INTO `{PREFIX}users_groups` (`id`, `user_id`, `group_id`) VALUES
   (1, 1, 1);
+
+-- split --
+
+DROP TABLE IF EXISTS `{PREFIX}widgets`;
+CREATE TABLE `{PREFIX}widgets` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `author` varchar(50) NOT NULL,
+  `author_email` varchar(50) NOT NULL,
+  `author_website` varchar(50) NOT NULL,
+  `version` varchar(50) NOT NULL,
+  `slug` varchar(30) DEFAULT NULL,
+  `options` text,
+  `content` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- split --
+
+DROP TABLE IF EXISTS `{PREFIX}widget_areas`;
+CREATE TABLE `{PREFIX}widget_areas` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `theme_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- split --
+
+DROP TABLE IF EXISTS `{PREFIX}widget_instances`;
+CREATE TABLE `{PREFIX}widget_instances` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `widget_area_id` int(11) NOT NULL,
+  `widget_id` int(11) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `show_title` int(1) NOT NULL DEFAULT '1',
+  `options` text,
+  `content` text,
+  `order` int(1) NOT NULL,
+  `active` int(1) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- split --
 

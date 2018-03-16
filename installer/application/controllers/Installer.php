@@ -497,7 +497,6 @@ class Installer extends CI_Controller {
 		$schema = str_replace('{LAST-NAME}', $db->real_escape_string($this->session->last_name), $schema);
 		$schema = str_replace('{SALT}', $user_salt, $schema);
 		$schema = str_replace('{NOW}', time(), $schema);
-		//$schema = str_replace('{MIGRATION}', $config['migration_version'], $schema);
 
 
 		// Parse the queries
