@@ -49,7 +49,7 @@ if ( ! file_exists('pubvana/config/database.php') || ! file_exists('pubvana/conf
 	if (strpos($_SERVER['REQUEST_URI'], 'installer/'))
 	{
 		header('Status: 404');
-		exit('Open Blog is missing application/config/database.php or application/config/config.php and cannot find the installer folder. Please check permission to access these files or upload the installer folder.');
+		exit('Pubvana is missing pubvana/config/database.php or pubvana/config/config.php and cannot find the installer folder. Please check permission to access these files or upload the installer folder.');
 	}
 	
 	// Otherwise go to installer
