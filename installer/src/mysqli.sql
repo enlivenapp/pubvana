@@ -6,7 +6,7 @@
 --
 
 DROP TABLE IF EXISTS `{PREFIX}categories`;
-CREATE TABLE `{PREFIX}categories` (
+CREATE TABLE IF NOT EXISTS `{PREFIX}categories` (
   `id` int(11) NOT NULL,
   `name` varchar(60) DEFAULT NULL,
   `url_name` varchar(200) DEFAULT NULL,
