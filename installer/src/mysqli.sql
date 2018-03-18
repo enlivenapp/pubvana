@@ -452,7 +452,7 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}templates` (
 -- split --
 
 INSERT INTO `{PREFIX}templates` (`id`, `name`, `description`, `author`, `author_email`, `path`, `image`, `is_default`, `is_active`, `is_admin`, `version`, `has_options`) VALUES
-(1, 'Default', 'The default theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default', 'default.png', '1', '0', '0', '1.0.0', 1),
+(1, 'Default', 'The default theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default', 'default.png', '1', '1', '0', '1.0.0', 0),
 (2, 'Default Admin', 'The default Admin theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default_admin', 'default_admin.png', '1', '1', '1', '1.0.0', 0);
 
 -- split --
