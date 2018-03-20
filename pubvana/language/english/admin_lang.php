@@ -321,14 +321,14 @@ $lang['comments_current_status']			= "Current Status";
 $lang['updates_hdr']						= "Updates";
 $lang['updates_subheader']					= "You can update Pubvana. Below is the current status of your installation.";
 $lang['updates_failed_connection']			= "Failed to connect to the pubvana.org API.";
-$lang['updates_update_available']			= "There is an update available! <br><b><em>IMPORTANT NOTICE: Make a FULL site Backup before your begin the update!</em></b>";
+$lang['updates_update_available']			= "There is an update available! <br><b><em>IMPORTANT NOTICE: Make a FULL site Backup before updating your website!</em></b>";
 $lang['updates_update_not_available']		= "You installation of Pubvana is up to date.";
 $lang['updates_pv_install_text']			= "Your Pubvana Installation";
 $lang['updates_pv_current_stable_text']		= "Current Stable Release";
 $lang['updates_install_up_to_date_text']	= "Your Pubvana installation is up to date.  You don't need to do anything.";
 $lang['updates_update_now_btn']				= "Update Now";
 $lang['updates_update_success_resp']		= "Update Succeeded. Make sure to check your settings";
-$lang['updates_update_failed_resp']			= "Unable to update Pubvana.  Please try again or find help on the Pubvana website.";
+$lang['updates_update_failed_resp']			= "Unable to update Pubvana.  Please try again or find help on the Pubvana website. Check Log files for details.";
 $lang['updates_download_btn']				= "Download The Update";
 
 
@@ -401,7 +401,7 @@ $lang['settings_update_failed']				= "Settings Failed to Update.  Please try aga
 $lang['permission_check_failed']			= "You must be an logged in and have permission to view this page.";
 
 // installer directory warning
-$lang['installer_dir_warning_notice']		= "The /installer/ directory is still present.  For better security you should delete the installer/ directory and it's contents immediately!";
+$lang['installer_dir_warning_notice']		= "The /installer/ directory is still present.  For better security it is highly recommended to delete it immediately!";
 
 
 $lang['SSL']						= "Secure Socket layer (SSL)";
@@ -418,12 +418,23 @@ $lang['gAnalyticsPropId_desc']	= 'Enter the "Property ID" provided to you by <a 
 
 
 // updates
-$lang['updates_composer_hdr']		= 'Composer';
-$lang['updates_composer_txt']		= 'If you have installed Pubvana with <a href="https://getcomposer.org" target="_blank">Composer</a> you can update using the command line.<br><br> <ol> <li>type `<code>cd root/of/pubvana</code>`</li> <li>type `<code>composer update</code>`</li> <li>login to your admin panel to run automated updates for your database.</li></ul>';
+$lang['updates_auto_hdr']		= 'Automatic Update';
+$lang['updates_auto_txt']		= 'Click the button above to update Pubvana.  <br><b>Back up your database and site files before updating.</b>';
 
-$lang['updates_download_hdr'] 		= 'Downloaded';
-$lang['updates_download_txt'] 		= 'If you have installed Pubvana by downloading you can update by downloading the latest release and copying the new files over the old ones.<br><br> <ol> <li>In your browser, go to the <a href="http://pubvana.org" target="_blank">Pubvana website</a></li> <li>Download the latest release</li> <li>Unzip and copy files over your existing installation</li><li>login to your admin panel to run automated updates for your database.</li></ul>';
-
+$lang['updates_download_hdr'] 		= 'Download';
+$lang['updates_download_txt'] 		= 'If you prefer to to download &amp; copy files yourself, click the button above to download the most recent version.<br><br> 
+				<ol> 
+					<li>Copy the new files into the <code>pubvana/</code> directory of the website</li> 
+					<li>Login to your Admin panel (or refresh any admin page) to run automated updates for your database.</li>
+				</ul>';
+$lang['updates_disabled_txt'] 		= 'Automatic Updates are disabled.  cURL or ZipArchive is not available on your system.  Please enable to allow automatic updates.';
+$lang['updates_curl_not_avail']		= 'cURL is not available on your system. Please enable it to use Updates.';
+$lang['updates_zip_not_avail']		= 'ZipArchive is not available on your system. Please enable it to use Updates.';
+$lang['updates_auto_confirm_txt']	= 'Confirm to continue update of Pubvana.  <br><b>Ensure there are backups of site and database files!</b>';
+$lang['updates_curlzip_not_avail']	= 'cURL or ZipArchive is not available on your system.  Install/Enable to use updates.';
+$lang['updates_uploads_not_write']	= 'uploads/ directory is not writable.  Set uploads/ permissions to read &amp; write (777).';
+//$lang['']	= '';
+//$lang['']	= '';
 
 $lang['themes_theme_options']		= 'Options';
 $lang['theme_options_hdr']			= 'Theme Options';

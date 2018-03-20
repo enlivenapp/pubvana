@@ -85,11 +85,157 @@ class Admin_updates_m extends CI_Model
      */
 	public function perform_update()
 	{
-		return false;
+
+		$uploads_dir = realpath("uploads");
+		$tmp_dir = $uploads_dir . '/tmp/';
+
+		// if cURL/ZipArchive isn't installed 
+		if (! $this->_isCurl() || ! $this->_isZipArchive())
+		{
+			$this->session->set_flashdata('error', lang('updates_curlzip_not_avail'));
+			log_message('error', 'Updates: cURL or ZipArchive is not available.');
+			return false;
+		}
+
+		// if we can't write to uploads/ fail
+		if (!is_writable($uploads_dir))
+		{
+			$this->session->set_flashdata('error', lang('updates_uploads_not_write'));
+			log_message('error', 'Updates: uploads/ is not writable');
+			return false;
+		}
+
+		// we can write to the uploads/ dir, but uploads/tmp doesn't exist
+		if (! is_dir($tmp_dir))
+		{
+			// make that dir
+			if (! mkdir($tmp_dir, 0777))
+			{
+				$this->session->set_flashdata('error', lang('updates_update_failed_resp'));
+				log_message('error', 'Updates: Could not mkdir tmp/ directory');
+				return false;
+			}
+		}
+
+		// if we failed to unlink last time, try again.
+		if (file_exists($tmp_dir . 'current.zip'))
+		{	
+			// if it won't unlink, fail
+			if (!unlink($tmp_dir . 'current.zip'))
+			{
+				$this->session->set_flashdata('error', lang('updates_update_failed_resp'));
+				log_message('error', 'Updates: Could not unlink() previous current.zip file.');
+				return false;
+			}
+		}
+
+		// we should now have uploads/tmp with no current.zip file, otherwise, 
+		// it's failed somewhere along the way.
+
+   		// get the current.zip file
+   		$download_url = $this->config->item('pv_update_download_url');
+
+		// set up cURL
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $download_url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+		if (! $data = curl_exec ($ch))
+		{
+			log_message('error', 'Updates: cURL Error: ' . curl_error($ch));
+			return false;
+		}
+		curl_close ($ch);
+
+		// define the file, we unlink later
+		$destination = $tmp_dir . "current.zip";
+
+		// open the file
+		$file = fopen($destination, "w+");
+
+		// it puts the data in the file or it gets the hose again
+		fputs($file, $data);
+
+		fclose($file);
+		
+		// new zip instance 
+		$zip = new ZipArchive;
+
+		// unzip the file
+		$res = $zip->open($tmp_dir . 'current.zip'); 
+
+		if ($res === TRUE) 
+		{
+			// extract to home directory
+		    $zip->extractTo($tmp_dir); 
+		    $zip->close();
+
+		    // now, for some fun...
+		    // delete install files and 
+		    // uploads/tmp directory
+		    if (!$this->delDir($tmp_dir))
+		    {
+		    	// we're not going to outright fail, because the update worked
+		    	// but we are going to log it as an error.
+		    	$this->session->set_flashdata('error', lang('updates_update_failed_resp'));
+		    	log_message('error', 'Updates: Unable to delete ' . $tmp_dir);
+		    }
+		    // success
+		    return true;
+		} else 
+		{
+			// failed to process zip file
+			$this->session->set_flashdata('error', lang('updates_update_failed_resp'));
+			log_message('error', 'Updates: Failed to process zip file. Error: ' . $res);
+		    return false;
+		}
 	}
 
 	/**
-     * Construct
+     * delDir
+     *
+     * Deletes a directory and all contents
+     *
+     * @access  public
+     * @author  Phil Sturgeon ?
+     * @version 3.0
+     * 
+     * @return  bool
+     */
+	private function delDir($dir = false)
+	{
+		if (!$dir)
+		{
+			return false;
+		}
+
+		$it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+
+		$files = new RecursiveIteratorIterator($it,
+		             RecursiveIteratorIterator::CHILD_FIRST);
+		foreach($files as $file) 
+		{
+		    if ($file->isDir())
+		    {
+		        rmdir($file->getRealPath());
+		    } else 
+		    {
+		        unlink($file->getRealPath());
+		    }
+		}
+		if (rmdir($dir))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+
+
+
+	/**
+     * _isCurl
      *
      * @access  public
      * @author  Phil Sturgeon ?
@@ -100,6 +246,12 @@ class Admin_updates_m extends CI_Model
 	public function _isCurl()
 	{
     	return function_exists('curl_init');
+	}
+
+
+	public function _isZipArchive()
+	{
+		return class_exists('ZipArchive');
 	}
 
 }

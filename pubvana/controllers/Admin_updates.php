@@ -64,11 +64,18 @@ class Admin_updates extends PV_AdminController {
 	{
 		$data['update_avail'] = $this->Admin_updates_m->check_for_update();
 
+		$data['curlInstalled'] 	= $this->Admin_updates_m->_isCurl();
+		$data['zipArchive']		= $this->Admin_updates_m->_isZipArchive();
+
 		$this->template->build('admin/updates/index', $data);
 	}
 
+
+
+
+
 	/**
-     * do_update
+     * auto_update
      * 
      * Don't have much done with updates just
      * yet, but this will get more later
@@ -79,7 +86,7 @@ class Admin_updates extends PV_AdminController {
      * 
      * @return  null
      */
-	public function do_update()
+	public function auto_update()
 	{
 		if ($this->Admin_updates_m->perform_update())
 		{
@@ -87,10 +94,10 @@ class Admin_updates extends PV_AdminController {
     		$this->session->set_flashdata('success', lang('updates_update_success_resp'));
 			redirect('admin_updates');
         }
-        // failed
-		$this->session->set_flashdata('error', lang('updates_update_failed_resp'));
+        // failed - msg generated in model
 		redirect('admin_updates');
     }
+
 
 
 }

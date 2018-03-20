@@ -35,6 +35,10 @@ $config['pv_update_download_url']	= 'https://updates.pubvana.org/current/downloa
 // for the current release of OB.
 $config['pv_themes_url']			= 'https://pubvana.org/addons/themes/';
 
+// returns list of available themes 
+// for the current release of OB.
+$config['pv_widgets_url']			= 'https://pubvana.org/addons/widgets/';
+
 
 
 
