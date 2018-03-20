@@ -8,7 +8,7 @@
 	</div>
 	
 	<div class="row">
-		<div class="col-sm-6 container-bg" style="height: 125px;">
+		<div class="col-sm-6 container-bg" style="height: 175px;">
 			<h4>Prerequisites:</h4>
 			<ul class="text-left">
 				<li>MySQL/MariaDB database with database name, hostname, username, and password</li>
@@ -17,12 +17,13 @@
 			</ul>
 
 		</div>
-		<div class="col-sm-6 container-bg" style="height: 125px;">
+		<div class="col-sm-6 container-bg" style="height: 175px;">
 			<h4>Optional:</h4>
 			<ul class="text-left">
-				<li>PHP cURL module - Recommended</li>
+				<li>PHP cURL module - Required for Automatic Updates</li>
+				<li>PHP ZipArchive module - Required for Automatic Updates</li>
 				<li>mod_rewrite (for Apache users) for prettier URLs - Recommended</li>
-				<li><a href="https://getcomposer.org" target="_blank">Composer installed</a> - Recommended</li>
+				<li><a href="https://getcomposer.org" target="_blank">Composer locally installed</a> - Recommended</li>
 				<li>SSH Shell access to your server/account (Composer Updates) - Recommended</li>
 			</ul>
 
@@ -30,7 +31,7 @@
 	</div>
 
 	<div class="row">
-		<div class="col-sm-6 container-bg">
+		<div class="col-sm-6 container-bg" style="height: 220px;">
 			<h4>Environment Found:</h4>
 			<table class="table table-condensed table-responsive">
 				<tr>
@@ -53,7 +54,7 @@
 			<p>Note: Verify these results with your hosting provider.</p>
 
 		</div>
-		<div class="col-sm-6 container-bg" style="height: 200px;">
+		<div class="col-sm-6 container-bg" style="height: 220px;">
 			<h4>File System: (writable)</h4>
 			<p>These folders must be readable and writable.</p>
 			<ul class="text-left">

@@ -67,9 +67,7 @@ class Admin_updates_m extends CI_Model
 				// else... we failed...
 				return ['status' => 'failed', 'message' => lang('updates_failed_connection')];
 			}
-
 		}
-		//elseif (wget...)
 	}
 
 	/**
@@ -180,9 +178,17 @@ class Admin_updates_m extends CI_Model
 		    	$this->session->set_flashdata('error', lang('updates_update_failed_resp'));
 		    	log_message('error', 'Updates: Unable to delete ' . $tmp_dir);
 		    }
+
+		    // let's try to update composer if it's installed locally, otherwise, they'll
+		    // just have to rely on general updates.
+		    if (file_exists(FCPATH . '/composer.phar'))
+		    {
+		    	passthru('php composer.phar update');
+		    }
 		    // success
 		    return true;
-		} else 
+		} 
+		else 
 		{
 			// failed to process zip file
 			$this->session->set_flashdata('error', lang('updates_update_failed_resp'));
