@@ -167,7 +167,7 @@ class Admin_updates_m extends CI_Model
 		if ($res === TRUE) 
 		{
 			// extract to home directory
-		    $zip->extractTo($tmp_dir); 
+		    $zip->extractTo(FCPATH); 
 		    $zip->close();
 
 		    // now, for some fun...
