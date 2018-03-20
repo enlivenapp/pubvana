@@ -70,7 +70,7 @@
             <script>
                 $('#sortable').nestedSortable({
                     items: 'li',
-                    maxLevels: '1',
+                    maxLevels: '2',
                     listType: 'ul',
                     tabSize: '35',
                     placeholder: "ui-state-highlight",
