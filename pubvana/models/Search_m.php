@@ -70,39 +70,33 @@ class Search_m extends CI_Model
 		if ($formPost['titlebody'] == 'both')
 		{
 			$this->db->
-					like($this->db->dbprefix($this->_table['posts'].'.title'), $formPost['search_term'])
-					->where($this->db->dbprefix($this->_table['posts'] . '.status'), 'published')
-					->where($this->db->dbprefix($this->_table['posts'] . '.date_posted') . ' <= ', $current_date)
-					->or_like($this->db->dbprefix($this->_table['posts'].'.content'), $formPost['search_term'])
-					->where($this->db->dbprefix($this->_table['posts'] . '.status'), 'published')
-					->where($this->db->dbprefix($this->_table['posts'] . '.date_posted') . ' <= ', $current_date)
-					->get($this->_table['posts'])
-					->result();
+					like('title', $formPost['search_term'])
+					->where('status', 'published')
+					->where('date_posted <= ', $current_date)
+					->or_like('content', $formPost['search_term'])
+					->where('status', 'published')
+					->where('date_posted <= ', $current_date);
 		}
 		elseif ($formPost['titlebody'] == 'title')
 		{
 			$this->db
-					->like('title', $formPost['search_term'])
-					->where($this->db->dbprefix($this->_table['posts'] . '.status'), 'published')
-					->where($this->db->dbprefix($this->_table['posts'] . '.date_posted') . ' <= ', $current_date)
-					->get($this->_table['posts'])
-					->result();
+					->where('status', 'published')
+					->where('date_posted <= ', $current_date)
+					->like('title', $formPost['search_term']);
 		}
 		elseif ($formPost['titlebody'] == 'body')
 		{
 			$this->db
 					->like('content', $formPost['search_term'])
-					->where($this->db->dbprefix($this->_table['posts'] . '.status'), 'published')
-					->where($this->db->dbprefix($this->_table['posts'] . '.date_posted') . ' <= ', $current_date)
-					->get($this->_table['posts'])
-					->result();
+					->where('status', 'published')
+					->where('date_posted <= ', $current_date);
 		}
 
-			$this->db
-					->order_by($this->db->dbprefix($this->_table['posts'] . '.sticky'), 'DESC')
-					->order_by($this->db->dbprefix($this->_table['posts'] . '.id'), 'DESC')
-					->limit($this->config->item('posts_per_page'));
-
+		$this->db
+				->order_by('featured', 'DESC')
+				->order_by('sticky', 'DESC')
+				->order_by('id', 'DESC')
+				->limit($this->config->item('posts_per_page'));
 			
 		$results = $this->db->get($this->_table['posts'])->result();
 
