@@ -124,3 +124,59 @@ $lang['notices_success_unsub_msg']          = 'Este e-mail é para confirmar que
 // public language
 $lang['language_changed_successfully']      = 'Idioma alterado com sucesso';
 $lang['language_not_available']             = 'Não temos este idioma disponível.';
+// new for Pubvana
+// new for Pubvana
+// new for Pubvana
+// new for Pubvana
+// new for Pubvana
+// new for Pubvana
+// new for Pubvana
+// new for Pubvana
+// new for Pubvana
+// Please translate
+
+
+
+$lang['search_hdr']						= 'Search';
+$lang['search_results_hdr']				= 'Search Results for ';
+$lang['search_btn']						= 'Search Now';
+$lang['search_txt']						= 'Search for a term or words:';
+$lang['search_again']					= 'Search Again';
+$lang['page']							= "Page";
+$lang['pages']							= "Pages";	
+$lang['post']							= "Post";
+$lang['posts']							= "Posts";	
+$lang['search_in']						= "In: ";
+$lang['title']							= "Title";
+$lang['body']							= "Content Body";
+$lang['search_term']					= "Search Term";
+
+// shiny new contact form text
+$lang['contact_hdr']					= 'Contact';
+$lang['contact_sent']					= "Thank you for contacting me. I will respond as soon as I can."; 
+$lang['contact_prob']					= "There was a problem sending your message.  Please try again."; 
+
+$lang['contact_txt']					= 'Thank you for your interest in contacting me.  Please fill in the form and I will return your email as soon as possible.';
+$lang['contact_name']					= 'Name';
+$lang['contact_email']					= 'Email';
+$lang['contact_msg']					= 'Message';
+
+// contact email...
+$lang['contact_subject']				= 'New Website Contact';
+$lang['contact_pt1']					= "You've received a new message from: ";
+$lang['contact_pt2']					= "<br><br>Email Address: ";
+$lang['contact_pt3']					= "<br><br>The Message: ";
+$lang['contact_pt4']					= "<br><br>You may also view the message on your dashboard.";
+
+// js validator text
+
+$lang['name_empty']						= "The Name is required and can not be empty";
+$lang['email_empty']					= 'The email address is required';
+$lang['email_invalid']					= 'The email address is not valid';
+$lang['msg_empty']						= 'The Message is required and cannot be empty';
+
+// misc texts
+$lang['updated']	= 'Last Update: ';
+
+$lang['featured']						= 'Featured';
+$lang['sticky']							= 'Sticky';

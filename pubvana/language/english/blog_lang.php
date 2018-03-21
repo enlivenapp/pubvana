@@ -136,7 +136,7 @@ $lang['language_not_available']			= 'We do not seem to have that language availa
 // new for Pubvana
 // new for Pubvana
 // new for Pubvana
-// new for Pubvana
+// Please translate
 
 
 
@@ -180,11 +180,6 @@ $lang['msg_empty']						= 'The Message is required and cannot be empty';
 
 // misc texts
 $lang['updated']	= 'Last Update: ';
-
-
-
-
-// New for Pubvana
 
 $lang['featured']						= 'Featured';
 $lang['sticky']							= 'Sticky';
