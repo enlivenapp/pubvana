@@ -452,7 +452,7 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}templates` (
 -- split --
 
 INSERT INTO `{PREFIX}templates` (`id`, `name`, `description`, `author`, `author_email`, `path`, `image`, `is_default`, `is_active`, `is_admin`, `version`, `has_options`) VALUES
-(1, 'Default', 'The default theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default', 'default.png', '1', '1', '0', '1.0.0', 0),
+(1, 'Default', 'The default theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default', 'default.png', '1', '1', '0', '1.0.0', 1),
 (2, 'Default Admin', 'The default Admin theme for Pubvana', 'Enliven Applications', 'info@pubvana.org', 'default_admin', 'default_admin.png', '1', '1', '1', '1.0.0', 0);
 
 -- split --
@@ -469,6 +469,10 @@ CREATE TABLE `{PREFIX}theme_options` (
   `type` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- split --
+
+INSERT INTO `{PREFIX}theme_options` (`id`, `theme_id`, `name`, `value`, `type`) VALUES
+(1, 1, 'main_background', 'bg_suburb.jpg', 'images');
 
 -- split --
 
@@ -541,6 +545,21 @@ CREATE TABLE `{PREFIX}widgets` (
 
 -- split --
 
+
+INSERT INTO `{PREFIX}widgets` (`id`, `name`, `description`, `author`, `author_email`, `author_website`, `version`, `slug`, `options`, `content`) VALUES
+(1, 'HTML', 'Add arbitrary HTML to your site', 'Enliven Applications', 'info@pubvana.org', 'https://pubvana.com', '1.0.0', 'html', 'a:0:{}', ''),
+(2, 'Pubvana Links', 'Add Links to your website. Admin -> Links', 'Enliven Applications', 'info@pubvana.org', 'https://enlivenapp.com', '1.0.0', 'pubvana_links', 'a:1:{s:8:\"numlinks\";a:5:{s:10:\"field_type\";s:8:\"dropdown\";s:7:\"default\";s:1:\"5\";s:5:\"label\";s:15:\"Number of Links\";s:9:\"help_text\";s:55:\"Choose the maximum number of links to display publicly.\";s:7:\"options\";s:18:\"1|3|5|7|9|10|15|20\";}}', ''),
+(3, 'Pubvana Archives', 'Add Archived (Older) posts to your website.', 'Enliven Applications', 'info@pubvana.org', 'https://enlivenapp.com', '1.0.0', 'pubvana_archives', 'a:1:{s:11:\"numarchives\";a:5:{s:10:\"field_type\";s:8:\"dropdown\";s:7:\"default\";s:1:\"5\";s:5:\"label\";s:15:\"Number of Links\";s:9:\"help_text\";s:56:\"Choose the maximum number of months to display publicly.\";s:7:\"options\";s:18:\"1|3|5|7|9|10|15|20\";}}', ''),
+(4, 'Pubvana Categories', 'Display blog categories on your website. Admin -> Categories', 'Enliven Applications', 'info@pubvana.org', 'https://enlivenapp.com', '1.0.0', 'pubvana_categories', 'a:1:{s:7:\"numcats\";a:5:{s:10:\"field_type\";s:8:\"dropdown\";s:7:\"default\";s:1:\"5\";s:5:\"label\";s:20:\"Number of Categories\";s:9:\"help_text\";s:60:\"Choose the maximum number of categories to display publicly.\";s:7:\"options\";s:18:\"1|3|5|7|9|10|15|20\";}}', ''),
+(5, 'Pubvana Recent Posts', 'Show the most recent posts of your blog. Admin -> Posts', 'Enliven Applications', 'info@pubvana.org', 'https://enlivenapp.com', '1.0.0', 'pubvana_recent_posts', 'a:1:{s:8:\"numposts\";a:5:{s:10:\"field_type\";s:8:\"dropdown\";s:7:\"default\";s:1:\"5\";s:5:\"label\";s:15:\"Number of Posts\";s:9:\"help_text\";s:55:\"Choose the maximum number of posts to display publicly.\";s:7:\"options\";s:18:\"1|3|5|7|9|10|15|20\";}}', ''),
+(6, 'Login Widget', 'Widget to login to your website', 'Enliven Applications', 'info@pubvana.org', 'https://enlivenapp.com', '1.0.1', 'pubvana_login', 'a:5:{s:14:\"lang_login_btn\";a:4:{s:10:\"field_type\";s:4:\"text\";s:7:\"default\";s:5:\"Login\";s:5:\"label\";s:12:\"Login Button\";s:9:\"help_text\";s:46:\"Change the language used for the login button.\";}s:17:\"lang_remember_btn\";a:4:{s:10:\"field_type\";s:4:\"text\";s:7:\"default\";s:11:\"Remember Me\";s:5:\"label\";s:16:\"Remember Me Text\";s:9:\"help_text\";s:50:\"Change the language used for Remember Me checkbox.\";}s:15:\"lang_forgot_btn\";a:4:{s:10:\"field_type\";s:4:\"text\";s:7:\"default\";s:21:\"Forgot Your Password?\";s:5:\"label\";s:25:\"Forgotten Password Button\";s:9:\"help_text\";s:57:\"Change the language used for the Forgotten Password link.\";}s:16:\"lang_place_ident\";a:4:{s:10:\"field_type\";s:4:\"text\";s:7:\"default\";s:15:\"you@example.com\";s:5:\"label\";s:20:\"Identity Placeholder\";s:9:\"help_text\";s:51:\"Change the language used for the Email Placeholder.\";}s:15:\"lang_pass_ident\";a:4:{s:10:\"field_type\";s:4:\"text\";s:7:\"default\";s:8:\"Password\";s:5:\"label\";s:20:\"Password Placeholder\";s:9:\"help_text\";s:54:\"Change the language used for the Password Placeholder.\";}}', ''),
+(7, 'Pubvana Popular Posts', 'Show the most popular posts of your blog. Admin -> Posts', 'Enliven Applications', 'info@pubvana.org', 'https://enlivenapp.com', '1.0.0', 'pubvana_popular_posts', 'a:1:{s:8:\"numposts\";a:5:{s:10:\"field_type\";s:8:\"dropdown\";s:7:\"default\";s:1:\"5\";s:5:\"label\";s:15:\"Number of Posts\";s:9:\"help_text\";s:55:\"Choose the maximum number of posts to display publicly.\";s:7:\"options\";s:18:\"1|3|5|7|9|10|15|20\";}}', ''),
+(8, 'Featured Post', 'Shows the featured posts of your blog. Set featured post in Admin -> Posts', 'Enliven Applications', 'info@pubvana.org', 'https://enlivenapp.com', '1.0.0', 'pubvana_featured_post', 'a:0:{}', '');
+
+
+-- split --
+
+
 DROP TABLE IF EXISTS `{PREFIX}widget_areas`;
 
 -- split --
@@ -550,6 +569,14 @@ CREATE TABLE `{PREFIX}widget_areas` (
   `name` varchar(50) NOT NULL,
   `theme_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- split --
+
+INSERT INTO `{PREFIX}widget_areas` (`id`, `name`, `theme_id`) VALUES
+(1, 'home_left', 1),
+(2, 'home_middle_left', 1),
+(3, 'home_middle_right', 1),
+(4, 'home_right', 1);
 
 -- split --
 

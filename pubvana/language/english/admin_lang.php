@@ -219,8 +219,8 @@ $lang['post_form_redirect_temp']			= "Temporarily Redirect to new URL Title";
 $lang['post_form_feature_image_text']		= "Feature Image";
 $lang['post_add_form_feature_image_help_text']		= "Upload a feature image or leave blank.";
 $lang['post_edit_form_feature_image_help_text']		= "Upload a feature image to replace current or leave blank to keep the same.";
-$lang['post_new_post_notification_sbj']		= "New Post";
-$lang['post_new_post_notification_msg']		= "Hi!   We just added new content.  Below is the new post. <br><br>";
+$lang['post_new_post_notification_sbj']				= "New Post";
+$lang['post_new_post_notification_msg']				= "Hi!   We just added new content.  Below is the new post. <br><br>";
 $lang['post_new_post_notification_msg_foot']		= "<br><br>You're receiving this email because you've requested new content when we post it. ";
 
 
@@ -413,13 +413,13 @@ $lang['TLS']						= "Transport Layer Security (TLS)";
 
 
 // Google analytics
-$lang['gAnalyticsPropId_label']	= 'Google Analytics';
-$lang['gAnalyticsPropId_desc']	= 'Enter the "Property ID" provided to you by <a href="https://support.google.com/analytics/answer/1008080" target="_blank">Google (Find your Tracking ID)</a> <i class="fa fa-external-link"></i>.<br>We add the code to your site so you do not have to.';
+$lang['gAnalyticsPropId_label']		= 'Google Analytics';
+$lang['gAnalyticsPropId_desc']		= 'Enter the "Property ID" provided to you by <a href="https://support.google.com/analytics/answer/1008080" target="_blank">Google (Find your Tracking ID)</a> <i class="fa fa-external-link"></i>.<br>We add the code to your site so you do not have to.';
 
 
 // updates
-$lang['updates_auto_hdr']		= 'Automatic Update';
-$lang['updates_auto_txt']		= 'Click the button above to update Pubvana.  <br><b>Back up your database and site files before updating.</b>';
+$lang['updates_auto_hdr']			= 'Automatic Update';
+$lang['updates_auto_txt']			= 'Click the button above to update Pubvana.  <br><b>Back up your database and site files before updating.</b>';
 
 $lang['updates_download_hdr'] 		= 'Download';
 $lang['updates_download_txt'] 		= 'If you prefer to to download &amp; copy files yourself, click the button above to download the most recent version.<br><br> 
@@ -433,8 +433,6 @@ $lang['updates_zip_not_avail']		= 'ZipArchive is not available on your system. P
 $lang['updates_auto_confirm_txt']	= 'Confirm to continue update of Pubvana.  <br><b>Ensure there are backups of site and database files!</b>';
 $lang['updates_curlzip_not_avail']	= 'cURL or ZipArchive is not available on your system.  Install/Enable to use updates.';
 $lang['updates_uploads_not_write']	= 'uploads/ directory is not writable.  Set uploads/ permissions to read &amp; write (777).';
-//$lang['']	= '';
-//$lang['']	= '';
 
 $lang['themes_theme_options']		= 'Options';
 $lang['theme_options_hdr']			= 'Theme Options';
@@ -443,46 +441,73 @@ $lang['theme_options_subheader']	= 'Customize your site theme options.';
 $lang['theme_options_for_txt']		= 'Theme Options for';
 $lang['theme_options_save_btn']		= 'Save Options';
 
-$lang['theme_options_images_txt']	= '<b>Note</b>: To use images you\'ve uploaded via the Media Manager</a> <ul><li>Choose Image</li><li>Click Get Info</li><li>Right Click on Link and "Copy Link"</li><li>Paste in the appropriate field above.</li></ul>';
+$lang['theme_options_images_txt']	= '<b>Note</b>: To use images you\'ve uploaded via the Media Manager, in the Media Manager;</a> <ul><li>Choose Image</li><li>Click Get Info</li><li>Right Click on Link and "Copy Link"</li><li>Paste in the appropriate field above.</li></ul>';
 
 $lang['theme_options_update_success_txt']		= 'Theme Options Updated Successfully';
 $lang['theme_options_update_error_txt']			= 'Error updating Theme Options.  Try again?';
 
-$lang['comment_system_label']				= "Comment System";
-$lang['comment_system_desc']				= "Choose the comment system you would like to use. <b>Note:</b> Moderation settings are automatically disabled if using anything other than the Pubvana Comment System. ";
-$lang['Local']							= "Pubvana Comment System";
-$lang['Facebook']						= "Facebook Comment Plugin";
+$lang['comment_system_label']					= "Comment System";
+$lang['comment_system_desc']					= "Choose the comment system you would like to use. <b>Note:</b> Moderation settings are automatically disabled if using anything other than the Pubvana Comment System. ";
+$lang['Local']									= "Pubvana Comment System";
+$lang['Facebook']								= "Facebook Comment Plugin";
 
 
-$lang['facebook_id_label']				= "Facebook ID";
-$lang['facebook_id_desc']				= '(Optional) Enter your numerical facebook ID to enable moderation when using the Facebook Comments Plugin.  <a href="https://findmyfbid.com" target="_blank">Click here for help finding your Facebook ID</a>';
-
-$lang['widgets_hdr']		= 'Widgets';
-$lang['widgets_hdr_txt']	= 'Drag and drop a widget onto the areas where you would like to include it on your website. Click <i class="fa fa-question-circle-o" aria-hidden="true"></i> beside the widget name for more information';
-$lang['navigation_hdr']		= "Navigation";
-$lang['lang_hdr']			= "Languages";
-$lang['dashboard_hdr']		= "Dashboard";
-$lang['settings_hdr']		= "General Settings";
-$lang['users_hdr']			= "Users";
+$lang['facebook_id_label']						= "Facebook ID";
+$lang['facebook_id_desc']						= '(Optional) Enter your numerical facebook ID to enable moderation when using the Facebook Comments Plugin.  <a href="https://findmyfbid.com" target="_blank">Click here for help finding your Facebook ID</a>';
 
 
-$lang['no_widgets_added_yet']	= "No Widgets have been added yet.";
-$lang['no_widgets_found']		= "No Widgets Found. <br>Have you installed any?";
-$lang['avail_widgets_hdr']		= "Available Widgets";
-$lang['widgets_add_to']			= "Add to...";
-$lang['widget_admin_added']		= "Widget added.  Make sure to edit the default options, if any.";
-$lang['widget_admin_added_error']		= "Looks like something went wrong. Please try adding your widget again.";
-$lang['widget_content_txt']				= 'Enter any additional content you would like to add at the bottom of the widget output. HTML or plain text is OK, but don\'t mix the two.';
-$lang['widget_active_txt']				= 'Choose whether the widget is active and shown in public pages or is inactive and hidden from public pages.';
-$lang['widget_active_radio_txt']		= 'Active';
-$lang['widget_inactive_radio_txt']		= 'Inactive';
-$lang['widget_admin_update']			= "Widget Updated Successfully";
-$lang['widget_admin_update_error']		= "Looks like something went wrong. Please try updating the widget again.";
+// Widgets
+$lang['widgets_hdr']							= 'Widgets';
+$lang['widgets_hdr_txt']						= 'Drag and drop a widget onto the areas where you would like to include it on your website. Click <i class="fa fa-question-circle-o" aria-hidden="true"></i> beside the widget name for more information';
+$lang['widgets_no_areas_found']					= 'No Widget Areas found for this theme.';
+$lang['no_widgets_added_yet']					= "No Widgets have been added yet.";
+$lang['no_widgets_found']						= "No Widgets Found. <br>Have you installed any?";
+$lang['avail_widgets_hdr']						= "Available Widgets";
+$lang['widgets_add_to']							= "Add to...";
+$lang['widget_admin_added']						= "Widget added.  Make sure to edit the default options, if any.";
+$lang['widget_admin_added_error']				= "Looks like something went wrong. Please try adding your widget again.";
+$lang['widget_content_txt']						= 'Enter any additional content you would like to add at the bottom of the widget output. HTML or plain text is OK, but don\'t mix the two.';
+$lang['widget_active_txt']						= 'Choose whether the widget is active and shown in public pages or is inactive and hidden from public pages.';
+$lang['widget_active_radio_txt']				= 'Active';
+$lang['widget_inactive_radio_txt']				= 'Inactive';
+$lang['widget_admin_update']					= "Widget Updated Successfully";
+$lang['widget_admin_update_error']				= "Looks like something went wrong. Please try updating the widget again.";
+$lang['widget_admin_removed']					= 'Widget Removed Successfully';
+$lang['widget_admin_removed_error']				= 'Looks like something went wrong. Please try removing the widget again.';
+$lang['widgets_options_label_hdr']				= "Options";
 
-$lang['widget_admin_removed']			= 'Widget Removed Successfully';
-$lang['widget_admin_removed_error']		= 'Looks like something went wrong. Please try removing the widget again.';
-$lang['widgets_options_label_hdr']		= "Options";
+// New Post stuff
+$lang['post_form_feature_text'] 				= 'Featured Post';
+$lang['post_form_feature_help_text'] 			= 'Choose if this is a featured post. This also works in conjunction with the Featured Post Widget.';
 
-$lang['post_form_feature_text'] = 'Featured Post';
-$lang['post_form_feature_help_text'] = 'Choose if this is a featured post. This also works in conjunction with the Featured Post Widget.';
+// Page headers
+$lang['navigation_hdr']							= "Navigation";
+$lang['lang_hdr']								= "Languages";
+$lang['dashboard_hdr']							= "Dashboard";
+$lang['settings_hdr']							= "General Settings";
+$lang['users_hdr']								= "Users";
 
+
+// dashboard items
+$lang['dash_published_posts']			= 'Published Posts';
+$lang['more']							= 'More';
+$lang['dash_comments']					= 'Comments (Active/Modded)';
+$lang['dash_content_subscribers']		= 'Content Subscribers';
+$lang['dash_post_drafts']				= 'Post Drafts';
+$lang['dash_total_post_views']			= 'Total Post Views';
+$lang['dash_settings_checklist']		= 'Settings Check List';
+$lang['dash_settings_quick_look']		= 'Settings Quick Look';
+$lang['dash_google_analytics_conn']		= 'Google Analytics Connected';
+$lang['dash_google_recaptcha']			= 'Google Recaptcha';
+$lang['dash_use_google_recaptcha']		= 'Use Google Recaptcha';
+$lang['dash_use_honeypot']				= 'Use HoneyPot';
+$lang['dash_comment_system_used']		= 'Comment Systen Used';
+$lang['dash_enabled']					= 'Enabled';
+$lang['dash_disabled']					= 'Disabled';
+$lang['dash_goto_settings']				= 'Go to Settings';
+$lang['dash_using_fb_comment_system']	= 'Using Facebook Comments';
+
+
+// Pubvana news
+$lang['pubvana_no_news_found']			= 'No News Found';
+$lang['pubvana_news_hdr']				= 'Pubvana News';

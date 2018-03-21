@@ -22,7 +22,7 @@
 
 <div class="wrapper">
 
-    <div class="box" style="background-image:url('<?php echo Asset::get_filepath_img('bg_suburb.jpg'); ?>');">
+    <div class="box" style="background-image:url('<?= $this->template->main_background; ?>');">
         <div class="row">
 
           <?php if ( $this->pv_auth->logged_in() ): ?>
@@ -152,21 +152,24 @@
                         <div class="row">
 
                           <div class="col-sm-3">
-                            <?php echo $template['partials']['links']; ?>
+                            <? // Note to Devs: this is how you call widget areas you've set
+                               // up in theme_details.php
+                            ?>
+                            <?= $this->template->home_left; ?>
                           </div>
 
 
                           <div class="col-sm-3">
-                            <?php echo $template['partials']['archives']; ?>
+                            <?= $this->template->home_middle_left; ?>
                           </div>
 
 
                           <div class="col-sm-3">
-                            <?php echo $template['partials']['categories']; ?>
+                            <?= $this->template->home_middle_right; ?>
                           </div>
 
                           <div class="col-sm-3">
-                            <?php echo $template['partials']['notices']; ?>
+                            <?= $this->template->home_right; ?>
                           </div>
 
                         </div>

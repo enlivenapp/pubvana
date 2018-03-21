@@ -53,6 +53,12 @@ class Admin_m extends CI_Model
 		// get post count
 		$data->post_count = $this->count_posts();
 
+		$data->post_draft_count = $this->count_posts(true);
+
+		$data->users_count = $this->count_users();
+
+		$data->total_post_views_count = $this->count_all_posts();
+
 		// get active comments
 		$data->active_comments_count = $this->count_comments();
 
@@ -165,6 +171,59 @@ class Admin_m extends CI_Model
 		return $this->db->where('required', 1)->get('settings')->result();
 	}
 
+
+	/**
+     * count_all_posts
+     * 
+     * Provides an integer from counting 
+     * total views from each post
+     *
+     * @access  public
+     * @author  Enliven Applications
+     * @version 3.0
+     * 
+     * @return  int
+     */
+	public function count_all_posts()
+	{
+
+		$all =  $this->db->select('post_count')->get('posts')->result();
+		
+		$count = 0;
+		
+		if ($all)
+		{
+			foreach($all as $a)
+			{
+				$count = $count + $a->post_count;
+			}
+		}
+		return $count;
+	}
+
+
+
+
+	/**
+     * count_users
+     * 
+     * Provides an integer from counting 
+     * users
+     *
+     * @access  public
+     * @author  Enliven Applications
+     * @version 3.0
+     * 
+     * @return  int
+     */
+	public function count_users()
+	{
+
+		return $this->db->count_all_results('users');
+	}
+
+
+
 	/**
      * count_posts
      * 
@@ -177,9 +236,10 @@ class Admin_m extends CI_Model
      * 
      * @return  int
      */
-	public function count_posts()
+	public function count_posts($draft = false)
 	{
-		return $this->db->where('status', 'published')->count_all_results('posts');
+		$where = ($draft) ? 'draft' : 'published';
+		return $this->db->where('status', $where)->count_all_results('posts');
 	}
 
 	/**

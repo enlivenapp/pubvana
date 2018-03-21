@@ -35,8 +35,14 @@ v 1.0.0 (First Pubvana Release after Open Blog v3.0.0)
 * Changed comments to Comment System.  Added support for Facebook Comment Plugin
 * Admin theme now looks for [group_permission:name]\_hdr when showing the title in the admin area.
 * We now count (and can display) how many views a post has.  `post_count`
+* Created Widget system
+* updated Admin dashboard 
+* updated /installer/ `mcrypt_create_iv()` error.
+* Added `lang()`s to admin dashboard
+* Added Confirm dialog to all remove/delete functions in Admin Dashboard
 
-New Widgets(v1.0.0)
+
+New Basic Widgets(v1.0.0)
 
 * HTML - Add arbitrary HTML to your website
 * Login - Simple widget to login to your site
@@ -54,6 +60,7 @@ Widgets above are free and come installed.  A store will be created for other wi
 
 ### Todo
 
+* Automated Theme & Widget updating
 * Social login/registering
 * Author: info card/bio blip/etc
 

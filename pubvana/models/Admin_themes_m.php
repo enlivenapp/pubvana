@@ -231,7 +231,7 @@ class Admin_themes_m extends CI_Model
 			if ($theme->version != $data->version)
 			{
 				// update theme info
-				//$this->update_theme_info($theme->id, $data, $has_options);
+				$this->update_theme_info($theme->id, $data, $has_options);
 				// do the options update
 				return $this->auto_update_options($data->options, $theme->id);
 			}

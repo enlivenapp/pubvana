@@ -39,7 +39,7 @@
 			in the blog and on open-blog.org to determine
 			if an update in available.
 		*/
-		public $version = '1.0.0';
+		public $version = '1.0.4';
 
 			/*
 			Enter the information in which you allow Widget areas,
@@ -86,9 +86,10 @@
 		*/
 		public $options = 
 		[
-			'widget_areas'	=> [],
-			'images'		=> []
-			
+			'widget_areas'	=> ['home_left', 'home_middle_left', 'home_middle_right', 'home_right'],
+			'images'		=> [
+					'main_background' => 'bg_suburb.jpg'
+				]
 		];
 
 

@@ -227,6 +227,12 @@
 				  		
 			<?php endforeach ?>
 
+		<?php else: ?>
+			<div class="text-center">
+				<h4><?= lang('widgets_no_areas_found') ?></h4>
+			</div>
+			
+
 		<?php endif ?>
 	</div>
 
