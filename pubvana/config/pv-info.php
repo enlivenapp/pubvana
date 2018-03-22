@@ -16,7 +16,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 
 
-$config['pv_version'] 	= '1.0.0-beta';
+$config['pv_version'] 	= '1.0.0';
 $config['pv_author']	= 'Enliven Applications';
 $config['pv_email']		= 'info@pubvana.org';
 
