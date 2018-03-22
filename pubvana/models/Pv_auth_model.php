@@ -155,7 +155,7 @@ class Pv_auth_model extends Ion_auth_model
 		{
 			// two odd cases, where I didn't necessarily stick to 
 			// the normal convention I set...
-			if ($v->name == 'settings' || $v->name == 'dashboard' || $v->name == 'media')
+			if ($v->name == 'settings' || $v->name == 'dashboard')
 			{	
 				// setting has a url of /admin/settings
 				if ($v->name == 'settings')
@@ -169,17 +169,7 @@ class Pv_auth_model extends Ion_auth_model
 					$return_arr[$k]['link'] = '<a href="' . site_url('admin') . '">' . $v->description . '</a>';
 					$return_arr[$k]['name'] = $v->name;
 				}
-				// another odd case. I want to open it in a separate window
-				elseif ($v->name == 'media')
-				{
-					$return_arr[$k]['link'] = '<a target="_blank" href="' . site_url('admin_' . $v->name) . '">' . $v->description . '</a>';
-					$return_arr[$k]['name'] = $v->name;
-				}
 			}
-
-			
-
-
 
 			// otherwise, it's all the same 
 			else
@@ -201,7 +191,7 @@ class Pv_auth_model extends Ion_auth_model
 		{
 			// two odd cases, where I didn't necessarily stick to 
 			// the normal convention I set...
-			if ($perm->name == 'settings' || $perm->name == 'dashboard' || $perm->name == 'media')
+			if ($perm->name == 'settings' || $perm->name == 'dashboard')
 			{	
 				// setting has a url of /admin/settings
 				if ($perm->name == 'settings')
@@ -212,11 +202,6 @@ class Pv_auth_model extends Ion_auth_model
 				elseif ($perm->name == 'dashboard')
 				{
 					$return_arr[] = '<a class="dropdown-item" href="' . site_url('admin') . '">' . $perm->description . '</a>';
-				}
-				// another odd case. I want to open it in a separate window
-				elseif ($perm->name == 'media')
-				{
-					$return_arr[] = '<a class="dropdown-item" target="_blank" href="' . site_url('admin_' . $perm->name) . '">' . $perm->description . '</a>';
 				}
 			}
 			// otherwise, it's all the same 

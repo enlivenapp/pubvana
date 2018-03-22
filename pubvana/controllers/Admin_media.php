@@ -18,21 +18,25 @@ class Admin_media extends PV_AdminController {
 
         // set active_link so we know what to 
         // set class="active" to in the nav menu
-        $this->template->set('active_link', 'widgets');
+        $this->template->set('active_link', 'media');
+
+        //$this->template->append_css('theme-bootstrap-libreicons-svg.css');
+        $this->template->append_css('default.css');
     }
 
 
 
     public function index()
     {
+
         $this->load->helper('url');
         $data['connector'] = site_url('admin_media/connector');
 
         //// PITA ////
-        $data['full_version'] = '2.1.32';
+        $data['full_version'] = '2.1.34';
 
-        $this->load->view('admin/media/elfinder', $data);
-        //$this->template->build('admin/media/elfinder', $data);
+        //$this->load->view('admin/media/elfinder', $data);
+        $this->template->build('admin/media/elfinder', $data);
     }
    
     public function connector()
