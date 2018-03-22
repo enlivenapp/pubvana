@@ -49,7 +49,7 @@ class Admin_media extends PV_AdminController {
                     'path'          => FCPATH . '/uploads',
                     'URL'           => base_url('uploads'),
                     'uploadDeny'    => array('all'),                  // All Mimetypes not allowed to upload
-                    'uploadAllow'   => array('image', 'text/plain', 'application/pdf'),// Mimetype `image` and `text/plain` allowed to upload
+                    'uploadAllow'   => array('image', 'text/plain', 'application/pdf', 'application/zip'),// Mimetype `image` and `text/plain` allowed to upload
                     'uploadOrder'   => array('deny', 'allow'),        // allowed Mimetype `image` and `text/plain` only
                     'accessControl' => array($this, 'elfinderAccess'),// disable and hide dot starting files (OPTIONAL)
                     // more elFinder options here

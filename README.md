@@ -63,6 +63,7 @@ Widgets above are free and come installed.  A store will be created for other wi
 * Automated Theme & Widget updating
 * Social login/registering
 * Author: info card/bio blip/etc
+* WP migration to Pubvana
 
 #### Premium Widgets: Visit https://pubvana.org
 
