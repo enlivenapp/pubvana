@@ -2,19 +2,66 @@
 
 ### Blogging and Small business CMS
 
-Pubvana is a re-brand of Open Blog v3 (with added functionality).  See Change Log below
-  	
-## BETA - Do Not use in production -
+Pubvana is a re-brand of Open Blog v3 (with added functionality).  See Change Log below.
   		  
-#### Composer Installation
+#### Installation
+
+Visit https://pubvana.org/installation for more information.
 
 * Latest Stable - `composer create-project enlivenapp/pubvana [project folder]` 
 * Developers - `composer create-project --stability dev enlivenapp/pubvana [project folder]`   
 
+## Bug Reports, Feature Requests
 
-#### Download
+Please use the [Issues Tracker](https://github.com/enlivenapp/pubvana/issues).
 
-Visit https://pubvana.org/downloads to download the latest version of Pubvana to install on your self-hosted server.
+## Links
+
+[pubvana.org Home](http://pubvana.org) (Working Example and Live Blog)
+
+Pubvana Addon Store (Themes, Widgets, and other Addons) - Coming Soon
+
+[Facebook Page](https://www.facebook.com/pubvana.org)
+
+[User Docs](http://pubvana.org)
+
+## License Notice
+
+Pubvana is released under the MIT Open Source License.
+
+## Contributors & Team Members 
+
+- Enliven Applications
+
+
+## Translators & Translations
+
+_Translators Wanted!_  
+
+If you would like to help translate files, please fork this repo and send a PR. 
+
+* French, Indonesian, and Portuguese need updates.
+
+Please include a README.me update under 'Translators' with:
+
+* Your Name
+* Link to your site/github/wherever. (optional)
+
+  
+* French 
+  - [Paul DUBOT](https://github.com/keeganpa)
+  - [Léonard GAURIAU](https://github.com/leoDisjonct)
+  - [Clément TRASSOUDAINE](https://github.com/intv0id)
+  - [Jean-Baptiste VALLADEAU](https://github.com/ignamarte)
+  - [Rhagngahr](https://github.com/Rhagngahr)
+
+* Indonesian
+  - [Suhindra](https://github.com/suhindra)
+
+* Portuguese
+  - [Samuel Fontebasso](https://github.com/fontebasso)
+
+
 
 #### Change Log
 
@@ -60,8 +107,8 @@ Widgets above are free and come installed.  A store will be created for other wi
 
 ### Todo
 
-* Automated Theme & Widget updating
-* Social login/registering
+* Automated Theme & Widget updating (from API)
+* Social login/registering/posting/etc
 * Author: info card/bio blip/etc
 * WP migration to Pubvana
 
