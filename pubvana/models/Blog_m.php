@@ -79,7 +79,17 @@ class Blog_m extends CI_Model
 				$item['date_posted'] = DateTime::createFromFormat('Y-m-d', $item['date_posted'])->format('D M d Y');
 			}
 
-			$result['post_count'] = $query->num_rows();
+			$this->db->select( $this->db->dbprefix($this->_table['posts']. '.*,') . $this->db->dbprefix($this->_table['users'] . '.first_name, ') . $this->db->dbprefix($this->_table['users']. '.last_name') )
+					->join( $this->db->dbprefix($this->_table['users']), $this->db->dbprefix($this->_table['posts']. '.author') . ' = '  . $this->db->dbprefix($this->_table['users'] . '.id') )
+					->where($this->db->dbprefix($this->_table['posts'] . '.status'), 'published')
+					->where($this->db->dbprefix($this->_table['posts'] . '.date_posted') . ' <= ', $current_date)
+					->order_by($this->db->dbprefix($this->_table['posts'] . '.featured'), 'DESC')
+					->order_by($this->db->dbprefix($this->_table['posts'] . '.sticky'), 'DESC')
+					->order_by($this->db->dbprefix($this->_table['posts'] . '.id'), 'DESC');
+			
+		$query2 = $this->db->get($this->_table['posts']);
+
+			$result['post_count'] = $query2->num_rows();
 
 			return json_decode(json_encode($result));
 		}
@@ -257,7 +267,7 @@ class Blog_m extends CI_Model
      * 
      * @return  obj|array
      */
-	public function get_posts_by_date($year, $month)
+	public function get_posts_by_date($year, $month, $offset = 0)
 	{
 		$result = new stdClass();
 		$date = $year . '-' . $month;
@@ -266,10 +276,11 @@ class Blog_m extends CI_Model
 		$this->db->select('posts.*, users.first_name, users.last_name')
 					->join($this->_table['users'] . ' users', 'posts.author = users.id')
 					->where('posts.status', 'published')
-					->where('posts.date_posted <=', $current_date)
-					->like('posts.date_posted', $date)
-					->order_by('posts.sticky', 'DESC')
-					->order_by('posts.id', 'DESC');
+					->where($this->db->dbprefix($this->_table['posts']) . '.date_posted <=', $current_date)
+					->like($this->db->dbprefix($this->_table['posts']) . '.date_posted', $date)
+					->order_by($this->_table['posts'] . '.sticky', 'DESC')
+					->order_by($this->_table['posts'] . '.id', 'DESC')
+					->limit($this->config->item('posts_per_page'), $offset);
 			
 		$query = $this->db->get($this->_table['posts']);
 			
@@ -285,7 +296,17 @@ class Blog_m extends CI_Model
 				$item->comment_count = $this->db->where('post_id', $item->id)->where('modded', '0')->from($this->_table['comments'])->count_all_results();
 			}
 
-			$result->post_count = $query->num_rows();
+			$this->db->select('posts.*, users.first_name, users.last_name')
+					->join($this->_table['users'] . ' users', 'posts.author = users.id')
+					->where('posts.status', 'published')
+					->where($this->db->dbprefix($this->_table['posts']) . '.date_posted <=', $current_date)
+					->like($this->db->dbprefix($this->_table['posts']) . '.date_posted', $date)
+					->order_by($this->_table['posts'] . '.sticky', 'DESC')
+					->order_by($this->_table['posts'] . '.id', 'DESC');
+			
+		$query2 = $this->db->get($this->_table['posts']);
+
+			$result->post_count = $query2->num_rows();
 
 			return $result;
 		}
@@ -301,10 +322,11 @@ class Blog_m extends CI_Model
      * 
      * @return  obj|array
      */
-	public function get_posts_by_category($url_name)
+	public function get_posts_by_category($url_name, $offset = 0)
 	{
 		$result = new stdClass();
 		$current_date = date('Y-m-d');
+
 		
 		$this->db->select('posts.*, users.first_name, users.last_name')
 					->join($this->_table['posts_to_categories'] . ' posts_to_categories', 'posts.id = posts_to_categories.post_id')
@@ -314,7 +336,8 @@ class Blog_m extends CI_Model
 					->where('posts.date_posted <=', $current_date)
 					->where('categories.url_name', $url_name)
 					->order_by('posts.sticky', 'DESC')
-					->order_by('posts.id', 'DESC');
+					->order_by('posts.id', 'DESC')
+					->limit($this->config->item('posts_per_page'), $offset);
 			
 		$query = $this->db->get($this->_table['posts']);
 			
@@ -330,7 +353,20 @@ class Blog_m extends CI_Model
 				$item->comment_count = $this->db->where('post_id', $item->id)->where('modded', '0')->from($this->_table['comments'])->count_all_results();
 			}
 
-			$result->post_count = $query->num_rows();
+
+			$query2 = $this->db->select('posts.*, users.first_name, users.last_name')
+					->join($this->_table['posts_to_categories'] . ' posts_to_categories', 'posts.id = posts_to_categories.post_id')
+					->join($this->_table['categories'] . ' categories', 'posts_to_categories.category_id = categories.id')
+					->join($this->_table['users'] . ' users', 'posts.author = users.id')
+					->where('posts.status', 'published')
+					->where('posts.date_posted <=', $current_date)
+					->where('categories.url_name', $url_name)
+					->order_by('posts.sticky', 'DESC')
+					->order_by('posts.id', 'DESC')
+					->get($this->_table['posts']);
+		
+
+			$result->post_count = $query2->num_rows();
 
 			return $result;
 		}

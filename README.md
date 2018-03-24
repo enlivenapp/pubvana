@@ -65,7 +65,12 @@ Please include a README.me update under 'Translators' with:
 
 #### Change Log
 
-v 1.0.0 (First Pubvana Release after Open Blog v3.0.0)
+##### v1.0.1
+
+* Introduced blog post pagination in categories, archives, and general blog post display.
+
+
+##### v1.0.0 (First Pubvana Release after Open Blog v3.0.0)
 
 * Added post and page search capabilities
 * Added sitemap.xml(valid xml output) & robots.txt generator

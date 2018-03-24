@@ -13,7 +13,7 @@ class Blog extends PV_Controller {
 	public function index($offset=0)
 	{
 		// get the posts
-		$posts = $this->Blog_m->get_posts();
+		$posts = $this->Blog_m->get_posts($offset);
 
 		
 		//Create Pagination
@@ -24,9 +24,11 @@ class Blog extends PV_Controller {
 			already set in /applications/config/pagination.php
 		 */ 
 		
-		$config['base_url'] = site_url();
+		$config['base_url'] = site_url('blog/pagi');
 		$config['total_rows'] = ($posts && $posts->post_count) ? $posts->post_count : 0;
 		$config['per_page'] = $this->config->item('posts_per_page');
+		// on testing/production it's identifying the incorrect URI segment
+			$config['uri_segment'] = 3;
 
 		// docs say we don't have to if we have a config file, but we have to	
 		$this->pagination->initialize($config);
@@ -52,10 +54,10 @@ class Blog extends PV_Controller {
      * 
      * @return  null
      */
-	public function category($url_name = null)
+	public function category($url_name = null, $offset = 0)
 	{		
 	
-		if ($data = $this->Blog_m->get_posts_by_category($url_name))
+		if ($data = $this->Blog_m->get_posts_by_category($url_name, $offset))
 		{
 			
 
@@ -63,11 +65,11 @@ class Blog extends PV_Controller {
 			$this->load->library('pagination');
 
 			/*
-				the setting for bootstrap 3 or Semantic UI are 
+				the css setting for bootstrap 3/4 or Semantic UI are 
 				already set in /applications/config/pagination.php
 			 */ 
 			
-			$config['base_url'] = site_url();
+			$config['base_url'] = site_url('blog/category/' . $url_name);
 			$config['total_rows'] = $data->post_count;
 			$config['per_page'] = $this->config->item('posts_per_page');
 
@@ -91,7 +93,7 @@ class Blog extends PV_Controller {
 	/**
      * Archive
      * 
-     * Shows archives for year/month
+     * Shows archives for year/month with pagination
      *
      * @access  public
      * @author  Enliven Applications
@@ -101,19 +103,21 @@ class Blog extends PV_Controller {
      */
 	public function archive($year=null, $month=null, $offset=0)
 	{
-		if ($data = $this->Blog_m->get_posts_by_date($year, $month))
+		if ($data = $this->Blog_m->get_posts_by_date($year, $month, $offset))
 		{
 			//Create Pagination
 			$this->load->library('pagination');
 
 			/*
-				the setting for bootstrap 3 or Semantic UI are 
+				the css setting for bootstrap 3/4 or Semantic UI are 
 				already set in /applications/config/pagination.php
 			 */ 
 			
-			$config['base_url'] = site_url();
+			$config['base_url'] = site_url('blog/archive/' . $year . '/' . $month);
 			$config['total_rows'] = $data->post_count;
 			$config['per_page'] = $this->config->item('posts_per_page');
+			// on testing/production it's identifying the incorrect URI segment
+			$config['uri_segment'] = 5;
 
 			// docs say we don't have to if we have a config file, but we have to	
 			$this->pagination->initialize($config);

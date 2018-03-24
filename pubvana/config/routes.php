@@ -61,7 +61,9 @@ $route['page/(:any)'] 						= 'pages/page/$1';
 
 // blog posts
 
-// the new way...  domain.com/blog/title
+$route['blog/pagi/(:any)']					= 'blog/index/$1';
+$route['blog/pagi']							= 'blog/index';
+// anything else should be an actual post
 $route['blog/(:any)'] 						= 'blog/post/$1';
 
 // extra stuff 
