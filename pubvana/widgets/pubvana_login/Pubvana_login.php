@@ -33,11 +33,9 @@ class Pubvana_login extends Widgets
         {
             // they're logged in, cancel.
             
-            // a special condition.  This gives
-            // us the change to anagrammatically 
-            // nuke the display at runtime. 
-            // simply return String 'cancel'
-            return 'cancel';
+            // a special condition.  return false to cancel 
+            // display entirely, including the title.
+            return false;
         }  
     }
 } 

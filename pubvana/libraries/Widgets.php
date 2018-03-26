@@ -173,7 +173,7 @@ class Widgets
 			foreach ($area->instances as $instance)
 			{
 
-				if (trim($instance->rendered) == 'cancel')
+				if (trim($instance->rendered) == false)
 				{
 					$return[$area->name] .= '';
 				}
