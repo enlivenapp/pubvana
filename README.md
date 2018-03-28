@@ -68,6 +68,8 @@ Please include a README.me update under 'Translators' with:
 ##### v1.0.1
 
 * Introduced blog post pagination in categories, archives, and general blog post display.
+* Bug fix - Basic Login Widget displaying Title when user logged in.
+* Bug Fix - Primary Key/Auto_increment didn't happen on widget related tables.
 
 
 ##### v1.0.0 (First Pubvana Release after Open Blog v3.0.0)

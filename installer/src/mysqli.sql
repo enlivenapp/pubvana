@@ -531,7 +531,7 @@ DROP TABLE IF EXISTS `{PREFIX}widgets`;
 -- split --
 
 CREATE TABLE `{PREFIX}widgets` (
-  `id` int(11) UNSIGNED NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `description` varchar(200) NOT NULL,
   `author` varchar(50) NOT NULL,
@@ -541,7 +541,7 @@ CREATE TABLE `{PREFIX}widgets` (
   `slug` varchar(30) DEFAULT NULL,
   `options` text,
   `content` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- split --
 
@@ -565,10 +565,10 @@ DROP TABLE IF EXISTS `{PREFIX}widget_areas`;
 -- split --
 
 CREATE TABLE `{PREFIX}widget_areas` (
-  `id` int(11) UNSIGNED NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `theme_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- split --
 
@@ -585,7 +585,7 @@ DROP TABLE IF EXISTS `{PREFIX}widget_instances`;
 -- split --
 
 CREATE TABLE `{PREFIX}widget_instances` (
-  `id` int(11) UNSIGNED NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `widget_area_id` int(11) NOT NULL,
   `widget_id` int(11) NOT NULL,
   `title` varchar(50) NOT NULL,
@@ -594,4 +594,4 @@ CREATE TABLE `{PREFIX}widget_instances` (
   `content` text,
   `order` int(1) NOT NULL,
   `active` int(1) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

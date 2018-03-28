@@ -39,7 +39,7 @@ class Widget_Pubvana_login
 			in the blog and on pubvana.org to determine
 			if an update in available.
 		*/
-		public $version = '1.0.1';
+		public $version = '1.0.2';
 
 		/*
 			Options are a multi-dimensional array that lists
