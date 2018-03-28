@@ -6,7 +6,7 @@
   <?php if ($this->uri->segment(2) == 'category'): ?>
     <?= lang('category_hdr') . ' `' . ucfirst($this->uri->segment(3)) . '`'  ?> 
   <?php elseif ($this->uri->segment(2) == 'archive'): ?>
-    <?= lang('archives_for_hdr') . ' ' . date('F', $this->uri->segment(4)) . ' ' . $this->uri->segment(3)  ?> 
+    <?= lang('archives_for_hdr') . ' ' . DateTime::createFromFormat('Y-m-d', $this->uri->segment(3) . '-' . $this->uri->segment(4) . '-01')->format('F Y');  ?> 
 
   <?php else: ?>
     <?php echo lang('older_posts'); ?>
