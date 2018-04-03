@@ -2,7 +2,7 @@
 		<?php foreach ($posts as $post): ?>
 		<div class="card mx-auto" style="width: 18rem;">
 			<?php if ($post->feature_image): ?>
-		  		<img class="card-img-top" src="<?= base_url('uploads/' . $post->feature_image) ?>" alt="<?= $post->title ?>">
+		  		<img class="card-img-top img-fluid img-responsive" src="<?= base_url('uploads/' . $post->feature_image) ?>" alt="<?= $post->title ?>">
 			<?php endif ?>
 		  <div class="card-body">
 		    <h5 class="card-title"><?= $post->title ?></h5>

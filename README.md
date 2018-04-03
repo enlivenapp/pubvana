@@ -65,6 +65,11 @@ Please include a README.me update under 'Translators' with:
 
 #### Change Log
 
+#### v1.0.2
+
+* Fixed installation error: `Incorrect table definition; there can be only one auto column and it must be defined as a key`
+* update widgets (featured post, popular posts, recent posts) to allow responsive images `class="img-responsive img-fluid"` for Bootstrap 3 & 4 themes
+
 ##### v1.0.1
 
 * Introduced blog post pagination in categories, archives, and general blog post display.
