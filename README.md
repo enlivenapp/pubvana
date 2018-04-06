@@ -65,6 +65,12 @@ Please include a README.me update under 'Translators' with:
 
 #### Change Log
 
+#### v1.0.3
+
+* Update - Better display `<title>` in admin theme
+* Update - Allow non-language file items to show when using the form builder.
+* 
+
 #### v1.0.2
 
 * Fixed installation error: `Incorrect table definition; there can be only one auto column and it must be defined as a key`

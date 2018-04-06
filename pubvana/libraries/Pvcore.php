@@ -200,7 +200,16 @@ class Pvcore
 					// if $parts[0] is not numeric we run it through the
 					// language filter to get the text value in language file
 					// otherwise, we return it unhindered as a number
-					$form_opts[$parts[0]] = ( ! is_numeric($parts[1])) ? lang($parts[1]) : $parts[1];
+					// if there's no language file entry for it, we'll just
+					// return a humanized version of what's in the database.
+					if (is_numeric($parts[1]))
+					{
+						$form_opts[$parts[0]] = $parts[1];
+					}
+					else
+					{
+						$form_opts[$parts[0]] = (lang($parts[1])) ? lang($parts[1]) : humanize($parts[1]);
+					}
 
 					// if they've tried to submit the new value
 					// but validation failed, we'll repopulate

@@ -201,7 +201,26 @@ class PV_AdminController extends CI_Controller
 		// $this->config so we can use them
 		if ($this->config->item('site_name'))
 		{
-			$this->template->title($this->config->item('site_name'));
+
+			$title_parts[] = $this->config->item('site_name');
+
+			// If the method is something other than index, use that
+			if ($this->router->fetch_method() != 'index')
+			{
+				$title_parts[] = $this->router->fetch_method();
+			}
+
+			// Make sure controller name is not the same as the method name
+			if ( ! in_array($this->router->fetch_method(), $title_parts))
+			{
+				$title_parts[] = $this->router->fetch_class();
+			}
+
+			// Glue the title pieces together using the title separator setting
+			$title = humanize(implode(' | ', $title_parts));
+
+
+			$this->template->title(ucwords($title), ' Powered by Pubvana');
 		}
 
 
