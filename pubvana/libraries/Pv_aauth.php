@@ -11,7 +11,7 @@
  *
  * Requirements: PHP5 or above
  *
- * @package    Pv_Auth
+ * @package    Pv_auth
  * @author     Enliven Applications
  * @link       http://enlivenapp.com
  * @filesource
