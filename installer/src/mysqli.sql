@@ -523,8 +523,8 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}users_groups` (
   KEY `fk_{PREFIX}users_groups_users1_idx` (`user_id`),
   KEY `fk_{PREFIX}users_groups_groups1_idx` (`group_id`),
   CONSTRAINT `uc_{PREFIX}users_groups` UNIQUE (`user_id`, `group_id`),
-  CONSTRAINT `fk_{PREFIX}users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_{PREFIX}users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fk_{PREFIX}users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `{PREFIX}users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_{PREFIX}users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `{PREFIX}groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- split --
