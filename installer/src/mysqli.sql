@@ -7,7 +7,8 @@ CREATE TABLE `{PREFIX}categories` (
   `id` int(11) NOT NULL,
   `name` varchar(60) DEFAULT NULL,
   `url_name` varchar(200) DEFAULT NULL,
-  `description` varchar(200) DEFAULT NULL
+  `description` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- split --
@@ -31,7 +32,8 @@ CREATE TABLE `{PREFIX}comments` (
   `author_ip` varchar(100) NOT NULL,
   `content` text,
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `modded` int(1) NOT NULL DEFAULT '1'
+  `modded` int(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- split --
@@ -46,7 +48,8 @@ CREATE TABLE `{PREFIX}contacts` (
   `email` varchar(50) NOT NULL,
   `sender_ip` varchar(50) NOT NULL,
   `message` varchar(200) NOT NULL,
-  `send_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `send_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- split --
@@ -60,7 +63,12 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}groups` (
   `name` varchar(20) NOT NULL,
   `description` varchar(100) NOT NULL,
   `protected` int(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `fk_users_groups_users1_idx` (`user_id`),
+  KEY `fk_users_groups_groups1_idx` (`group_id`),
+  CONSTRAINT `uc_users_groups` UNIQUE (`user_id`, `group_id`),
+  CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- split --
