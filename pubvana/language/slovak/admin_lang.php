@@ -3,15 +3,15 @@
 	Language variable for the admin control panel
  */
 
-$lang['yes']								= 'Yes';
-$lang['no']									= 'No';
-$lang['pages']								= 'Pages';
+$lang['yes']								= 'Áno';
+$lang['no']									= 'Nie';
+$lang['pages']								= 'Stránky';
 $lang['blog']								= 'Blog';
 
 // Settings
 $lang['settings_help_txt']					= "Settings allow you to change how your website performs certain actions and basic information like your site's name.";
-$lang['allow_comments_label']				= "Allow Comments";
-$lang['allow_comments_desc']				= "Do you want to allow comments on your blog posts?";
+$lang['allow_comments_label']				= "Povoliť komentáre";
+$lang['allow_comments_desc']				= "Chcete povoliť komentáre na vašich blogových príspevkoch?";
 $lang['base_controller_label']				= "Base Controller";
 $lang['base_controller_desc']				= "Choose where the homepage is...";
 $lang['blog_description_label']				= "Blog Description";
