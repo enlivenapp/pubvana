@@ -1,20 +1,20 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 // headers
-$lang['recent_posts']					= "Recent Posts";
-$lang['older_posts']					= "Older Posts";
+$lang['recent_posts']					= "Najnovšie príspevky";
+$lang['older_posts']					= "Staršie príspevky";
 $lang['connect_hdr']					= "Connect";
-$lang['blog_links_hdr']					= "Blog Links";
-$lang['links_hdr']						= "Links";
-$lang['archives_hdr']					= "Archives";
-$lang['categories_hdr']					= "Categories";
-$lang['blog_notices_hdr']				= "Subscribe";
-$lang['blog_notices_unsub_hdr']			= "Unsubscribe";
+$lang['blog_links_hdr']					= "Blogové odkazy";
+$lang['links_hdr']						= "Odkazy";
+$lang['archives_hdr']					= "Archív";
+$lang['categories_hdr']					= "Kategórie";
+$lang['blog_notices_hdr']				= "Prihlásiť sa";
+$lang['blog_notices_unsub_hdr']			= "Odhlásiť sa";
 				
-$lang['category_hdr']					= "Posts in Category ";
-$lang['archives_for_hdr']				= "Archives for ";
-$lang['blog_notices_help_txt']			= "Get an email when new content is added.";
-$lang['blog_notices_help_unsub_txt']	= "Enter the email address to Unsubscribe.";
+$lang['category_hdr']					= "Príspevky v kategórii ";
+$lang['archives_for_hdr']				= "Archív pre ";
+$lang['blog_notices_help_txt']			= "Dostať email, keď je pridaný nový obsah.";
+$lang['blog_notices_help_unsub_txt']	= "Zadajte email adresu pre odhlásenie.";
 
 
 // General Buttons
