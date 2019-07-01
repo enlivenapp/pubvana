@@ -21,36 +21,36 @@
 $lang['error_csrf'] = 'This form post did not pass our security checks.';
 
 // Login
-$lang['login_heading']         = 'Login';
-$lang['login_subheading']      = 'Please login with your email/username and password below.';
-$lang['login_identity_label']  = 'Email/Username:';
-$lang['login_password_label']  = 'Password:';
-$lang['login_remember_label']  = 'Remember Me:';
-$lang['login_submit_btn']      = 'Login';
-$lang['login_forgot_password'] = 'Forgot your password?';
+$lang['login_heading']         = 'Prihlásenie';
+$lang['login_subheading']      = 'Prosím prihláste sa s Vašim emailom/používateľským menom a heslom nižšie.';
+$lang['login_identity_label']  = 'Email/Používateľské meno:';
+$lang['login_password_label']  = 'Heslo:';
+$lang['login_remember_label']  = 'Zapamätaj si ma:';
+$lang['login_submit_btn']      = 'Prihlásiť';
+$lang['login_forgot_password'] = 'Zabudli ste Vaše heslo?';
 
 // Index
-$lang['index_heading']           = 'Users';
+$lang['index_heading']           = 'Používatelia';
 $lang['index_subheading']        = 'Below is a list of the users.';
-$lang['index_fname_th']          = 'First Name';
-$lang['index_lname_th']          = 'Last Name';
+$lang['index_fname_th']          = 'Krstné meno';
+$lang['index_lname_th']          = 'Priezvisko';
 $lang['index_email_th']          = 'Email';
-$lang['index_groups_th']         = 'Groups';
+$lang['index_groups_th']         = 'Skupiny';
 $lang['index_status_th']         = 'Status';
-$lang['index_action_th']         = 'Action';
-$lang['index_active_link']       = 'Active';
-$lang['index_inactive_link']     = 'Inactive';
-$lang['index_create_user_link']  = 'Create a new user';
-$lang['index_create_group_link'] = 'Create a new group';
+$lang['index_action_th']         = 'Akcia';
+$lang['index_active_link']       = 'Aktívny';
+$lang['index_inactive_link']     = 'Neaktívny';
+$lang['index_create_user_link']  = 'Vytvoriť nového používateľa';
+$lang['index_create_group_link'] = 'Vytvoriť novú skupinu';
 
 // Deactivate User
-$lang['deactivate_heading']                  = 'Deactivate User';
-$lang['deactivate_subheading']               = 'Are you sure you want to deactivate the user \'%s\'';
-$lang['deactivate_confirm_y_label']          = 'Yes:';
-$lang['deactivate_confirm_n_label']          = 'No:';
-$lang['deactivate_submit_btn']               = 'Submit';
-$lang['deactivate_validation_confirm_label'] = 'confirmation';
-$lang['deactivate_validation_user_id_label'] = 'user ID';
+$lang['deactivate_heading']                  = 'Deaktivácia používateľa';
+$lang['deactivate_subheading']               = 'Ste si istý, že chcete deaktivovať používateľa \'%s\'';
+$lang['deactivate_confirm_y_label']          = 'Áno:';
+$lang['deactivate_confirm_n_label']          = 'Nie:';
+$lang['deactivate_submit_btn']               = 'Potvrdiť';
+$lang['deactivate_validation_confirm_label'] = 'potvrdenie';
+$lang['deactivate_validation_user_id_label'] = 'ID používateľa';
 
 // Create User
 $lang['create_user_heading']                           = 'Create User';
