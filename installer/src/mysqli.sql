@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS `{PREFIX}categories`;
 -- split --
 
 CREATE TABLE `{PREFIX}categories` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(60) DEFAULT NULL,
   `url_name` varchar(200) DEFAULT NULL,
   `description` varchar(200) DEFAULT NULL,
@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `{PREFIX}comments`;
 -- split --
 
 CREATE TABLE `{PREFIX}comments` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `post_id` int(11) DEFAULT '0',
   `user_id` int(11) DEFAULT NULL,
   `author` varchar(50) DEFAULT NULL,
@@ -43,7 +43,7 @@ DROP TABLE IF EXISTS `{PREFIX}contacts`;
 -- split --
 
 CREATE TABLE `{PREFIX}contacts` (
-  `id` int(11) UNSIGNED NOT NULL,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `email` varchar(50) NOT NULL,
   `sender_ip` varchar(50) NOT NULL,
