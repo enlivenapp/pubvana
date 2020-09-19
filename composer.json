@@ -23,7 +23,7 @@
             "michelf/php-markdown": "^1.7",
             "kenjis/codeigniter-cli": "^0.1.0",
             "league/oauth2-client": "^2.2",
-            "Studio-42/elFinder": "2.1.34"        
+            "Studio-42/elfinder": "2.1.34"        
     },
     "autoload": {
         "psr-4": {
