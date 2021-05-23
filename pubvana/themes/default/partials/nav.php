@@ -8,7 +8,7 @@
 <?php endif; ?>	
 
 <?php if ( ! $this->pv_auth->logged_in() ): ?>
-	<li><a href="<?php echo site_url('auth/login') ?>"><b>Log In</b></a></li>
+	<li><a href="<?php echo site_url('auth/login') ?>"><b><?php echo lang('login_heading'); ?></b></a></li>
 <?php endif ?>
 
 </ul>
