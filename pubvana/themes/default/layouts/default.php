@@ -90,7 +90,7 @@
                           <div class="col-sn-2">
                             <div class="btn-group">
                               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Choose Language <span class="caret"></span>
+                                <?php echo lang('categories_hdr'); ?> <span class="caret"></span>
                               </button>
                               <ul class="dropdown-menu">
                                 <?php foreach ($this->template->lang_picker as $lang): ?>
