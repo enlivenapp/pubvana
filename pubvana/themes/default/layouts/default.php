@@ -90,7 +90,7 @@
                           <div class="col-sn-2">
                             <div class="btn-group">
                               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <?php echo lang('categories_hdr'); ?> <span class="caret"></span>
+                                <?php echo lang('choose_language'); ?> <span class="caret"></span>
                               </button>
                               <ul class="dropdown-menu">
                                 <?php foreach ($this->template->lang_picker as $lang): ?>
@@ -184,7 +184,7 @@
                           </div>
                           <div class="col-sm-6 text-right">
                             <p>
-                              <a href="#">© Copyright <?php echo date('Y') ?> <?php echo $template['title']; ?></a>
+                              <a href="#">&copy; <?php echo date('Y') ?> <?php echo $template['title']; ?></a>
                             </p>
                           </div>
                         </div>
