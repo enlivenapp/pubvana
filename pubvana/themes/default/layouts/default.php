@@ -89,21 +89,16 @@
                         <?php if ($this->template->lang_picker): ?>
                           <div class="col-sn-2">
                             <div class="btn-group">
-                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <?php echo lang('choose_language'); ?> <span class="caret"></span>
-                              </button>
+                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo lang('choose_language'); ?> <span class="caret"></span></button>
                               <ul class="dropdown-menu">
                                 <?php foreach ($this->template->lang_picker as $lang): ?>
                                 <li><?= $lang ?></li>
                                 <?php endforeach ?>
-                                
                               </ul>
                             </div>
                           </div>
                         <?php endif ?>
                       </div>
-                      
-
                       
                         <!-- content -->
 
@@ -133,7 +128,6 @@
                               </div>
                               <?php endif ?>
 
-
                             </div>
                             <?php endif ?>
       
@@ -141,7 +135,6 @@
 
                             <?php echo $template['partials']['social']; ?>
                             
-
                       <div class="col-sm-12">
                           <div class="page-header text-muted divider" id="blog-links">
                             <?php echo lang('blog_links_hdr'); ?>
@@ -179,12 +172,12 @@
                         <div class="row" id="footer">    
                           <div class="col-sm-6">
                             <p class="">
-                            <a href="http://www.bootply.com">Theme: Bootply</a> | <a href="http://pubvana.org">Powered by Pubvana</a>
+                            <a href="http://www.bootply.com" target="_blank">Theme: Bootply</a> | <a href="http://pubvana.org" target="_blank">Powered by Pubvana</a>
                             </p>
                           </div>
                           <div class="col-sm-6 text-right">
                             <p>
-                              <a href="#">&copy; <?php echo date('Y') ?> <?php echo $template['title']; ?></a>
+                              <a href="/">&copy; <?php echo date('Y') ?> <?php echo $template['title']; ?></a>
                             </p>
                           </div>
                         </div>
