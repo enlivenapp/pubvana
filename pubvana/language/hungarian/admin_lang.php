@@ -3,14 +3,14 @@
 	Language variable for the admin control panel
  */
 
-$lang['yes']								= 'Yes';
-$lang['no']									= 'No';
-$lang['pages']								= 'Pages';
-$lang['blog']								= 'Blog';
+$lang['yes']								= 'Igen';
+$lang['no']									= 'Nem';
+$lang['pages']								= 'Oldalak';
+$lang['blog']								= 'Bejegyzések';
 
 // Settings
 $lang['settings_help_txt']					= "Settings allow you to change how your website performs certain actions and basic information like your site's name.";
-$lang['allow_comments_label']				= "Allow Comments";
+$lang['allow_comments_label']				= "Hozzászólások engedélyezése";
 $lang['allow_comments_desc']				= "Do you want to allow comments on your blog posts?";
 $lang['base_controller_label']				= "Base Controller";
 $lang['base_controller_desc']				= "Choose where the homepage is...";
@@ -40,11 +40,11 @@ $lang['recaptcha_private_key_label']		= "Google Recaptcha Private Key";
 $lang['recaptcha_private_key_desc']			= "Enter the PRIVATE key provided by google.";
 $lang['recaptcha_site_key_label']			= "Google Recaptcha Site Key";
 $lang['recaptcha_site_key_desc']			= "Enter the SITE key provided by google.";
-$lang['site_name_label']					= "Site Name";
+$lang['site_name_label']					= "Oldal Neve";
 $lang['site_name_desc']						= "Enter the name of your website.";
 $lang['theme_image_label']					= "";
 $lang['theme_image_desc']					= "";
-$lang['use_recaptcha_label']				= "Enable Recaptcha";
+$lang['use_recaptcha_label']				= "Recaptcha Engedélyezése";
 $lang['use_recaptcha_desc']					= 'Would you like to enable Google Recaptcha for your site to help eliminate SPAM and comment moderation? <a href="https://www.google.com/recaptcha/intro/" target="_blank">More Info <sup><i class="fa fa-external-link"></i></sup></a>';
 $lang['use_honeypot_label']					= "Enable Form Honey Pots";
 $lang['use_honeypot_desc']					= "To help prevent SPAM, you can use a honey pot, a SPAMmer filling in a hidden field that should not be. This will help protect your comment and registration forms from robots but not humans. ";
@@ -55,11 +55,11 @@ $lang['mail']								= 'MAIL (Easy to use, bad for large list of recipients)';
 $lang['sendmail']							= "SENDMAIL (Some servers don't allow the 'mail' protocol.)";
 $lang['sendmail_path_label']				= "Sendmail Path";
 $lang['sendmail_path_desc']					= "(Required if usung Sendmail) Enter the sendmail path. Usually found in your server control panel.";
-$lang['smtp_user_label']					= "SMTP User";
+$lang['smtp_user_label']					= "SMTP Felhasználó";
 $lang['smtp_user_desc']						= "(Required if usung SMTP) Enter the username for your SMTP account";
 $lang['smtp_host_label']					= "SMTP Host";
 $lang['smtp_host_desc']						= "(Required if usung SMTP) Enter the SMTP Host for your account.  (IE: google.com, mail.yourdomain.com, etc)";
-$lang['smtp_pass_label']					= "SMTP Password";
+$lang['smtp_pass_label']					= "SMTP Jelszó";
 $lang['smtp_pass_desc']						= "(Required if usung SMTP) Enter the SMTP Password for your username";
 $lang['smtp_port_label']					= "SMTP Port";
 $lang['smtp_port_desc']						= "(Required if usung SMTP) Enter the SMTP Port number provided by your host.";
@@ -77,9 +77,6 @@ $lang['manual_activation_label']				= "Manual Activation";
 $lang['manual_activation_desc']					= "Would you like to manually verify each user who registers?";
 $lang['allow_registrations_label']				= "Allow Registrations";
 $lang['allow_registrations_desc']				= "Do you wish to allow users to create an account on your blog?";
-
-
-
 
 
 
@@ -111,19 +108,19 @@ $lang['link_update_fail_resp']				= "Could not update Link.  Please try again.";
 
 
 // Categories
-$lang['cats_hdr']							= "Categories";
-$lang['cat_remove_btn']						= "Remove Category";
-$lang['cat_edit_btn']						= "Edit Category";
-$lang['index_add_new_cat']					= "Add New Category";
+$lang['cats_hdr']							= "Kategóriák";
+$lang['cat_remove_btn']						= "Kategória Törlése";
+$lang['cat_edit_btn']						= "Kategória Szerkesztése";
+$lang['index_add_new_cat']					= "Új Kategória";
 $lang['add_cat_subheading']					= "Please add the category information below.";
-$lang['cat_form_name']						= "Category Name";
+$lang['cat_form_name']						= "Kategória Beve";
 $lang['cat_form_url']						= "(same as above, all lowercase, no spaces)";
-$lang['cat_form_desc']						= "Description";
+$lang['cat_form_desc']						= "Leírás";
 $lang['blank_window']						= "Open in new window";
 $lang['same_window']						= "Open in same window";
-$lang['visible']							= "Visible";
-$lang['not_visible']						= "Hidden";
-$lang['save_cat_btn']						= "Save Category";
+$lang['visible']							= "Látható";
+$lang['not_visible']						= "Rejtett";
+$lang['save_cat_btn']						= "Kategória Mentése";
 $lang['cat_added_success_resp']				= "Category added successfully";
 $lang['cat_added_fail_resp']				= "Could not add Category.  Please try again.";
 $lang['cat_removed_success_resp']			= "Category removed successfully";
@@ -133,39 +130,39 @@ $lang['cat_update_fail_resp']				= "Could not update Category.  Please try again
 
 
 // pages
-$lang['pages_hdr']							= "Pages";
+$lang['pages_hdr']							= "Oldalak";
 $lang['optional_hdr']						= "Optional";
 $lang['optional_help_text']					= "While the options below are optional, they are highly recommended and greatly help with Search Engine Optimization (SEO). We also generate meta tags for facebook and twitter with these values.";
-$lang['page_remove_btn']					= "Remove Page";
-$lang['page_edit_btn']						= "Edit Page";
-$lang['index_add_new_page']					= "Add New Page";
-$lang['index_edit_page']					= "Edit Page";
-$lang['save_page_btn']						= "Save Page";
-$lang['page_added_success_resp']			= "Page added successfully";
+$lang['page_remove_btn']					= "Oldal Törlése";
+$lang['page_edit_btn']						= "Oldal Szerkesztése";
+$lang['index_add_new_page']					= "Új Oldal";
+$lang['index_edit_page']					= "Oldal Szerkesztése";
+$lang['save_page_btn']						= "Oldal Mentése";
+$lang['page_added_success_resp']			= "Oldal sikeresen hozzáadva.";
 $lang['page_added_fail_resp']				= "Could not add Page.  Please try again.";
 $lang['page_removed_success_resp']			= "Page removed successfully";
 $lang['page_removed_fail_resp']				= "Could not remove Page.  Please try again.";
-$lang['page_update_success_resp']			= "Page updated successfully";
-$lang['page_update_fail_resp']				= "Could not update Page.  Please try again.";
-$lang['page_form_title_text']				= "Page Title";
+$lang['page_update_success_resp']			= "Oldal sikeresen frissítve";
+$lang['page_update_fail_resp']				= "Could not update Page. Please try again.";
+$lang['page_form_title_text']				= "Oldal Címe";
 $lang['page_form_title_help_text']			= "Enter the title of your page.";
-$lang['page_form_status_text']				= "Status";
+$lang['page_form_status_text']				= "Állapot";
 $lang['page_form_status_help_text']			= "Choose if you want the page to be Live or Draft.";
-$lang['page_form_status_active']			= "Live";
-$lang['page_form_status_inactive']			= "Draft";
-$lang['page_form_content_text']				= "Page Content";
+$lang['page_form_status_active']			= "Nyilvános";
+$lang['page_form_status_inactive']			= "Piszkozat";
+$lang['page_form_content_text']				= "Oldal Tartalma";
 $lang['page_form_content_help_text']		= "Enter the content of your page below. Use the editor to help you format with Markdown.";
-$lang['page_form_meta_title_text']			= "META Title";
+$lang['page_form_meta_title_text']			= "META Cím";
 $lang['page_form_meta_title_help_text']		= "Usually the same as your page title, but you can enter a different one here.";
-$lang['page_form_meta_keywords_text']		= "META Keywords";
+$lang['page_form_meta_keywords_text']		= "META Kulcsszavak";
 $lang['page_form_meta_keywords_help_text']	= "Enter the keywords for this page separated by commas.";
-$lang['page_form_meta_desc_text']			= "META Description";
+$lang['page_form_meta_desc_text']			= "META Leírás";
 $lang['page_form_meta_desc_help_text']		= "Enter the description for this page.  It's best to keep it between 50 and 100 characters.";
-$lang['page_form_home_text']				= "Homepage";
+$lang['page_form_home_text']				= "Főoldal";
 $lang['page_form_home_help_text']			= "Check the box if this page is the homepage. You must choose Pages to be the default controller in Settings.  Any other page currently marked as the homepage will be removed as the homepage.";
-$lang['page_form_url_title_text']			= "URL Title";
+$lang['page_form_url_title_text']			= "URL cím";
 $lang['page_form_url_title_help_text']		= "This is the 'slug' shown in the URL of your page. If you change this value, there must be NO spaces between words, instead, used dashes. <br>IE: new-url-title";
-$lang['page_form_redirect_text']			= "Redirection";
+$lang['page_form_redirect_text']			= "Átirányítás";
 $lang['page_form_redirect_help_text']		= "If you change the URL Title above we automatically set up an HTTP 301 (permanent) redirect for you so the old url_title points to the new page url_title. Here, you can override the default settings.";
 $lang['page_form_redirect_none']			= "Do Not Redirect Old URL Title";
 $lang['page_form_redirect_perm']			= "Permanently Redirect to new URL Title";
@@ -174,44 +171,44 @@ $lang['page_form_redirect_temp']			= "Temporarily Redirect to new URL Title";
 
 
 // posts
-$lang['posts_hdr']							= "Posts";
-$lang['optional_hdr']						= "Optional";
+$lang['posts_hdr']							= "Bejegyzések";
+$lang['optional_hdr']						= "Opcionális";
 $lang['optional_help_text']					= "While the options below are optional, they are highly recommended and greatly help with Search Engine Optimization (SEO). We also generate meta tags for facebook and twitter with these values.";
-$lang['post_remove_btn']					= "Remove Post";
-$lang['post_edit_btn']						= "Edit Post";
-$lang['index_add_new_post']					= "Add New Post";
-$lang['index_edit_post']					= "Edit Post";
-$lang['save_post_btn']						= "Save Post";
+$lang['post_remove_btn']					= "Bejegyzés Törlése";
+$lang['post_edit_btn']						= "Bejegyzés Szerkesztése";
+$lang['index_add_new_post']					= "Új Bejegyzés";
+$lang['index_edit_post']					= "Bejegyzés Szerkesztése";
+$lang['save_post_btn']						= "Bejegyzés Mentése";
 $lang['post_added_success_resp']			= "Post added successfully";
 $lang['post_added_fail_resp']				= "Could not add post.  Please try again.";
 $lang['post_removed_success_resp']			= "Post removed successfully";
 $lang['post_removed_fail_resp']				= "Could not remove post.  Please try again.";
 $lang['post_update_success_resp']			= "post updated successfully";
 $lang['post_update_fail_resp']				= "Could not update post.  Please try again.";
-$lang['post_form_title_text']				= "Post Title";
+$lang['post_form_title_text']				= "Bejegyzés Címe";
 $lang['post_form_title_help_text']			= "Enter the title of your post.";
-$lang['post_form_status_text']				= "Status";
+$lang['post_form_status_text']				= "Állapot";
 $lang['post_form_status_help_text']			= "Choose if you want the post to be Live or Draft.";
-$lang['post_form_status_active']			= "Live";
-$lang['post_form_status_inactive']			= "Draft";
-$lang['post_form_content_text']				= "Post Content";
+$lang['post_form_status_active']			= "Nyilvános";
+$lang['post_form_status_inactive']			= "Piszkozat";
+$lang['post_form_content_text']				= "Bejegyzés Tartalma";
 $lang['post_form_content_help_text']		= "Enter the content of your post below. Use the editor to help you format with Markdown.";
-$lang['post_form_excerpt_text']				= "Post Excerpt";
+$lang['post_form_excerpt_text']				= "Bejegyzés Kivonata";
 $lang['post_form_excerpt_help_text']		= "Enter a short ~200 character excerpt (teaser) of your post below.";
 $lang['post_form_cats_help_text']			= "Choose any categories.  To choose multiple categories press CMD/CTRL + Click your choices.";
-$lang['post_form_meta_title_text']			= "META Title";
+$lang['post_form_meta_title_text']			= "META Cím";
 $lang['post_form_meta_title_help_text']		= "Usually the same as your post title, but you can enter a different one here.";
-$lang['post_form_meta_keywords_text']		= "META Keywords";
+$lang['post_form_meta_keywords_text']		= "META Kulcsszavak";
 $lang['post_form_meta_keywords_help_text']	= "Enter the keywords for this post separated by commas.";
 $lang['post_form_meta_desc_text']			= "META Description";
 $lang['post_form_meta_desc_help_text']		= "Enter the description for this post.  It's best to keep it between 50 and 100 characters.";
-$lang['post_form_home_text']				= "Homepage";
+$lang['post_form_home_text']				= "Főoldal";
 $lang['post_form_home_help_text']			= "Check the box if this post is the homepage. You must choose posts to be the default controller in Settings.  Any other posts currently marked as the homepost will be removed as the homepage.";
-$lang['post_form_url_title_text']			= "URL Title";
+$lang['post_form_url_title_text']			= "URL Cím";
 $lang['post_form_url_title_help_text']		= "This is the 'slug' shown in the URL of your post. If you change this value, there must be NO spaces between words, instead, used dashes. <br>IE: new-url-title";
 $lang['post_add_form_url_title_help_text']	= "This is the 'slug' shown in the URL of your post. If you enter this, there must be NO spaces between words, instead, used dashes. You can leave this blank and we'll build one for you based on the title of your post. <br>IE: new-url-title";
 
-$lang['post_form_redirect_text']			= "Redirection";
+$lang['post_form_redirect_text']			= "Átirányítás";
 $lang['post_form_redirect_help_text']		= "If you change the URL Title above we automatically set up an HTTP 301 (permanent) redirect for you so the old url_title points to the new post url_title. Here, you can override the default settings.";
 $lang['post_form_redirect_none']			= "Do Not Redirect Old URL Title";
 $lang['post_form_redirect_perm']			= "Perminently Redirect to new URL Title";
@@ -219,7 +216,7 @@ $lang['post_form_redirect_temp']			= "Temporarily Redirect to new URL Title";
 $lang['post_form_feature_image_text']		= "Feature Image";
 $lang['post_add_form_feature_image_help_text']		= "Upload a feature image or leave blank.";
 $lang['post_edit_form_feature_image_help_text']		= "Upload a feature image to replace current or leave blank to keep the same.";
-$lang['post_new_post_notification_sbj']		= "New Post";
+$lang['post_new_post_notification_sbj']		= "Új Bejegyzés";
 $lang['post_new_post_notification_msg']		= "Hi!   We just added new content.  Below is the new post. <br><br>";
 $lang['post_new_post_notification_msg_foot']		= "<br><br>You're receiving this email because you've requested new content when we post it. ";
 
