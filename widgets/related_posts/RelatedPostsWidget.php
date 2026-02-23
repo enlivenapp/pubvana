@@ -14,8 +14,9 @@ class RelatedPostsWidget extends BaseWidget
     protected function buildOutput(array $options): string
     {
         $request  = service('request');
-        $segment1 = $request->getUri()->getSegment(1);
-        $segment2 = $request->getUri()->getSegment(2);
+        $uri      = $request->getUri();
+        $segment1 = $uri->getTotalSegments() >= 1 ? $uri->getSegment(1) : '';
+        $segment2 = $uri->getTotalSegments() >= 2 ? $uri->getSegment(2) : '';
 
         $posts = [];
         if ($segment1 === 'blog' && $segment2) {

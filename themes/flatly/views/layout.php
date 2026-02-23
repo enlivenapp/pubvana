@@ -70,7 +70,7 @@
 <footer class="bg-primary text-white py-5 mt-5">
     <div class="container">
         <div class="row">
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <h5><?= esc(site_name()) ?></h5>
                 <p class="text-white-50"><?= esc(site_tagline()) ?></p>
                 <?php foreach (($social_links ?? []) as $s): ?>
@@ -79,8 +79,9 @@
                     </a>
                 <?php endforeach; ?>
             </div>
-            <div class="col-md-4 mb-4"><?= widget_area('footer-1') ?></div>
-            <div class="col-md-4 mb-4"><?= widget_area('footer-2') ?></div>
+            <div class="col-md-3 mb-4"><?= widget_area('footer-1') ?></div>
+            <div class="col-md-3 mb-4"><?= widget_area('footer-2') ?></div>
+            <div class="col-md-3 mb-4"><?= widget_area('footer-3') ?></div>
         </div>
         <hr class="border-white-50">
         <div class="row">

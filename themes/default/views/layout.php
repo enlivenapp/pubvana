@@ -70,26 +70,29 @@
 <footer class="bg-dark text-light py-5 mt-5">
     <div class="container">
         <div class="row">
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <h5><?= esc(site_name()) ?></h5>
-                <p class="text-muted"><?= esc(site_tagline()) ?></p>
+                <p class="text-white-50"><?= esc(site_tagline()) ?></p>
                 <!-- Social Links -->
                 <?php foreach (($social_links ?? []) as $s): ?>
-                    <a href="<?= esc($s->url) ?>" class="text-muted me-2" target="_blank" rel="noopener">
+                    <a href="<?= esc($s->url) ?>" class="text-white-50 me-2" target="_blank" rel="noopener">
                         <i class="<?= esc($s->icon) ?>"></i>
                     </a>
                 <?php endforeach; ?>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <?= widget_area('footer-1') ?>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <?= widget_area('footer-2') ?>
+            </div>
+            <div class="col-md-3 mb-4">
+                <?= widget_area('footer-3') ?>
             </div>
         </div>
         <hr class="border-secondary">
         <div class="row">
-            <div class="col text-center text-muted small">
+            <div class="col text-center text-white-50 small">
                 <?php
                 $copyright = '';
                 $t = active_theme();
@@ -101,10 +104,10 @@
                 echo $copyright ? esc($copyright) : '&copy; ' . date('Y') . ' ' . esc(site_name()) . '. All rights reserved.';
                 ?>
                 &nbsp;&middot;&nbsp;
-                <a href="<?= base_url('feed') ?>" class="text-muted"><i class="fas fa-rss"></i> RSS</a>
+                <a href="<?= base_url('feed') ?>" class="text-white-50"><i class="fas fa-rss"></i> RSS</a>
                 <?php if (setting('Seo.sitemapEnabled')): ?>
                 &nbsp;&middot;&nbsp;
-                <a href="<?= base_url('sitemap.xml') ?>" class="text-muted">Sitemap</a>
+                <a href="<?= base_url('sitemap.xml') ?>" class="text-white-50">Sitemap</a>
                 <?php endif; ?>
             </div>
         </div>
