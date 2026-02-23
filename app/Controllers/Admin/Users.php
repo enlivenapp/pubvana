@@ -51,18 +51,42 @@ class Users extends BaseAdminController
             return redirect()->to('/admin/users')->with('error', 'Permission denied.');
         }
 
+        // Protect site owner (lowest ID)
+        $ownerId = (int) db_connect()->table('users')->selectMin('id')->get()->getRowObject()->id;
+        if ($id === $ownerId && auth()->id() !== $ownerId) {
+            return redirect()->to('/admin/users')->with('error', 'The site owner account cannot be modified.');
+        }
+
         $userModel = new UserModel();
         $user      = $userModel->findById($id);
         if (! $user) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
-        $group = $this->request->getPost('group');
-        if ($group && array_key_exists($group, config('AuthGroups')->groups)) {
+        // Role
+        $role = $this->request->getPost('role');
+        if ($role && array_key_exists($role, config('AuthGroups')->groups)) {
             foreach ($user->getGroups() as $g) {
                 $user->removeGroup($g);
             }
-            $user->addGroup($group);
+            $user->addGroup($role);
+        }
+
+        // Active status — use Shield ban to actually block login, keep active col in sync
+        $db = db_connect();
+        if ($this->request->getPost('active')) {
+            $user->unBan();
+            $db->table('users')->where('id', $id)->update(['active' => 1]);
+        } elseif ($id !== auth()->id() && $id !== $ownerId) {
+            $user->ban('Deactivated by admin');
+            $db->table('users')->where('id', $id)->update(['active' => 0]);
+        }
+
+        // Password (optional)
+        $password = $this->request->getPost('password');
+        if ($password) {
+            $user->fill(['password' => $password]);
+            $userModel->save($user);
         }
 
         return redirect()->to('/admin/users')->with('success', 'User updated.');
@@ -73,9 +97,51 @@ class Users extends BaseAdminController
         if ($id === auth()->id()) {
             return redirect()->to('/admin/users')->with('error', 'Cannot delete yourself.');
         }
-        $userModel = new UserModel();
-        $userModel->delete($id, true);
+        $ownerId = (int) db_connect()->table('users')->selectMin('id')->get()->getRowObject()->id;
+        if ($id === $ownerId) {
+            return redirect()->to('/admin/users')->with('error', 'The site owner account cannot be deleted.');
+        }
+        (new UserModel())->delete($id, true);
         return redirect()->to('/admin/users')->with('success', 'User deleted.');
+    }
+
+    public function create(): string
+    {
+        if (! auth()->user()->can('users.manage')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
+        return $this->adminView('users/create', $this->baseData('Create User', 'users'));
+    }
+
+    public function store()
+    {
+        if (! auth()->user()->can('users.manage')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
+        if (! $this->validate([
+            'username' => 'required|min_length[3]|max_length[30]|is_unique[users.username]',
+            'email'    => 'required|valid_email',
+            'password' => 'required|min_length[8]',
+            'role'     => 'required|in_list[subscriber,author,editor,admin,superadmin]',
+        ])) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $users = auth()->getProvider();
+        $user  = new \CodeIgniter\Shield\Entities\User([
+            'username' => $this->request->getPost('username'),
+            'active'   => 1,
+        ]);
+        $user->setEmail($this->request->getPost('email'));
+        $user->setPassword($this->request->getPost('password'));
+        $users->save($user);
+
+        $newUser = $users->findByCredentials(['email' => $this->request->getPost('email')]);
+        if ($newUser) {
+            $newUser->addGroup($this->request->getPost('role'));
+        }
+
+        return redirect()->to('/admin/users')->with('success', 'User created.');
     }
 
     public function profile(int $id): string

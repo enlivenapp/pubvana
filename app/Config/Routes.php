@@ -107,6 +107,8 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
 
     // Users
     $routes->get('users',                    'Users::index');
+    $routes->get('users/create',             'Users::create');
+    $routes->post('users/create',            'Users::store');
     $routes->get('users/(:num)/edit',        'Users::edit/$1');
     $routes->post('users/(:num)/edit',       'Users::update/$1');
     $routes->post('users/(:num)/delete',     'Users::delete/$1');
