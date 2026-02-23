@@ -39,10 +39,23 @@ class ThemeService
         if (! $theme) {
             return '<p>No active theme.</p>';
         }
+
         $path = THEMES_PATH . $theme->folder . '/views/' . $name . '.php';
+
+        // Fall back to parent theme if the view isn't in the active theme
+        if (! is_file($path)) {
+            $infoFile = THEMES_PATH . $theme->folder . '/theme_info.php';
+            $info     = is_file($infoFile) ? (require $infoFile) : [];
+            $parent   = $info['parent'] ?? null;
+            if ($parent) {
+                $path = THEMES_PATH . $parent . '/views/' . $name . '.php';
+            }
+        }
+
         if (! is_file($path)) {
             return '<p>Theme view not found: ' . esc($name) . '</p>';
         }
+
         // CI4's view() doesn't support absolute paths; render via extract+include
         extract($data);
         ob_start();

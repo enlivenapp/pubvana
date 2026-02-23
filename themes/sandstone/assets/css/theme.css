@@ -1,0 +1,45 @@
+/* Pubvana — Sandstone Theme */
+body { line-height: 1.7; }
+
+.post-content img { max-width: 100%; height: auto; border-radius: 0.375rem; }
+.post-content h2, .post-content h3 { margin-top: 2rem; }
+.post-content blockquote {
+    border-left: 4px solid #93c54b;
+    padding: 0.5rem 1rem;
+    background: #f8f9fa;
+    font-style: italic;
+}
+.post-content pre {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    overflow-x: auto;
+}
+
+.card { transition: box-shadow 0.2s; }
+.card:hover { box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15) !important; }
+
+.widget { margin-bottom: 2rem; }
+.widget-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #93c54b;
+}
+
+.tag-cloud a {
+    display: inline-block; margin: 2px; padding: 2px 8px;
+    background: #f0f0f0; border-radius: 3px;
+    font-size: 0.85rem; text-decoration: none; color: #555;
+}
+.tag-cloud a:hover { background: #93c54b; color: #fff; }
+
+footer a { color: #adb5bd; }
+footer a:hover { color: #fff; }
+
+.comment { background: #f8f9fa; border-radius: 0.375rem; padding: 1rem; }
+
+.pagination .page-link { color: #93c54b; }
+.pagination .page-item.active .page-link { background-color: #93c54b; border-color: #93c54b; }
