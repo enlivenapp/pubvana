@@ -1,113 +1,117 @@
-# Pubvana v2
+# Pubvana
 
-A modern, open-source blogging and content management system built on CodeIgniter 4.
+### Blogging and Small Business CMS
 
-## Features
+Pubvana is a re-brand of Open Blog v3 (with added functionality). v2 is a full rewrite on CodeIgniter 4 with a modern admin UI, dual content editor, theme & widget system, and built-in marketplace.
 
-- **Posts & Pages** — full CRUD with draft/published/scheduled workflow
-- **Dual content editor** — Summernote (WYSIWYG HTML) or SimpleMDE (Markdown), selectable per post
-- **Theme system** — folder-based themes with widget areas, options, and asset symlinking
-- **Widget system** — 8 built-in widgets, drag-and-drop area management
-- **Configurable front page** — set the homepage to the blog index or any static page
-- **Marketplace** — browse and install free themes & widgets; paid items link to the Pubvana store
-- **Role-based access** — superadmin, admin, editor, author, subscriber (powered by CodeIgniter Shield)
-- **Media library** — image upload with auto-generated thumbnails
-- **Navigation manager** — primary and footer menus with drag-and-drop reordering
-- **Comment moderation** — approve, spam, or trash comments
-- **SEO** — per-post meta title/description, sitemap.xml, RSS feed, Google Analytics
-- **Redirects** — manage 301/302 redirects from the admin panel
-- **Social links** — manage social media links displayed site-wide
+## Installation
 
-## Stack
+```bash
+git clone https://github.com/enlivenapp/pubvana.git
+cd pubvana
+composer install
+cp env .env
+# Edit .env: set app.baseURL, database credentials, CI_ENVIRONMENT
+php spark key:generate
+php spark migrate --all
+php spark db:seed DatabaseSeeder
+```
+
+Point your web server `DocumentRoot` at the `public/` folder.
+
+**Default admin login** — `admin@example.com` / `Admin@12345` — change immediately after first login.
+
+## Requirements
+
+- PHP 8.2+
+- MySQL 5.7+ / MariaDB 10.3+
+- Composer
+- Apache `mod_rewrite` (or Nginx equivalent)
+- PHP extensions: `intl`, `mbstring`, `json`, `mysqlnd`, `gd`, `zip`
+
+## Stack (v2)
 
 | Layer | Technology |
 |---|---|
 | Framework | CodeIgniter 4.7 |
 | Authentication | CodeIgniter Shield |
-| Settings | codeigniter4/settings |
-| Markdown | Parsedown |
 | Admin UI | SB Admin 2 (Bootstrap 4 + jQuery) |
 | Public theme | Bootstrap 5 + Font Awesome 6 |
 | HTML editor | Summernote |
 | Markdown editor | SimpleMDE |
 
-## Requirements
+## Features (v2)
 
-- PHP 8.2 or higher
-- MySQL 5.7+ / MariaDB 10.3+
-- Composer
-- Apache with `mod_rewrite` enabled (or Nginx equivalent)
-- PHP extensions: `intl`, `mbstring`, `json`, `mysqlnd`, `gd`, `zip`
+- Posts & Pages with draft/published/scheduled workflow
+- Dual content editor — WYSIWYG HTML or Markdown, selectable per post
+- Theme system with widget areas, theme options, and asset symlinking
+- 8 built-in widgets with drag-and-drop area management
+- Configurable front page — blog index or any static page
+- Marketplace — browse and install free themes & widgets
+- Role-based access — superadmin, admin, editor, author, subscriber
+- Media library with auto-generated thumbnails
+- Navigation manager with drag-and-drop reordering
+- Comment moderation — approve, spam, or trash
+- SEO — per-post meta, sitemap.xml, RSS feed, Google Analytics
+- 301/302 redirect manager
+- Social links manager
 
-## Installation
+## Bug Reports & Feature Requests
 
-```bash
-# Clone the repo
-git clone https://github.com/enlivenapp/pubvana.git
-cd pubvana
+Please use the [Issues Tracker](https://github.com/enlivenapp/pubvana/issues).
 
-# Install dependencies
-composer install
+## Links
 
-# Copy and configure environment
-cp env .env
-# Edit .env: set app.baseURL, database credentials, CI_ENVIRONMENT
+[pubvana.org Home](http://pubvana.org)
 
-# Generate encryption key
-php spark key:generate
+Pubvana Addon Store (Themes, Widgets, and other Addons) — Coming Soon
 
-# Run migrations
-php spark migrate --all
+[Facebook Page](https://www.facebook.com/pubvana.org)
 
-# Seed default data (theme, widgets, settings, superadmin user)
-php spark db:seed DatabaseSeeder
-
-# Point your web server DocumentRoot to /path/to/pubvana/public
-```
-
-## Default Admin Credentials
-
-After seeding, log in at `/login`:
-
-| Field | Value |
-|---|---|
-| Email | `admin@example.com` |
-| Password | `Admin@12345` |
-
-**Change these immediately after first login.**
-
-## Directory Structure
-
-```
-pubvana/
-├── app/                    # CI4 application (controllers, models, views, config)
-├── public/                 # Web root (index.php, assets)
-│   ├── assets/admin/       # SB Admin 2 vendored files
-│   └── themes/             # Symlinked theme assets (auto-created)
-├── themes/                 # Installed themes
-│   └── default/            # Built-in Bootstrap 5 theme
-├── widgets/                # Installed widgets (8 built-in)
-├── writable/               # Cache, logs, sessions, uploads
-└── vendor/                 # Composer dependencies (not committed)
-```
-
-## Built-in Widgets
-
-| Widget | Description |
-|---|---|
-| Recent Posts | Latest posts with optional date/excerpt |
-| Categories List | All categories with post counts |
-| Tag Cloud | Tag cloud with configurable max tags |
-| Social Links | Site social media links |
-| Text Block | Free HTML/text content |
-| Search Form | Site search input |
-| Recent Comments | Latest approved comments |
-| Archive List | Monthly or yearly post archives |
-
-## Contributing
-
-Issues and pull requests are welcome at [github.com/enlivenapp/pubvana](https://github.com/enlivenapp/pubvana).
+[User Docs](http://pubvana.org)
 
 ## License
 
-MIT
+Pubvana is released under the MIT Open Source License.
+
+## Contributors & Team Members
+
+- Enliven Applications
+
+## Translators & Translations
+
+_Translators Wanted!_
+
+If you would like to help translate files, please fork this repo and send a PR.
+
+* French, Indonesian, and Portuguese need updates.
+
+Please include a README.md update under 'Translators' with your name and a link to your site/GitHub (optional).
+
+* French
+  - [Paul DUBOT](https://github.com/keeganpa)
+  - [Léonard GAURIAU](https://github.com/leoDisjonct)
+  - [Clément TRASSOUDAINE](https://github.com/intv0id)
+  - [Jean-Baptiste VALLADEAU](https://github.com/ignamarte)
+  - [Rhagngahr](https://github.com/Rhagngahr)
+
+* Indonesian
+  - [Suhindra](https://github.com/suhindra)
+
+* Portuguese
+  - [Samuel Fontebasso](https://github.com/fontebasso)
+
+## Todo
+
+* Automated theme & widget updating (from API)
+* Social login / registering / posting
+* Author info card / bio
+* WordPress migration to Pubvana
+
+#### Premium Widgets — Visit https://pubvana.org
+
+* Advanced Login
+* Gallery
+* Google Calendar & Maps
+* YouTube Channel Feed
+* and more…
