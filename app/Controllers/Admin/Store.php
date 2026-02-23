@@ -15,7 +15,7 @@ class Store extends BaseAdminController
 
         return $this->adminView('store/index', array_merge($this->baseData('Pubvana Store', 'marketplace'), [
             'paid_items' => array_values($paidItems),
-            'store_url'  => setting('Marketplace.storeUrl') ?? 'https://pubvana.org/store',
+            'store_url'  => setting('Marketplace.storeUrl') ?? 'https://pubvana.net/store',
         ]));
     }
 }

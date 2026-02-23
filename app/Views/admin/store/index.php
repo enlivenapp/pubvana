@@ -12,7 +12,7 @@
         <i class="fas fa-store fa-4x text-primary mb-4"></i>
         <h3>Visit the Pubvana Store</h3>
         <p class="text-muted lead mb-4">Browse premium themes and widgets to power up your Pubvana site.<br>Purchase items on the Pubvana store, then install them here using your license key.</p>
-        <a href="<?= esc(setting('Marketplace.storeUrl') ?: 'https://pubvana.org/store') ?>" target="_blank" class="btn btn-primary btn-lg">
+        <a href="<?= esc(setting('Marketplace.storeUrl') ?: 'https://pubvana.net/store') ?>" target="_blank" class="btn btn-primary btn-lg">
             <i class="fas fa-external-link-alt mr-2"></i> Open Pubvana Store
         </a>
     </div>
@@ -27,7 +27,7 @@
                     <h5 class="mb-0">Premium Themes</h5>
                 </div>
                 <p class="text-muted">Professional, fully customizable themes for your blog and portfolio.</p>
-                <a href="<?= esc(setting('Marketplace.storeUrl') ?: 'https://pubvana.org/store') ?>/themes" target="_blank" class="btn btn-outline-primary btn-sm">Browse Themes →</a>
+                <a href="<?= esc(setting('Marketplace.storeUrl') ?: 'https://pubvana.net/store') ?>/themes" target="_blank" class="btn btn-outline-primary btn-sm">Browse Themes →</a>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
                     <h5 class="mb-0">Premium Widgets</h5>
                 </div>
                 <p class="text-muted">Extend your sidebar and layout with powerful ready-to-use widgets.</p>
-                <a href="<?= esc(setting('Marketplace.storeUrl') ?: 'https://pubvana.org/store') ?>/widgets" target="_blank" class="btn btn-outline-success btn-sm">Browse Widgets →</a>
+                <a href="<?= esc(setting('Marketplace.storeUrl') ?: 'https://pubvana.net/store') ?>/widgets" target="_blank" class="btn btn-outline-success btn-sm">Browse Widgets →</a>
             </div>
         </div>
     </div>
@@ -51,7 +51,7 @@
                     <h5 class="mb-0">Support</h5>
                 </div>
                 <p class="text-muted">Questions about a purchase or license? Our support team is here to help.</p>
-                <a href="<?= esc(setting('Marketplace.storeUrl') ?: 'https://pubvana.org') ?>/support" target="_blank" class="btn btn-outline-info btn-sm">Get Support →</a>
+                <a href="<?= esc(setting('Marketplace.storeUrl') ?: 'https://pubvana.net') ?>/support" target="_blank" class="btn btn-outline-info btn-sm">Get Support →</a>
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label>Download URL</label>
-                    <input type="url" name="download_url" class="form-control" placeholder="https://pubvana.org/downloads/...">
+                    <input type="url" name="download_url" class="form-control" placeholder="https://pubvana.net/downloads/...">
                 </div>
                 <div class="form-group col-md-3">
                     <label>Item Type</label>

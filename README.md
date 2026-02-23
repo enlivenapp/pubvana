@@ -62,13 +62,13 @@ Please use the [Issues Tracker](https://github.com/enlivenapp/pubvana/issues).
 
 ## Links
 
-[pubvana.org Home](http://pubvana.org)
+[pubvana.net Home](http://pubvana.net)
 
 Pubvana Addon Store (Themes, Widgets, and other Addons) — Coming Soon
 
-[Facebook Page](https://www.facebook.com/pubvana.org)
+[Facebook Page](https://www.facebook.com/pubvana.net)
 
-[User Docs](http://pubvana.org)
+[User Docs](http://pubvana.net)
 
 ## License
 
@@ -108,7 +108,7 @@ Please include a README.md update under 'Translators' with your name and a link 
 * Author info card / bio
 * WordPress migration to Pubvana
 
-#### Premium Widgets — Visit https://pubvana.org
+#### Premium Widgets — Visit https://pubvana.net
 
 * Advanced Login
 * Gallery
