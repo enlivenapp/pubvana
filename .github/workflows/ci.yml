@@ -38,7 +38,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           extensions: intl, json, mbstring, pdo, pdo_mysql, mysqli, gd, zip
-          coverage: xdebug
+          coverage: none
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
@@ -52,9 +52,6 @@ jobs:
       - name: Prepare writable directories
         run: mkdir -p writable/{cache,logs,session,uploads,tmp} && chmod -R 777 writable/
 
-      - name: Prepare build directories
-        run: mkdir -p build/logs
-
       - name: Run Unit tests
         run: vendor/bin/phpunit --testsuite Unit --no-coverage
 
@@ -67,15 +64,3 @@ jobs:
       - name: Run Integration tests
         run: vendor/bin/phpunit --testsuite Integration --no-coverage
 
-      - name: Generate coverage report (PHP 8.2 only)
-        if: matrix.php-version == '8.2'
-        run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
-
-      - name: Upload coverage to Codecov
-        if: matrix.php-version == '8.2'
-        uses: codecov/codecov-action@v4
-        with:
-          files: build/logs/clover.xml
-          fail_ci_if_error: false
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

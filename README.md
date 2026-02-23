@@ -5,6 +5,7 @@
 [![Release](https://img.shields.io/github/v/release/enlivenapp/pubvana)](https://github.com/enlivenapp/pubvana/releases)
 [![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-orange.svg)](https://codeigniter.com)
+[![Installs](https://img.shields.io/packagist/dt/enlivenapp/pubvana.svg)](https://packagist.org/packages/enlivenapp/pubvana)
 [![Stars](https://img.shields.io/github/stars/enlivenapp/pubvana?style=flat)](https://github.com/enlivenapp/pubvana/stargazers)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/enlivenapp/pubvana/issues)
 
