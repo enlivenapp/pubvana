@@ -1,69 +1,113 @@
-# CodeIgniter 4 Application Starter
+# Pubvana v2
 
-## What is CodeIgniter?
+A modern, open-source blogging and content management system built on CodeIgniter 4.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Features
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- **Posts & Pages** — full CRUD with draft/published/scheduled workflow
+- **Dual content editor** — Summernote (WYSIWYG HTML) or SimpleMDE (Markdown), selectable per post
+- **Theme system** — folder-based themes with widget areas, options, and asset symlinking
+- **Widget system** — 8 built-in widgets, drag-and-drop area management
+- **Configurable front page** — set the homepage to the blog index or any static page
+- **Marketplace** — browse and install free themes & widgets; paid items link to the Pubvana store
+- **Role-based access** — superadmin, admin, editor, author, subscriber (powered by CodeIgniter Shield)
+- **Media library** — image upload with auto-generated thumbnails
+- **Navigation manager** — primary and footer menus with drag-and-drop reordering
+- **Comment moderation** — approve, spam, or trash comments
+- **SEO** — per-post meta title/description, sitemap.xml, RSS feed, Google Analytics
+- **Redirects** — manage 301/302 redirects from the admin panel
+- **Social links** — manage social media links displayed site-wide
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## Stack
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+| Layer | Technology |
+|---|---|
+| Framework | CodeIgniter 4.7 |
+| Authentication | CodeIgniter Shield |
+| Settings | codeigniter4/settings |
+| Markdown | Parsedown |
+| Admin UI | SB Admin 2 (Bootstrap 4 + jQuery) |
+| Public theme | Bootstrap 5 + Font Awesome 6 |
+| HTML editor | Summernote |
+| Markdown editor | SimpleMDE |
 
-## Installation & updates
+## Requirements
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+- PHP 8.2 or higher
+- MySQL 5.7+ / MariaDB 10.3+
+- Composer
+- Apache with `mod_rewrite` enabled (or Nginx equivalent)
+- PHP extensions: `intl`, `mbstring`, `json`, `mysqlnd`, `gd`, `zip`
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+## Installation
 
-## Setup
+```bash
+# Clone the repo
+git clone https://github.com/enlivenapp/pubvana.git
+cd pubvana
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+# Install dependencies
+composer install
 
-## Important Change with index.php
+# Copy and configure environment
+cp env .env
+# Edit .env: set app.baseURL, database credentials, CI_ENVIRONMENT
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+# Generate encryption key
+php spark key:generate
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+# Run migrations
+php spark migrate --all
 
-**Please** read the user guide for a better explanation of how CI4 works!
+# Seed default data (theme, widgets, settings, superadmin user)
+php spark db:seed DatabaseSeeder
 
-## Repository Management
+# Point your web server DocumentRoot to /path/to/pubvana/public
+```
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+## Default Admin Credentials
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+After seeding, log in at `/login`:
 
-## Server Requirements
+| Field | Value |
+|---|---|
+| Email | `admin@example.com` |
+| Password | `Admin@12345` |
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+**Change these immediately after first login.**
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+## Directory Structure
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
+```
+pubvana/
+├── app/                    # CI4 application (controllers, models, views, config)
+├── public/                 # Web root (index.php, assets)
+│   ├── assets/admin/       # SB Admin 2 vendored files
+│   └── themes/             # Symlinked theme assets (auto-created)
+├── themes/                 # Installed themes
+│   └── default/            # Built-in Bootstrap 5 theme
+├── widgets/                # Installed widgets (8 built-in)
+├── writable/               # Cache, logs, sessions, uploads
+└── vendor/                 # Composer dependencies (not committed)
+```
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+## Built-in Widgets
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+| Widget | Description |
+|---|---|
+| Recent Posts | Latest posts with optional date/excerpt |
+| Categories List | All categories with post counts |
+| Tag Cloud | Tag cloud with configurable max tags |
+| Social Links | Site social media links |
+| Text Block | Free HTML/text content |
+| Search Form | Site search input |
+| Recent Comments | Latest approved comments |
+| Archive List | Monthly or yearly post archives |
+
+## Contributing
+
+Issues and pull requests are welcome at [github.com/enlivenapp/pubvana](https://github.com/enlivenapp/pubvana).
+
+## License
+
+MIT
