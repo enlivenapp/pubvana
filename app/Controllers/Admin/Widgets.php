@@ -18,20 +18,17 @@ class Widgets extends BaseAdminController
         $areas    = $theme ? $areaModel->where('theme_id', $theme->id)->findAll() : [];
 
         $db = db_connect();
-        $areaData = [];
-        foreach ($areas as $area) {
-            $instances = $db->table('widget_instances wi')
-                ->select('wi.*, w.name as widget_name, w.folder')
-                ->join('widgets w', 'w.id = wi.widget_id')
-                ->where('wi.widget_area_id', $area->id)
-                ->orderBy('wi.sort_order', 'ASC')
-                ->get()->getResultObject();
-            $areaData[(int) $area->id] = ['area' => $area, 'instances' => $instances];
-        }
+        $instances = $areas ? $db->table('widget_instances wi')
+            ->select('wi.*, w.name as widget_name, w.folder')
+            ->join('widgets w', 'w.id = wi.widget_id')
+            ->whereIn('wi.widget_area_id', array_column((array) $areas, 'id'))
+            ->orderBy('wi.sort_order', 'ASC')
+            ->get()->getResultObject() : [];
 
         return $this->adminView('widgets/areas', array_merge($this->baseData('Widgets', 'widgets'), [
-            'area_data'       => $areaData,
-            'available_widgets' => (new WidgetModel())->where('is_active', 1)->findAll(),
+            'areas'     => $areas,
+            'instances' => $instances,
+            'available' => (new WidgetModel())->where('is_active', 1)->findAll(),
         ]));
     }
 
