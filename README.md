@@ -26,6 +26,11 @@ Point your web server `DocumentRoot` at the `public/` folder.
 > ```bash
 > ln -s /path/to/pubvana/themes/default/assets /path/to/pubvana/public/themes/default
 > ```
+>
+> The web server user (typically `www-data`) must be able to write to `public/themes/` to create symlinks when switching themes. Set this once after installation:
+> ```bash
+> chown www-data:www-data public/themes/
+> ```
 
 ## Requirements
 
