@@ -37,7 +37,10 @@ abstract class BaseWidget
         if (! is_file($path)) {
             return '';
         }
-        return view($path, $data);
+        extract($data);
+        ob_start();
+        include $path;
+        return ob_get_clean();
     }
 
     protected function getFolder(): string
@@ -62,6 +65,10 @@ abstract class BaseWidget
         if (! is_file($path)) {
             return '';
         }
-        return view($path, ['options' => $merged, 'info' => $info]);
+        $options = $merged;
+        extract(['options' => $options, 'info' => $info]);
+        ob_start();
+        include $path;
+        return ob_get_clean();
     }
 }
