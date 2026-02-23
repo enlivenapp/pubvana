@@ -34,7 +34,9 @@ class Feed extends BaseController
             $xml .= "    <link>" . esc(post_url($post->slug)) . "</link>\n";
             $xml .= "    <guid isPermaLink=\"true\">" . esc(post_url($post->slug)) . "</guid>\n";
             $xml .= "    <pubDate>" . date('r', strtotime($post->published_at)) . "</pubDate>\n";
-            $xml .= "    <description><![CDATA[" . ($post->excerpt ?? excerpt($content)) . "]]></description>\n";
+            // Escape ]]> so it cannot break out of the CDATA section
+            $desc = str_replace(']]>', ']]]]><![CDATA[>', $post->excerpt ?? excerpt($content));
+            $xml .= "    <description><![CDATA[" . $desc . "]]></description>\n";
             $xml .= "  </item>\n";
         }
 

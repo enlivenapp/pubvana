@@ -21,6 +21,9 @@ class Navigation extends BaseAdminController
 
     public function store()
     {
+        if (! auth()->user()->can('admin.navigation')) {
+            return redirect()->to('/admin/navigation')->with('error', 'Permission denied.');
+        }
         if (! $this->validate(['label' => 'required', 'url' => 'required'])) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
@@ -37,12 +40,18 @@ class Navigation extends BaseAdminController
 
     public function delete(int $id)
     {
+        if (! auth()->user()->can('admin.navigation')) {
+            return redirect()->to('/admin/navigation')->with('error', 'Permission denied.');
+        }
         (new NavigationModel())->delete($id);
         return redirect()->to('/admin/navigation')->with('success', 'Nav item removed.');
     }
 
     public function reorder()
     {
+        if (! auth()->user()->can('admin.navigation')) {
+            return $this->response->setStatusCode(403)->setJSON(['error' => 'Permission denied.']);
+        }
         $order = $this->request->getPost('order') ?? [];
         $model = new NavigationModel();
         foreach ($order as $i => $id) {

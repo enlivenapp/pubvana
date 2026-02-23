@@ -51,8 +51,16 @@ class WordPressImportService
             return $this->results;
         }
 
+        // Load file contents then parse as string to prevent XXE injection.
+        // LIBXML_NONET blocks network fetches for any entity references.
+        $contents = file_get_contents($path);
+        if ($contents === false) {
+            $this->results['errors'][] = 'Failed to read file: ' . $path;
+            return $this->results;
+        }
         libxml_use_internal_errors(true);
-        $xml = simplexml_load_file($path, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $xml = simplexml_load_string($contents, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NONET);
+        unset($contents); // free memory
         if (! $xml) {
             $this->results['errors'][] = 'Failed to parse XML. Ensure the file is a valid WordPress WXR export.';
             return $this->results;

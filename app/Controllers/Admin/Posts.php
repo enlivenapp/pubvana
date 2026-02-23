@@ -23,6 +23,9 @@ class Posts extends BaseAdminController
     public function index(): string
     {
         $filter = $this->request->getGet('status') ?? '';
+        if (! in_array($filter, ['', 'draft', 'published', 'scheduled'], true)) {
+            $filter = '';
+        }
         $posts  = $this->postModel->withDeleted();
         if ($filter) {
             $posts = $posts->where('posts.status', $filter);

@@ -80,6 +80,10 @@ class Users extends BaseAdminController
 
     public function profile(int $id): string
     {
+        if ($id !== auth()->id() && ! auth()->user()->can('users.manage')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
+
         $userModel = new UserModel();
         $user      = $userModel->findById($id);
         if (! $user) {
@@ -97,6 +101,10 @@ class Users extends BaseAdminController
 
     public function saveProfile(int $id)
     {
+        if ($id !== auth()->id() && ! auth()->user()->can('users.manage')) {
+            return redirect()->to('/admin/users/' . $id . '/profile')->with('error', 'Permission denied.');
+        }
+
         $userModel = new UserModel();
         $user      = $userModel->findById($id);
         if (! $user) {

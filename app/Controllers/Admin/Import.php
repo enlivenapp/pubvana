@@ -27,6 +27,10 @@ class Import extends BaseAdminController
             return redirect()->back()->with('error', 'Only .xml files are accepted.');
         }
 
+        if ($file->getSize() > 50 * 1024 * 1024) {
+            return redirect()->back()->with('error', 'Import file too large. Maximum size is 50 MB.');
+        }
+
         $tmpDir = WRITEPATH . 'tmp/';
         if (! is_dir($tmpDir)) {
             mkdir($tmpDir, 0755, true);

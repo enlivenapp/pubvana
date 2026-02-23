@@ -90,11 +90,22 @@ class Settings extends BaseAdminController
 
     /**
      * Write or update a key=value line in the .env file.
-     * Strips newlines from value to prevent injection of additional env lines.
+     * Only permitted keys may be written; values are stripped of newlines.
      * Skips write if value is empty, preserving any existing secret.
      */
     protected function writeEnvKey(string $key, string $value): void
     {
+        static $allowedKeys = [
+            'oauth.google.clientId',       'oauth.google.clientSecret',
+            'oauth.facebook.clientId',     'oauth.facebook.clientSecret',
+            'oauth.twitter.apiKey',        'oauth.twitter.apiSecret',
+            'oauth.twitter.accessToken',   'oauth.twitter.accessSecret',
+            'sharing.facebook.pageId',     'sharing.facebook.pageToken',
+        ];
+        if (! in_array($key, $allowedKeys, true)) {
+            return;
+        }
+
         // Strip newlines — prevents an attacker from injecting extra .env lines
         $value = str_replace(["\r", "\n"], '', $value);
 

@@ -30,6 +30,10 @@ class Themes extends BaseAdminController
 
     public function options(int $id): string
     {
+        if (! auth()->user()->can('admin.themes')) {
+            return redirect()->to('/admin/themes')->with('error', 'Permission denied.');
+        }
+
         $theme = (new ThemeModel())->find($id);
         if (! $theme) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
@@ -53,6 +57,10 @@ class Themes extends BaseAdminController
 
     public function saveOptions(int $id)
     {
+        if (! auth()->user()->can('admin.themes')) {
+            return redirect()->to('/admin/themes')->with('error', 'Permission denied.');
+        }
+
         $theme = (new ThemeModel())->find($id);
         if (! $theme) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();

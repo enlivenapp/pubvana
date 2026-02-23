@@ -120,12 +120,25 @@ class Blog extends BaseController
             'author_name'  => $this->request->getPost('author_name'),
             'author_email' => $this->request->getPost('author_email'),
             'content'      => $this->request->getPost('content'),
-            'parent_id'    => $this->request->getPost('parent_id') ?: null,
+            'parent_id'    => $this->validatedParentId($this->request->getPost('parent_id'), $post->id),
             'user_id'      => auth()->loggedIn() ? auth()->id() : null,
             'status'       => $status,
         ]);
 
         return true;
+    }
+
+    protected function validatedParentId(mixed $raw, int $postId): ?int
+    {
+        if (! $raw) {
+            return null;
+        }
+        $parentId = (int) $raw;
+        $exists   = db_connect()->table('comments')
+            ->where('id', $parentId)
+            ->where('post_id', $postId)
+            ->countAllResults();
+        return $exists ? $parentId : null;
     }
 
     public function category(string $slug): string

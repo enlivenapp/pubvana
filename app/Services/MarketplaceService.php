@@ -214,6 +214,19 @@ class MarketplaceService
 
     public function installFree(string $downloadUrl, string $type, string $folder): bool
     {
+        // Only allow downloads from pubvana.net
+        $parsed = parse_url($downloadUrl);
+        $host   = strtolower($parsed['host'] ?? '');
+        if ($host !== 'pubvana.net' && ! str_ends_with($host, '.pubvana.net')) {
+            log_message('warning', 'MarketplaceService: rejected download URL not from pubvana.net: ' . $downloadUrl);
+            return false;
+        }
+
+        // Folder name must be safe (no path traversal)
+        if (! preg_match('/^[a-z0-9_-]+$/', $folder)) {
+            return false;
+        }
+
         $tmpDir  = WRITEPATH . 'tmp/';
         $zipPath = $tmpDir . $folder . '.zip';
         $destDir = ($type === 'theme') ? THEMES_PATH : WIDGETS_PATH;
@@ -233,6 +246,18 @@ class MarketplaceService
             @unlink($zipPath);
             return false;
         }
+
+        // Reject ZIPs containing path traversal entries
+        for ($i = 0; $i < $archive->numFiles; $i++) {
+            $entry = $archive->getNameIndex($i);
+            if (str_contains($entry, '..') || str_starts_with($entry, '/')) {
+                $archive->close();
+                @unlink($zipPath);
+                log_message('warning', 'MarketplaceService: ZIP entry contains path traversal: ' . $entry);
+                return false;
+            }
+        }
+
         $archive->extractTo($destDir);
         $archive->close();
         @unlink($zipPath);
