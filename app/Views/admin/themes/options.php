@@ -17,8 +17,8 @@
             <?php foreach ($options as $key => $opt): ?>
                 <?php
                 $savedVal = $saved[$key] ?? ($opt['default'] ?? '');
-                $label    = esc($opt['label'] ?? $key);
-                $type     = $opt['type'] ?? 'text';
+                $label    = esc($opt['label']   ?? $key);
+                $type     = $opt['type']    ?? 'text';
                 ?>
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label font-weight-bold"><?= $label ?></label>

@@ -46,7 +46,8 @@ class Themes extends BaseAdminController
         return $this->adminView('themes/options', array_merge($this->baseData('Theme Options', 'themes'), [
             'theme'   => $theme,
             'info'    => $info,
-            'options' => $saved,
+            'options' => $info['options'] ?? [],  // definitions (type, label, default)
+            'saved'   => $saved,                  // current saved values
         ]));
     }
 
@@ -60,8 +61,9 @@ class Themes extends BaseAdminController
         $info     = is_file($infoFile) ? require $infoFile : [];
         $service  = new ThemeService();
 
+        $posted = $this->request->getPost('options') ?? [];
         foreach (array_keys($info['options'] ?? []) as $key) {
-            $value = $this->request->getPost($key);
+            $value = $posted[$key] ?? null;
             $service->saveThemeOption($id, $key, $value);
         }
 
