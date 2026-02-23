@@ -21,6 +21,12 @@ Point your web server `DocumentRoot` at the `public/` folder.
 
 **Default admin login** — `admin@example.com` / `Admin@12345` — change immediately after first login.
 
+> **Theme assets symlink**
+> After installation, activate your chosen theme via **Admin → Themes**. This automatically creates the symlink `public/themes/{folder}` → `themes/{folder}/assets` so CSS, JS, and images are served correctly. If you deploy to a server where the symlink is missing (e.g. after a fresh `git clone`), either re-activate the theme in the admin or run:
+> ```bash
+> ln -s /path/to/pubvana/themes/default/assets /path/to/pubvana/public/themes/default
+> ```
+
 ## Requirements
 
 - PHP 8.2+
