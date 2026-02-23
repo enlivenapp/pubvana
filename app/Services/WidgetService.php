@@ -20,6 +20,25 @@ class WidgetService
         return $widgets;
     }
 
+    public function sync(): void
+    {
+        $db = db_connect();
+        foreach ($this->discover() as $info) {
+            $exists = $db->table('widgets')->where('folder', $info['folder'])->countAllResults();
+            if (! $exists) {
+                $db->table('widgets')->insert([
+                    'name'        => $info['name']        ?? $info['folder'],
+                    'folder'      => $info['folder'],
+                    'description' => $info['description'] ?? '',
+                    'version'     => $info['version']     ?? '1.0.0',
+                    'is_active'   => 1,
+                    'created_at'  => date('Y-m-d H:i:s'),
+                    'updated_at'  => date('Y-m-d H:i:s'),
+                ]);
+            }
+        }
+    }
+
     public function getInstance(string $folder): ?BaseWidget
     {
         $classFile = WIDGETS_PATH . $folder . '/' . $this->folderToClass($folder) . '.php';

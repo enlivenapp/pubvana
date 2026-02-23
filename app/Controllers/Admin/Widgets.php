@@ -11,6 +11,8 @@ class Widgets extends BaseAdminController
 {
     public function areas(): string
     {
+        (new WidgetService())->sync();
+
         $theme    = $this->themeService->getActive();
         $areaModel = new WidgetAreaModel();
         $areas    = $theme ? $areaModel->where('theme_id', $theme->id)->findAll() : [];

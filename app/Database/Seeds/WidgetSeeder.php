@@ -15,7 +15,9 @@ class WidgetSeeder extends Seeder
             ['name' => 'Text Block',       'folder' => 'text_block',       'description' => 'Display custom HTML text', 'version' => '1.0.0'],
             ['name' => 'Search Form',      'folder' => 'search_form',      'description' => 'Display a search form',   'version' => '1.0.0'],
             ['name' => 'Recent Comments',  'folder' => 'recent_comments',  'description' => 'Display recent comments', 'version' => '1.0.0'],
-            ['name' => 'Archive List',     'folder' => 'archive_list',     'description' => 'Display post archives',   'version' => '1.0.0'],
+            ['name' => 'Archive List',       'folder' => 'archive_list',       'description' => 'Display post archives',                            'version' => '1.0.0'],
+            ['name' => 'Table of Contents', 'folder' => 'table_of_contents', 'description' => 'Auto-generates a table of contents from post headings', 'version' => '1.0.0'],
+            ['name' => 'Related Posts',     'folder' => 'related_posts',     'description' => 'Display posts related to the current post',           'version' => '1.0.0'],
         ];
         foreach ($widgets as $w) {
             $w['is_active']  = 1;
