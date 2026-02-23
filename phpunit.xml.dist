@@ -66,7 +66,7 @@
         <!-- Directory containing the front controller (index.php) -->
         <const name="PUBLICPATH" value="./public/"/>
         <!-- Database configuration for test suite (MySQLi, separate test DB) -->
-        <env name="database.tests.hostname" value="localhost"/>
+        <env name="database.tests.hostname" value="127.0.0.1"/>
         <env name="database.tests.database" value="pubvana_test"/>
         <env name="database.tests.username" value="ci4"/>
         <env name="database.tests.password" value="swish1485"/>

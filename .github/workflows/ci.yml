@@ -14,6 +14,22 @@ jobs:
       matrix:
         php-version: ['8.2', '8.3']
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: pubvana_test
+          MYSQL_USER: ci4
+          MYSQL_PASSWORD: swish1485
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -21,7 +37,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: intl, json, mbstring, pdo, pdo_sqlite, sqlite3, gd, zip
+          extensions: intl, json, mbstring, pdo, pdo_mysql, mysqli, gd, zip
           coverage: xdebug
 
       - name: Install dependencies
