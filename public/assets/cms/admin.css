@@ -1,0 +1,26 @@
+/* Pubvana Admin CSS Overrides */
+
+.sidebar-brand-icon svg { fill: #fff; }
+
+/* Dual editor toggle */
+.editor-toggle .btn-check:checked + .btn-outline-primary {
+    background-color: #4e73df;
+    color: #fff;
+}
+
+/* Widget area */
+.widget-instance-row { cursor: grab; }
+.widget-instance-row:active { cursor: grabbing; }
+
+/* Media grid */
+.media-grid .media-card { position: relative; overflow: hidden; border-radius: 4px; }
+.media-grid .media-card img { width: 100%; height: 140px; object-fit: cover; }
+.media-grid .media-card .media-actions { position: absolute; top: 4px; right: 4px; }
+
+/* Table tweaks */
+.table-hover tbody tr:hover { background-color: rgba(78,115,223,.04); }
+
+/* Flash alerts */
+.alert { border-radius: 0; border-left: 4px solid; }
+.alert-success { border-left-color: #1cc88a; }
+.alert-danger  { border-left-color: #e74a3b; }

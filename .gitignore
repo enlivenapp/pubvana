@@ -1,0 +1,43 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Composer
+/vendor/
+
+# CI4 writable directory
+/writable/cache/*
+/writable/debugbar/*
+/writable/logs/*
+/writable/session/*
+/writable/tmp/*
+/writable/uploads/*
+!/writable/cache/.gitkeep
+!/writable/debugbar/.gitkeep
+!/writable/logs/.gitkeep
+!/writable/session/.gitkeep
+!/writable/tmp/.gitkeep
+!/writable/uploads/.gitkeep
+
+# Node (if ever used)
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude Code
+.claude/
+
+# Theme asset symlinks (recreated on deploy)
+/public/themes/
+
+# Spark (generated)
+/spark
