@@ -76,7 +76,7 @@ Point your web server `DocumentRoot` at the `public/` folder.
 
 ### Reporting a Vulnerability
 
-Please **do not** open a public issue for security vulnerabilities. Email security reports to **security@pubvana.net**. We aim to respond within 48 hours and will credit reporters in the changelog.
+Please **do not** open a public issue for security vulnerabilities. Email security reports to **cs@pubvana.net**. We aim to respond within 48 hours and will credit reporters in the changelog.
 
 ### Production Hardening Checklist
 
