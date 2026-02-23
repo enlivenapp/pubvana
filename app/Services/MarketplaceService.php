@@ -4,6 +4,54 @@ namespace App\Services;
 
 class MarketplaceService
 {
+    protected string $apiBase = 'https://pubvana.net/api/marketplace';
+    protected int    $cacheTtl = 3600; // 1 hour
+
+    /**
+     * Fetch items from the live API, with 1-hour cache and mock fallback.
+     */
+    protected function fetchFromApi(string $type = ''): array
+    {
+        $cacheKey = 'marketplace_api_' . ($type ?: 'all');
+        $cached   = cache($cacheKey);
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        $url = $this->apiBase . '/items' . ($type ? '?type=' . $type : '');
+
+        try {
+            $client   = \Config\Services::curlrequest(['timeout' => 5]);
+            $response = $client->get($url, ['http_errors' => false]);
+
+            if ($response->getStatusCode() === 200) {
+                $data = json_decode($response->getBody(), true);
+                if (is_array($data)) {
+                    cache()->save($cacheKey, $data, $this->cacheTtl);
+                    return $data;
+                }
+            }
+        } catch (\Throwable $e) {
+            log_message('warning', 'MarketplaceService API unreachable: ' . $e->getMessage());
+        }
+
+        // Fallback to mock data
+        return $type === 'theme' ? $this->mockThemes()
+             : ($type === 'widget' ? $this->mockWidgets()
+             : array_merge($this->mockThemes(), $this->mockWidgets()));
+    }
+
+    /**
+     * Bust all marketplace API caches.
+     */
+    public function refreshCache(): void
+    {
+        cache()->delete('marketplace_api_all');
+        cache()->delete('marketplace_api_theme');
+        cache()->delete('marketplace_api_widget');
+    }
+
+
     protected function mockThemes(): array
     {
         return [
@@ -91,22 +139,77 @@ class MarketplaceService
                 'screenshot_url' => null,
                 'author'         => 'DevHive',
             ],
+            [
+                'item_type'      => 'widget',
+                'name'           => 'Advanced Login',
+                'slug'           => 'advanced-login',
+                'description'    => 'Customizable login/register widget with social OAuth buttons.',
+                'version'        => '1.0.0',
+                'price'          => 14.00,
+                'is_free'        => false,
+                'download_url'   => null,
+                'store_url'      => 'https://pubvana.net/store/widgets/advanced-login',
+                'screenshot_url' => null,
+                'author'         => 'Pubvana Team',
+            ],
+            [
+                'item_type'      => 'widget',
+                'name'           => 'Gallery',
+                'slug'           => 'gallery',
+                'description'    => 'Responsive masonry photo gallery with lightbox support.',
+                'version'        => '1.1.0',
+                'price'          => 12.00,
+                'is_free'        => false,
+                'download_url'   => null,
+                'store_url'      => 'https://pubvana.net/store/widgets/gallery',
+                'screenshot_url' => null,
+                'author'         => 'Pubvana Team',
+            ],
+            [
+                'item_type'      => 'widget',
+                'name'           => 'Google Calendar & Maps',
+                'slug'           => 'google-calendar-maps',
+                'description'    => 'Embed Google Calendar events and Maps on your sidebar.',
+                'version'        => '1.0.0',
+                'price'          => 18.00,
+                'is_free'        => false,
+                'download_url'   => null,
+                'store_url'      => 'https://pubvana.net/store/widgets/google-calendar-maps',
+                'screenshot_url' => null,
+                'author'         => 'Pubvana Team',
+            ],
+            [
+                'item_type'      => 'widget',
+                'name'           => 'YouTube Channel Feed',
+                'slug'           => 'youtube-channel-feed',
+                'description'    => 'Display your latest YouTube videos in a grid or list.',
+                'version'        => '1.2.0',
+                'price'          => 16.00,
+                'is_free'        => false,
+                'download_url'   => null,
+                'store_url'      => 'https://pubvana.net/store/widgets/youtube-channel-feed',
+                'screenshot_url' => null,
+                'author'         => 'Pubvana Team',
+            ],
         ];
     }
 
     public function fetchThemes(): array
     {
-        return array_map(fn($item) => (object) array_merge($item, ['installed_version' => null]), $this->mockThemes());
+        $items = $this->fetchFromApi('theme');
+        return array_map(fn($item) => (object) array_merge((array) $item, ['installed_version' => null]), $items);
     }
 
     public function fetchWidgets(): array
     {
-        return array_map(fn($item) => (object) array_merge($item, ['installed_version' => null]), $this->mockWidgets());
+        $items = $this->fetchFromApi('widget');
+        return array_map(fn($item) => (object) array_merge((array) $item, ['installed_version' => null]), $items);
     }
 
     public function fetchAll(): array
     {
-        return array_merge($this->fetchThemes(), $this->fetchWidgets());
+        $items = $this->fetchFromApi();
+        return array_map(fn($item) => (object) array_merge((array) $item, ['installed_version' => null]), $items);
     }
 
     public function installFree(string $downloadUrl, string $type, string $folder): bool

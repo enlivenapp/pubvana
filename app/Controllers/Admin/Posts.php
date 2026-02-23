@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Models\CategoryModel;
 use App\Models\PostModel;
 use App\Models\TagModel;
+use App\Services\SocialSharingService;
 
 class Posts extends BaseAdminController
 {
@@ -68,23 +69,36 @@ class Posts extends BaseAdminController
             $publishedAt = $this->request->getPost('published_at');
         }
 
+        $status          = $this->request->getPost('status');
+        $shareOnPublish  = $this->request->getPost('share_on_publish') ? 1 : 0;
+
         $id = $this->postModel->insert([
             'title'            => $this->request->getPost('title'),
             'slug'             => $slug,
             'content'          => $this->request->getPost('content'),
             'content_type'     => $this->request->getPost('content_type') ?? 'html',
             'excerpt'          => $this->request->getPost('excerpt'),
-            'status'           => $this->request->getPost('status'),
+            'status'           => $status,
             'featured_image'   => $this->request->getPost('featured_image'),
             'author_id'        => auth()->id(),
             'published_at'     => $publishedAt,
             'is_featured'      => $this->request->getPost('is_featured') ? 1 : 0,
+            'share_on_publish' => $shareOnPublish,
             'meta_title'       => $this->request->getPost('meta_title'),
             'meta_description' => $this->request->getPost('meta_description'),
         ]);
 
         $this->syncCategories($id, $this->request->getPost('categories') ?? []);
         $this->syncTags($id, $this->request->getPost('tags_raw') ?? '');
+
+        if ($status === 'published') {
+            $this->saveRevision($id);
+        }
+
+        if ($status === 'published' && $shareOnPublish) {
+            $post = $this->postModel->find($id);
+            (new SocialSharingService())->share($post);
+        }
 
         return redirect()->to('/admin/posts')->with('success', 'Post created successfully.');
     }
@@ -106,11 +120,14 @@ class Posts extends BaseAdminController
             ->get()->getResultObject();
         $tagNames = implode(', ', array_column((array) $postTags, 'name'));
 
+        $revisionCount = db_connect()->table('post_revisions')->where('post_id', $id)->countAllResults();
+
         return $this->adminView('posts/edit', array_merge($this->baseData('Edit Post', 'posts'), [
-            'post'              => $post,
-            'categories'        => (new CategoryModel())->findAll(),
-            'selected_cats'     => $catIds,
-            'tags_raw'          => $tagNames,
+            'post'           => $post,
+            'categories'     => (new CategoryModel())->findAll(),
+            'selected_cats'  => $catIds,
+            'tags_raw'       => $tagNames,
+            'revision_count' => $revisionCount,
         ]));
     }
 
@@ -132,8 +149,15 @@ class Posts extends BaseAdminController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        // Snapshot current state before overwriting
+        $this->saveRevision($id);
+
+        $newStatus      = $this->request->getPost('status');
+        $shareOnPublish = $this->request->getPost('share_on_publish') ? 1 : 0;
+        $wasPublished   = $post->status === 'published';
+
         $publishedAt = $post->published_at;
-        if ($this->request->getPost('status') === 'published' && ! $publishedAt) {
+        if ($newStatus === 'published' && ! $publishedAt) {
             $publishedAt = date('Y-m-d H:i:s');
         }
 
@@ -142,16 +166,23 @@ class Posts extends BaseAdminController
             'content'          => $this->request->getPost('content'),
             'content_type'     => $this->request->getPost('content_type') ?? 'html',
             'excerpt'          => $this->request->getPost('excerpt'),
-            'status'           => $this->request->getPost('status'),
+            'status'           => $newStatus,
             'featured_image'   => $this->request->getPost('featured_image'),
             'published_at'     => $publishedAt,
             'is_featured'      => $this->request->getPost('is_featured') ? 1 : 0,
+            'share_on_publish' => $shareOnPublish,
             'meta_title'       => $this->request->getPost('meta_title'),
             'meta_description' => $this->request->getPost('meta_description'),
         ]);
 
         $this->syncCategories($id, $this->request->getPost('categories') ?? []);
         $this->syncTags($id, $this->request->getPost('tags_raw') ?? '');
+
+        // Trigger sharing only when transitioning to published for the first time
+        if ($newStatus === 'published' && ! $wasPublished && $shareOnPublish) {
+            $updated = $this->postModel->find($id);
+            (new SocialSharingService())->share($updated);
+        }
 
         return redirect()->to('/admin/posts')->with('success', 'Post updated.');
     }
@@ -167,6 +198,42 @@ class Posts extends BaseAdminController
         }
         $this->postModel->delete($id);
         return redirect()->to('/admin/posts')->with('success', 'Post deleted.');
+    }
+
+    private function saveRevision(int $postId): void
+    {
+        $post = $this->postModel->find($postId);
+        if (! $post) {
+            return;
+        }
+        $db = db_connect();
+        $db->table('post_revisions')->insert([
+            'post_id'          => $postId,
+            'author_id'        => auth()->id(),
+            'title'            => $post->title,
+            'content'          => $post->content,
+            'content_type'     => $post->content_type ?? 'html',
+            'excerpt'          => $post->excerpt,
+            'status'           => $post->status,
+            'meta_title'       => $post->meta_title,
+            'meta_description' => $post->meta_description,
+            'created_at'       => date('Y-m-d H:i:s'),
+        ]);
+
+        // Prune: keep only the 20 most recent revisions per post
+        $ids = $db->table('post_revisions')
+                  ->select('id')
+                  ->where('post_id', $postId)
+                  ->orderBy('id', 'DESC')
+                  ->limit(20)
+                  ->get()->getResultArray();
+        if (count($ids) >= 20) {
+            $keepIds = array_column($ids, 'id');
+            $db->table('post_revisions')
+               ->where('post_id', $postId)
+               ->whereNotIn('id', $keepIds)
+               ->delete();
+        }
     }
 
     protected function syncCategories(int $postId, array $catIds): void

@@ -89,6 +89,10 @@
                     <input type="checkbox" name="is_featured" id="is_featured" class="form-check-input" value="1">
                     <label class="form-check-label" for="is_featured">Featured Post</label>
                 </div>
+                <div class="form-check mb-2">
+                    <input type="checkbox" name="share_on_publish" id="share_on_publish" class="form-check-input" value="1" checked>
+                    <label class="form-check-label" for="share_on_publish">Share to social on publish</label>
+                </div>
                 <button type="submit" class="btn btn-primary btn-block mt-3">Save Post</button>
             </div>
         </div>

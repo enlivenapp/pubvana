@@ -47,7 +47,7 @@ Point your web server `DocumentRoot` at the `public/` folder.
 - Theme system with widget areas, theme options, and asset symlinking
 - 8 built-in widgets with drag-and-drop area management
 - Configurable front page — blog index or any static page
-- Marketplace — browse and install free themes & widgets
+- Marketplace — browse and install free themes & widgets (live API + cache + mock fallback)
 - Role-based access — superadmin, admin, editor, author, subscriber
 - Media library with auto-generated thumbnails
 - Navigation manager with drag-and-drop reordering
@@ -55,6 +55,11 @@ Point your web server `DocumentRoot` at the `public/` folder.
 - SEO — per-post meta, sitemap.xml, RSS feed, Google Analytics
 - 301/302 redirect manager
 - Social links manager
+- Author profiles with bio cards on posts
+- Social OAuth login (Google, Facebook)
+- Social auto-share on publish (Twitter, Facebook)
+- WordPress importer (admin UI + `php spark wp:import` CLI)
+- Post revision history with one-click restore
 
 ## Bug Reports & Feature Requests
 
@@ -101,17 +106,53 @@ Please include a README.md update under 'Translators' with your name and a link 
 * Portuguese
   - [Samuel Fontebasso](https://github.com/fontebasso)
 
-## Todo
+## Roadmap / Todo
 
-* Automated theme & widget updating (from API)
-* Social login / registering / posting
-* Author info card / bio
-* WordPress migration to Pubvana
+### Widgets
+- [x] Recent Posts
+- [x] Tag Cloud
+- [x] Categories List
+- [x] Archive List
+- [x] Search Form
+- [x] Social Links
+- [x] Text Block
+- [x] Recent Comments
+- [x] Table of Contents
+- [x] Related Posts
+- [ ] Author Bio (sidebar)
+- [ ] Ad Unit / Custom HTML
+- [ ] Social Follow Buttons
+- [ ] Reading Progress Bar
+- [ ] Enhanced Search (AJAX live preview)
+- [ ] Email Opt-in / Lead Capture
+- [ ] Countdown Timer
 
-#### Premium Widgets — Visit https://pubvana.net
+### Admin / Platform
+- [x] Author Profiles & Bio Card
+- [x] Social OAuth Login (Google, Facebook)
+- [x] Social Auto-Share on Publish (Twitter, Facebook)
+- [x] Marketplace API with cache + refresh
+- [x] WordPress Importer (UI + CLI)
+- [x] Post Revision History
+- [ ] Scheduled Post Queue (calendar view)
+- [ ] Content Preview Links (shareable draft URLs)
+- [ ] Bulk Post Actions (publish/unpublish/delete many)
+- [ ] Schema.org Markup (Article, BreadcrumbList, Author JSON-LD)
+- [ ] Broken Link Checker
+- [ ] Image WebP Auto-Convert on Upload
+- [ ] Two-Factor Authentication (TOTP admin UI)
+- [ ] Backup & Export (DB + uploads zip)
+- [ ] Activity / Audit Log
+- [ ] Maintenance Mode toggle
 
-* Advanced Login
-* Gallery
-* Google Calendar & Maps
-* YouTube Channel Feed
-* and more…
+### Monetisation
+- [ ] Membership / Paywalled Posts
+- [ ] Tip Jar / Per-post donations
+- [ ] Affiliate Link Manager (/go/ short links)
+- [ ] E-commerce (products, cart, checkout, orders)
+
+### Premium Widgets (pubvana.net/store)
+- [ ] Advanced Login
+- [ ] Gallery (masonry + lightbox)
+- [ ] Google Calendar & Maps
+- [ ] YouTube Channel Feed

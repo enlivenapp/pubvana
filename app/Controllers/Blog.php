@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\AuthorProfileModel;
 use App\Models\CategoryModel;
 use App\Models\CommentModel;
 use App\Models\PostModel;
@@ -75,10 +76,30 @@ class Blog extends BaseController
             }
         }
 
+        $authorProfile = null;
+        if ($post->author_id) {
+            $profileModel  = new AuthorProfileModel();
+            $profile       = $profileModel->getByUserId((int) $post->author_id);
+            if ($profile) {
+                // Attach username/email from users table for gravatar fallback
+                $userRow = db_connect()->table('users u')
+                    ->select('u.username, ai.secret AS email')
+                    ->join('auth_identities ai', 'ai.user_id = u.id AND ai.type = \'email_password\'', 'left')
+                    ->where('u.id', $post->author_id)
+                    ->get()->getRowObject();
+                if ($userRow) {
+                    $profile->username = $userRow->username;
+                    $profile->email    = $userRow->email;
+                }
+                $authorProfile = $profile;
+            }
+        }
+
         return $this->themeService->view('post', array_merge($this->data, [
-            'post'     => $post,
-            'comments' => $comments,
-            'seo'      => $this->seoService->getMeta($post),
+            'post'           => $post,
+            'comments'       => $comments,
+            'author_profile' => $authorProfile,
+            'seo'            => $this->seoService->getMeta($post),
         ]));
     }
 

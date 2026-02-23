@@ -26,6 +26,10 @@ ob_start();
                 <?= render_content($post) ?>
             </div>
 
+            <?php if (!empty($author_profile)): ?>
+                <?= theme_view(THEMES_PATH . 'default/views/partials/author-card.php', ['author_profile' => $author_profile, 'post' => $post]) ?>
+            <?php endif; ?>
+
             <!-- Flash Messages -->
             <?php if (session()->getFlashdata('success')): ?>
                 <div class="alert alert-success mt-4"><?= esc(session()->getFlashdata('success')) ?></div>

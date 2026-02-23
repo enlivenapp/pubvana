@@ -29,7 +29,10 @@ class Settings extends BaseAdminController
         setting()->set('App.commentModeration', (bool) $this->request->getPost('comment_moderation'));
 
         $fpType = $this->request->getPost('front_page_type');
-        $fpId   = $this->request->getPost('front_page_id');
+        if (! in_array($fpType, ['blog', 'page'], true)) {
+            $fpType = 'blog';
+        }
+        $fpId = $this->request->getPost('front_page_id');
         setting()->set('App.frontPageType', $fpType);
         setting()->set('App.frontPageId',   ($fpType === 'page' && $fpId) ? (int) $fpId : null);
 
@@ -49,5 +52,72 @@ class Settings extends BaseAdminController
         setting()->set('Email.fromName',  $this->request->getPost('from_name'));
         setting()->set('Email.fromEmail', $this->request->getPost('from_email'));
         return redirect()->to('/admin/settings#email')->with('success', 'Email settings saved.');
+    }
+
+    public function saveSocial()
+    {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
+
+        // OAuth login credentials
+        $this->writeEnvKey('oauth.google.clientId',         $this->request->getPost('google_client_id') ?? '');
+        $this->writeEnvKey('oauth.google.clientSecret',     $this->request->getPost('google_client_secret') ?? '');
+        $this->writeEnvKey('oauth.facebook.clientId',       $this->request->getPost('facebook_client_id') ?? '');
+        $this->writeEnvKey('oauth.facebook.clientSecret',   $this->request->getPost('facebook_client_secret') ?? '');
+
+        return redirect()->to('/admin/settings#social')->with('success', 'Social login settings saved.');
+    }
+
+    public function saveSocialSharing()
+    {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
+
+        // Twitter / X sharing credentials
+        $this->writeEnvKey('oauth.twitter.apiKey',      $this->request->getPost('twitter_api_key') ?? '');
+        $this->writeEnvKey('oauth.twitter.apiSecret',   $this->request->getPost('twitter_api_secret') ?? '');
+        $this->writeEnvKey('oauth.twitter.accessToken', $this->request->getPost('twitter_access_token') ?? '');
+        $this->writeEnvKey('oauth.twitter.accessSecret',$this->request->getPost('twitter_access_secret') ?? '');
+
+        // Facebook sharing page credentials
+        $this->writeEnvKey('sharing.facebook.pageId',       $this->request->getPost('fb_page_id') ?? '');
+        $this->writeEnvKey('sharing.facebook.pageToken',    $this->request->getPost('fb_page_token') ?? '');
+
+        return redirect()->to('/admin/settings#sharing')->with('success', 'Social sharing settings saved.');
+    }
+
+    /**
+     * Write or update a key=value line in the .env file.
+     * Strips newlines from value to prevent injection of additional env lines.
+     * Skips write if value is empty, preserving any existing secret.
+     */
+    protected function writeEnvKey(string $key, string $value): void
+    {
+        // Strip newlines — prevents an attacker from injecting extra .env lines
+        $value = str_replace(["\r", "\n"], '', $value);
+
+        // Never blank-out an existing secret via an empty form submission
+        if ($value === '') {
+            return;
+        }
+
+        $envPath = ROOTPATH . '.env';
+        if (! file_exists($envPath)) {
+            return;
+        }
+
+        $contents = file_get_contents($envPath);
+        $escaped  = preg_quote($key, '/');
+        $line     = $key . ' = ' . $value;
+
+        if (preg_match('/^' . $escaped . '\s*=.*/m', $contents)) {
+            $contents = preg_replace('/^' . $escaped . '\s*=.*/m', $line, $contents);
+        } else {
+            $contents .= PHP_EOL . $line;
+        }
+
+        file_put_contents($envPath, $contents);
     }
 }

@@ -28,6 +28,10 @@ $routes->post('contact',                    'Contact::send');
 // ===================================================
 service('auth')->routes($routes);
 
+// Social OAuth
+$routes->get('auth/social/(:segment)',          'SocialAuth::redirect/$1');
+$routes->get('auth/social/(:segment)/callback', 'SocialAuth::callback/$1');
+
 // ===================================================
 // ADMIN ROUTES
 // ===================================================
@@ -43,6 +47,11 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
     $routes->get('posts/(:num)/edit',        'Posts::edit/$1');
     $routes->post('posts/(:num)/edit',       'Posts::update/$1');
     $routes->post('posts/(:num)/delete',     'Posts::delete/$1');
+
+    // Post Revisions
+    $routes->get('posts/(:num)/revisions',          'Revisions::index/$1');
+    $routes->get('posts/revisions/(:num)',           'Revisions::show/$1');
+    $routes->post('posts/revisions/(:num)/restore',  'Revisions::restore/$1');
 
     // Pages
     $routes->get('pages',                    'Pages::index');
@@ -101,12 +110,16 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
     $routes->get('users/(:num)/edit',        'Users::edit/$1');
     $routes->post('users/(:num)/edit',       'Users::update/$1');
     $routes->post('users/(:num)/delete',     'Users::delete/$1');
+    $routes->get('users/(:num)/profile',     'Users::profile/$1');
+    $routes->post('users/(:num)/profile',    'Users::saveProfile/$1');
 
     // Settings
     $routes->get('settings',                 'Settings::index');
     $routes->post('settings/general',        'Settings::saveGeneral');
     $routes->post('settings/seo',            'Settings::saveSeo');
     $routes->post('settings/email',          'Settings::saveEmail');
+    $routes->post('settings/social',         'Settings::saveSocial');
+    $routes->post('settings/sharing',        'Settings::saveSocialSharing');
 
     // Social
     $routes->get('social',                   'Social::index');
@@ -123,7 +136,12 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
     $routes->get('marketplace/themes',       'Marketplace::themes');
     $routes->get('marketplace/widgets',      'Marketplace::widgets');
     $routes->post('marketplace/install',     'Marketplace::install');
+    $routes->post('marketplace/refresh',     'Marketplace::refresh');
     $routes->post('marketplace/update/(:segment)', 'Marketplace::update/$1');
+
+    // Import
+    $routes->get('import',                   'Import::index');
+    $routes->post('import',                  'Import::upload');
 
     // Store (stub)
     $routes->get('store',                    'Store::index');

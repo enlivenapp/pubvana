@@ -8,6 +8,8 @@
     <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#general">General</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#seo">SEO</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#email">Email</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#social">Social Login</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#sharing">Social Sharing</a></li>
 </ul>
 
 <div class="tab-content">
@@ -177,6 +179,112 @@
                     </div>
                     <div class="text-right">
                         <button type="submit" class="btn btn-primary">Save Email Settings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Social Login -->
+    <div class="tab-pane fade" id="social">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Social Login (OAuth)</h6></div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">
+                    Credentials are saved to your <code>.env</code> file.
+                    Register your app at
+                    <a href="https://console.developers.google.com" target="_blank">Google</a>
+                    and <a href="https://developers.facebook.com" target="_blank">Facebook</a>
+                    to obtain client IDs and secrets.
+                </p>
+                <form method="POST" action="<?= base_url('admin/settings/social') ?>">
+                    <?= csrf_field() ?>
+
+                    <h6 class="font-weight-bold"><i class="fab fa-google text-danger"></i> Google</h6>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Client ID</label>
+                        <div class="col-sm-9"><input type="text" name="google_client_id" class="form-control"
+                            value="<?= esc(env('oauth.google.clientId')) ?>"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Client Secret</label>
+                        <div class="col-sm-9"><input type="password" name="google_client_secret" class="form-control"
+                            autocomplete="new-password" placeholder="(leave blank to keep existing)"></div>
+                    </div>
+
+                    <hr>
+                    <h6 class="font-weight-bold"><i class="fab fa-facebook text-primary"></i> Facebook</h6>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">App ID</label>
+                        <div class="col-sm-9"><input type="text" name="facebook_client_id" class="form-control"
+                            value="<?= esc(env('oauth.facebook.clientId')) ?>"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">App Secret</label>
+                        <div class="col-sm-9"><input type="password" name="facebook_client_secret" class="form-control"
+                            autocomplete="new-password" placeholder="(leave blank to keep existing)"></div>
+                    </div>
+
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary">Save Social Login Settings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Sharing -->
+    <div class="tab-pane fade" id="sharing">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Social Auto-Share on Publish</h6></div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">
+                    When a post is published with "Share on publish" checked, Pubvana will automatically
+                    post to configured social accounts.
+                </p>
+                <form method="POST" action="<?= base_url('admin/settings/sharing') ?>">
+                    <?= csrf_field() ?>
+
+                    <h6 class="font-weight-bold"><i class="fab fa-twitter text-info"></i> Twitter / X</h6>
+                    <p class="text-muted small">Get keys at <a href="https://developer.twitter.com" target="_blank">developer.twitter.com</a> → Your App → Keys and Tokens.</p>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">API Key</label>
+                        <div class="col-sm-9"><input type="password" name="twitter_api_key" class="form-control"
+                            autocomplete="new-password" placeholder="(leave blank to keep existing)"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">API Secret</label>
+                        <div class="col-sm-9"><input type="password" name="twitter_api_secret" class="form-control"
+                            autocomplete="new-password" placeholder="(leave blank to keep existing)"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Access Token</label>
+                        <div class="col-sm-9"><input type="password" name="twitter_access_token" class="form-control"
+                            autocomplete="new-password" placeholder="(leave blank to keep existing)"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Access Secret</label>
+                        <div class="col-sm-9"><input type="password" name="twitter_access_secret" class="form-control"
+                            autocomplete="new-password" placeholder="(leave blank to keep existing)"></div>
+                    </div>
+
+                    <hr>
+                    <h6 class="font-weight-bold"><i class="fab fa-facebook text-primary"></i> Facebook Page</h6>
+                    <p class="text-muted small">Requires a Page Access Token with <code>pages_manage_posts</code> permission.</p>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Page ID</label>
+                        <div class="col-sm-9"><input type="text" name="fb_page_id" class="form-control"
+                            value="<?= esc(env('sharing.facebook.pageId')) ?>"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Page Access Token</label>
+                        <div class="col-sm-9"><input type="password" name="fb_page_token" class="form-control"
+                            autocomplete="new-password" placeholder="(leave blank to keep existing)"></div>
+                    </div>
+
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary">Save Sharing Settings</button>
                     </div>
                 </form>
             </div>

@@ -2,9 +2,17 @@
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Marketplace</h1>
-    <a href="<?= base_url('admin/store') ?>" class="btn btn-sm btn-outline-info">
-        <i class="fas fa-shopping-cart fa-sm"></i> Visit Store
-    </a>
+    <div>
+        <form method="POST" action="<?= base_url('admin/marketplace/refresh') ?>" class="d-inline">
+            <?= csrf_field() ?>
+            <button class="btn btn-sm btn-outline-secondary mr-2">
+                <i class="fas fa-sync-alt fa-sm"></i> Refresh
+            </button>
+        </form>
+        <a href="<?= base_url('admin/store') ?>" class="btn btn-sm btn-outline-info">
+            <i class="fas fa-shopping-cart fa-sm"></i> Visit Store
+        </a>
+    </div>
 </div>
 
 <ul class="nav nav-tabs mb-3">

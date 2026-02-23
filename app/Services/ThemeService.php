@@ -91,8 +91,22 @@ class ThemeService
 
     public function symlinkAssets(string $folder): void
     {
-        $target = THEMES_PATH . $folder . '/assets';
-        $link   = FCPATH . 'themes/' . $folder;
+        // Reject any folder name containing path separators or non-safe characters
+        if (! preg_match('/^[a-zA-Z0-9_-]+$/', $folder)) {
+            throw new \RuntimeException('Invalid theme folder name: ' . $folder);
+        }
+
+        $target     = THEMES_PATH . $folder . '/assets';
+        $link       = FCPATH . 'themes/' . $folder;
+        $themesReal = realpath(THEMES_PATH);
+
+        // Verify resolved target stays within THEMES_PATH
+        if ($themesReal && is_dir($target)) {
+            $targetReal = realpath($target);
+            if ($targetReal === false || strpos($targetReal, $themesReal) !== 0) {
+                throw new \RuntimeException('Theme assets path resolves outside THEMES_PATH.');
+            }
+        }
 
         if (is_link($link)) {
             unlink($link);

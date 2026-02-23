@@ -2,6 +2,8 @@
 
 namespace App\Controllers\Admin;
 
+use App\Models\AuthorProfileModel;
+use App\Services\MediaService;
 use CodeIgniter\Shield\Models\UserModel;
 
 class Users extends BaseAdminController
@@ -45,6 +47,10 @@ class Users extends BaseAdminController
 
     public function update(int $id)
     {
+        if (! auth()->user()->can('users.manage')) {
+            return redirect()->to('/admin/users')->with('error', 'Permission denied.');
+        }
+
         $userModel = new UserModel();
         $user      = $userModel->findById($id);
         if (! $user) {
@@ -70,5 +76,57 @@ class Users extends BaseAdminController
         $userModel = new UserModel();
         $userModel->delete($id, true);
         return redirect()->to('/admin/users')->with('success', 'User deleted.');
+    }
+
+    public function profile(int $id): string
+    {
+        $userModel = new UserModel();
+        $user      = $userModel->findById($id);
+        if (! $user) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $profileModel = new AuthorProfileModel();
+        $profile      = $profileModel->getByUserId($id) ?? (object) [];
+
+        return $this->adminView('users/profile', array_merge($this->baseData('Author Profile', 'users'), [
+            'subject_user' => $user,
+            'profile'      => $profile,
+        ]));
+    }
+
+    public function saveProfile(int $id)
+    {
+        $userModel = new UserModel();
+        $user      = $userModel->findById($id);
+        if (! $user) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $data = [
+            'display_name' => $this->request->getPost('display_name'),
+            'bio'          => $this->request->getPost('bio'),
+            'website'      => $this->request->getPost('website'),
+            'twitter'      => ltrim($this->request->getPost('twitter') ?? '', '@'),
+            'facebook'     => $this->request->getPost('facebook'),
+            'linkedin'     => $this->request->getPost('linkedin'),
+        ];
+
+        // Handle avatar upload
+        $avatar = $this->request->getFile('avatar');
+        if ($avatar && $avatar->isValid() && ! $avatar->hasMoved()) {
+            try {
+                $mediaService  = new MediaService();
+                $result        = $mediaService->upload($avatar, auth()->id());
+                $data['avatar'] = $result['path'];
+            } catch (\RuntimeException $e) {
+                return redirect()->back()->with('error', 'Avatar upload failed: ' . $e->getMessage());
+            }
+        }
+
+        $profileModel = new AuthorProfileModel();
+        $profileModel->upsert($id, $data);
+
+        return redirect()->to('/admin/users/' . $id . '/profile')->with('success', 'Profile saved.');
     }
 }

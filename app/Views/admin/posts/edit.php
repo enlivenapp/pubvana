@@ -82,7 +82,19 @@
                     <input type="checkbox" name="is_featured" id="is_featured" class="form-check-input" value="1" <?= $post->is_featured ? 'checked' : '' ?>>
                     <label class="form-check-label" for="is_featured">Featured Post</label>
                 </div>
+                <?php if ($post->status !== 'published'): ?>
+                <div class="form-check mb-2">
+                    <input type="checkbox" name="share_on_publish" id="share_on_publish" class="form-check-input" value="1"
+                           <?= ($post->share_on_publish ?? 1) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="share_on_publish">Share to social on publish</label>
+                </div>
+                <?php endif; ?>
                 <button type="submit" class="btn btn-primary btn-block mt-3">Update Post</button>
+                <?php if (!empty($revision_count)): ?>
+                <a href="<?= base_url('admin/posts/' . $post->id . '/revisions') ?>" class="btn btn-outline-secondary btn-block mt-1 btn-sm">
+                    Revisions (<?= (int) $revision_count ?>)
+                </a>
+                <?php endif; ?>
             </div>
         </div>
 

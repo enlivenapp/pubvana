@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= $seo['title'] ?? site_name() ?></title>
+    <title><?= esc($seo['title'] ?? site_name()) ?></title>
     <?php if (!empty($seo['description'])): ?>
-    <meta name="description" content="<?= $seo['description'] ?>">
+    <meta name="description" content="<?= esc($seo['description']) ?>">
     <?php endif; ?>
     <?php if (!empty($seo['og_title'])): ?>
-    <meta property="og:title" content="<?= $seo['og_title'] ?>">
-    <meta property="og:description" content="<?= $seo['og_description'] ?? '' ?>">
+    <meta property="og:title" content="<?= esc($seo['og_title']) ?>">
+    <meta property="og:description" content="<?= esc($seo['og_description'] ?? '') ?>">
     <?php if (!empty($seo['og_image'])): ?>
-    <meta property="og:image" content="<?= $seo['og_image'] ?>">
+    <meta property="og:image" content="<?= esc($seo['og_image']) ?>">
     <?php endif; ?>
     <?php endif; ?>
     <link rel="alternate" type="application/rss+xml" title="<?= esc(site_name()) ?> RSS Feed" href="<?= base_url('feed') ?>">
@@ -25,7 +25,7 @@
 
     <?php if ($ga = setting('Seo.googleAnalytics')): ?>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?= esc($ga) ?>"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= esc($ga) ?>');</script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= esc($ga, 'js') ?>');</script>
     <?php endif; ?>
 </head>
 <body>
@@ -98,7 +98,7 @@
                         ->where('theme_id', $t->id)->where('option_key', 'footer_copyright')
                         ->get()->getRowObject()->option_value ?? '';
                 }
-                echo $copyright ?: '&copy; ' . date('Y') . ' ' . esc(site_name()) . '. All rights reserved.';
+                echo $copyright ? esc($copyright) : '&copy; ' . date('Y') . ' ' . esc(site_name()) . '. All rights reserved.';
                 ?>
                 &nbsp;&middot;&nbsp;
                 <a href="<?= base_url('feed') ?>" class="text-muted"><i class="fas fa-rss"></i> RSS</a>

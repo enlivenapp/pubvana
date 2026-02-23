@@ -41,6 +41,7 @@
                             <?php endif; ?>
                         </td>
                         <td>
+                            <a href="<?= base_url('admin/users/' . $user->id . '/profile') ?>" class="btn btn-sm btn-outline-secondary">Profile</a>
                             <?php if ($user->id !== auth()->id()): ?>
                             <a href="<?= base_url('admin/users/' . $user->id . '/edit') ?>" class="btn btn-sm btn-outline-primary">Edit</a>
                             <form method="POST" action="<?= base_url('admin/users/' . $user->id . '/delete') ?>" class="d-inline"

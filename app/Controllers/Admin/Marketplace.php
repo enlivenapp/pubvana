@@ -44,14 +44,20 @@ class Marketplace extends BaseAdminController
         ]));
     }
 
+    public function refresh()
+    {
+        $this->service->refreshCache();
+        return redirect()->to('/admin/marketplace')->with('success', 'Marketplace cache refreshed.');
+    }
+
     public function install()
     {
         if (! auth()->user()->can('admin.marketplace')) {
             return redirect()->to('/admin/marketplace')->with('error', 'Permission denied.');
         }
         $url    = $this->request->getPost('download_url');
-        $type   = $this->request->getPost('type');
-        $folder = $this->request->getPost('folder');
+        $type   = $this->request->getPost('item_type') ?? $this->request->getPost('type');
+        $folder = $this->request->getPost('slug') ?? $this->request->getPost('folder');
 
         if (! $url || ! in_array($type, ['theme', 'widget'], true) || ! $folder) {
             return redirect()->to('/admin/marketplace')->with('error', 'Invalid install request.');
