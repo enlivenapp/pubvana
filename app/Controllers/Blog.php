@@ -56,7 +56,7 @@ class Blog extends BaseController
         ]));
     }
 
-    public function post(string $slug): string
+    public function post(string $slug)
     {
         $post = $this->postModel->published()->findBySlug($slug);
         if (! $post) {
@@ -70,7 +70,7 @@ class Blog extends BaseController
 
         // Handle comment submission
         $commentSaved = false;
-        if ($this->request->getMethod() === 'post' && setting('App.commentsEnabled')) {
+        if (strtolower($this->request->getMethod()) === 'post' && setting('App.commentsEnabled')) {
             if (! auth()->loggedIn()) {
                 return redirect()->to('/login')->with('error', 'You must be logged in to comment.');
             }
@@ -83,7 +83,10 @@ class Blog extends BaseController
 
             $commentSaved = $this->handleComment($post);
             if ($commentSaved) {
-                return redirect()->to(post_url($slug) . '#comments')->with('success', 'Your comment is awaiting moderation.');
+                $msg = setting('App.commentModeration')
+                    ? 'Your comment is awaiting moderation.'
+                    : 'Your comment has been posted.';
+                return redirect()->to(post_url($slug) . '#comments')->with('success', $msg);
             }
         }
 

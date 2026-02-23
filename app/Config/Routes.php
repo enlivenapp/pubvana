@@ -145,8 +145,9 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
     $routes->get('import',                   'Import::index');
     $routes->post('import',                  'Import::upload');
 
-    // Store (stub)
+    // Store
     $routes->get('store',                    'Store::index');
+    $routes->post('store/install',           'Store::install');
 });
 
 // ===================================================

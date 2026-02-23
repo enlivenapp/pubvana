@@ -57,141 +57,23 @@ class MarketplaceService
         return [
             [
                 'item_type'      => 'theme',
-                'name'           => 'Aurora',
-                'slug'           => 'aurora',
-                'description'    => 'A clean, modern Bootstrap 5 theme for blogs.',
-                'version'        => '1.2.0',
-                'price'          => 0.00,
-                'is_free'        => true,
-                'download_url'   => 'https://pubvana.net/marketplace/download/aurora',
-                'store_url'      => null,
-                'screenshot_url' => 'https://pubvana.net/marketplace/screenshots/aurora.png',
-                'author'         => 'Pubvana Team',
-            ],
-            [
-                'item_type'      => 'theme',
-                'name'           => 'Nightfall',
-                'slug'           => 'nightfall',
-                'description'    => 'Dark mode magazine theme with featured hero.',
-                'version'        => '2.0.1',
+                'name'           => 'Ember',
+                'slug'           => 'ember',
+                'description'    => 'A warm, modern theme with amber accents. Inter + Lora typography, hero homepage, reading-time badges, author cards, and full sidebar support.',
+                'version'        => '1.0.0',
                 'price'          => 29.00,
                 'is_free'        => false,
                 'download_url'   => null,
-                'store_url'      => 'https://pubvana.net/store/themes/nightfall',
-                'screenshot_url' => 'https://pubvana.net/marketplace/screenshots/nightfall.png',
-                'author'         => 'ThemeForge',
-            ],
-            [
-                'item_type'      => 'theme',
-                'name'           => 'Minimal',
-                'slug'           => 'minimal',
-                'description'    => 'A minimal, typography-focused free theme.',
-                'version'        => '1.0.0',
-                'price'          => 0.00,
-                'is_free'        => true,
-                'download_url'   => 'https://pubvana.net/marketplace/download/minimal',
-                'store_url'      => null,
-                'screenshot_url' => 'https://pubvana.net/marketplace/screenshots/minimal.png',
+                'store_url'      => 'https://pubvana.net/store/themes/ember',
+                'screenshot_url' => 'https://pubvana.net/screenshots/ember.png',
                 'author'         => 'Pubvana Team',
-            ],
-            [
-                'item_type'      => 'theme',
-                'name'           => 'Portfolio Pro',
-                'slug'           => 'portfolio-pro',
-                'description'    => 'Premium portfolio + blog theme with full-screen hero.',
-                'version'        => '3.1.0',
-                'price'          => 49.00,
-                'is_free'        => false,
-                'download_url'   => null,
-                'store_url'      => 'https://pubvana.net/store/themes/portfolio-pro',
-                'screenshot_url' => 'https://pubvana.net/marketplace/screenshots/portfolio-pro.png',
-                'author'         => 'PixelCraft',
             ],
         ];
     }
 
     protected function mockWidgets(): array
     {
-        return [
-            [
-                'item_type'      => 'widget',
-                'name'           => 'Instagram Feed',
-                'slug'           => 'instagram-feed',
-                'description'    => 'Display your latest Instagram photos.',
-                'version'        => '1.3.0',
-                'price'          => 0.00,
-                'is_free'        => true,
-                'download_url'   => 'https://pubvana.net/marketplace/download/instagram-feed',
-                'store_url'      => null,
-                'screenshot_url' => null,
-                'author'         => 'Pubvana Team',
-            ],
-            [
-                'item_type'      => 'widget',
-                'name'           => 'Newsletter Pro',
-                'slug'           => 'newsletter-pro',
-                'description'    => 'Mailchimp & ConvertKit integration widget.',
-                'version'        => '2.0.0',
-                'price'          => 19.00,
-                'is_free'        => false,
-                'download_url'   => null,
-                'store_url'      => 'https://pubvana.net/store/widgets/newsletter-pro',
-                'screenshot_url' => null,
-                'author'         => 'DevHive',
-            ],
-            [
-                'item_type'      => 'widget',
-                'name'           => 'Advanced Login',
-                'slug'           => 'advanced-login',
-                'description'    => 'Customizable login/register widget with social OAuth buttons.',
-                'version'        => '1.0.0',
-                'price'          => 14.00,
-                'is_free'        => false,
-                'download_url'   => null,
-                'store_url'      => 'https://pubvana.net/store/widgets/advanced-login',
-                'screenshot_url' => null,
-                'author'         => 'Pubvana Team',
-            ],
-            [
-                'item_type'      => 'widget',
-                'name'           => 'Gallery',
-                'slug'           => 'gallery',
-                'description'    => 'Responsive masonry photo gallery with lightbox support.',
-                'version'        => '1.1.0',
-                'price'          => 12.00,
-                'is_free'        => false,
-                'download_url'   => null,
-                'store_url'      => 'https://pubvana.net/store/widgets/gallery',
-                'screenshot_url' => null,
-                'author'         => 'Pubvana Team',
-            ],
-            [
-                'item_type'      => 'widget',
-                'name'           => 'Google Calendar & Maps',
-                'slug'           => 'google-calendar-maps',
-                'description'    => 'Embed Google Calendar events and Maps on your sidebar.',
-                'version'        => '1.0.0',
-                'price'          => 18.00,
-                'is_free'        => false,
-                'download_url'   => null,
-                'store_url'      => 'https://pubvana.net/store/widgets/google-calendar-maps',
-                'screenshot_url' => null,
-                'author'         => 'Pubvana Team',
-            ],
-            [
-                'item_type'      => 'widget',
-                'name'           => 'YouTube Channel Feed',
-                'slug'           => 'youtube-channel-feed',
-                'description'    => 'Display your latest YouTube videos in a grid or list.',
-                'version'        => '1.2.0',
-                'price'          => 16.00,
-                'is_free'        => false,
-                'download_url'   => null,
-                'store_url'      => 'https://pubvana.net/store/widgets/youtube-channel-feed',
-                'screenshot_url' => null,
-                'author'         => 'Pubvana Team',
-            ],
-        ];
+        return [];
     }
 
     public function fetchThemes(): array
@@ -292,6 +174,56 @@ class MarketplaceService
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
+        }
+    }
+
+    /**
+     * Validate a license key via the pubvana.net API and install the item.
+     */
+    public function installLicensed(string $licenseKey, string $slug, string $type): bool
+    {
+        $client = \Config\Services::curlrequest(['timeout' => 10]);
+
+        try {
+            $response = $client->post('https://pubvana.net/api/license/validate', [
+                'json' => [
+                    'license_key' => $licenseKey,
+                    'domain'      => base_url(),
+                    'item_slug'   => $slug,
+                ],
+                'http_errors' => false,
+            ]);
+
+            $body   = json_decode($response->getBody(), true);
+            $status = $response->getStatusCode();
+
+            if ($status !== 200 || empty($body['valid'])) {
+                $error = $body['error'] ?? 'License validation failed (HTTP ' . $status . ')';
+                log_message('warning', 'MarketplaceService::installLicensed failed: ' . $error);
+                return false;
+            }
+
+            $downloadUrl = $body['download_url'] ?? null;
+            if (! $downloadUrl) {
+                log_message('warning', 'MarketplaceService::installLicensed: no download_url in response');
+                return false;
+            }
+
+            $installed = $this->installFree($downloadUrl, $type, $slug);
+            if (! $installed) {
+                return false;
+            }
+
+            // Persist the license key against the marketplace item
+            db_connect()->table('marketplace_items')
+                ->where('slug', $slug)
+                ->update(['license_key' => $licenseKey]);
+
+            return true;
+
+        } catch (\Throwable $e) {
+            log_message('error', 'MarketplaceService::installLicensed exception: ' . $e->getMessage());
+            return false;
         }
     }
 
