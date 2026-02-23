@@ -21,7 +21,7 @@ class CreateNavigationTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addKey('nav_group');
-        $this->forge->createTable('navigation');
+        $this->forge->createTable('navigation', true);
     }
 
     public function down()

@@ -13,7 +13,7 @@ class CreatePostsToCategoriesTable extends Migration
             'category_id' => ['type' => 'INT', 'unsigned' => true],
         ]);
         $this->forge->addKey(['post_id', 'category_id'], true);
-        $this->forge->createTable('posts_to_categories');
+        $this->forge->createTable('posts_to_categories', true);
     }
 
     public function down()

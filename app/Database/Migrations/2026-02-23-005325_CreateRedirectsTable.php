@@ -17,7 +17,7 @@ class CreateRedirectsTable extends Migration
             'updated_at' => ['type' => 'DATETIME', 'null' => true],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('redirects');
+        $this->forge->createTable('redirects', true);
     }
 
     public function down()

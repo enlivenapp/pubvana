@@ -20,7 +20,7 @@ class CreateWidgetsTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('folder');
-        $this->forge->createTable('widgets');
+        $this->forge->createTable('widgets', true);
     }
 
     public function down()

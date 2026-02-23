@@ -150,6 +150,14 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
 });
 
 // ===================================================
+// 404 OVERRIDE — returns a proper 404 response instead of re-throwing
+// the exception (required for FeatureTestTrait to capture assertStatus(404))
+// ===================================================
+$routes->set404Override(static function (): void {
+    service('response')->setStatusCode(404)->send();
+});
+
+// ===================================================
 // CATCH-ALL: Static pages (must be last)
 // ===================================================
 $routes->get('(:segment)', 'Pages::show/$1');

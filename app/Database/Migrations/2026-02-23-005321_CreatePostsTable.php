@@ -32,7 +32,7 @@ class CreatePostsTable extends Migration
         $this->forge->addUniqueKey('slug');
         $this->forge->addKey('author_id');
         $this->forge->addKey('status');
-        $this->forge->createTable('posts');
+        $this->forge->createTable('posts', true);
     }
 
     public function down()

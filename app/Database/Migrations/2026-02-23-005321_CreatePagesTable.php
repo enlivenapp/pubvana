@@ -25,7 +25,7 @@ class CreatePagesTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('slug');
-        $this->forge->createTable('pages');
+        $this->forge->createTable('pages', true);
     }
 
     public function down()

@@ -23,7 +23,7 @@ class CreateCommentsTable extends Migration
         $this->forge->addKey('id', true);
         $this->forge->addKey('post_id');
         $this->forge->addKey('status');
-        $this->forge->createTable('comments');
+        $this->forge->createTable('comments', true);
     }
 
     public function down()

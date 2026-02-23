@@ -243,10 +243,8 @@ class WordPressImportService
 
             if (! $this->dryRun) {
                 $id = $db->table('tags')->insert([
-                    'name'       => $name,
-                    'slug'       => $slug,
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s'),
+                    'name' => $name,
+                    'slug' => $slug,
                 ], true);
                 $this->tagMap[$slug] = (int) $id;
             }
@@ -362,8 +360,6 @@ class WordPressImportService
                 'content'      => $content,
                 'content_type' => 'html',
                 'status'       => $status,
-                'lang'         => 'en',
-                'published_at' => $status === 'published' ? ($pubDate ?: date('Y-m-d H:i:s')) : null,
                 'created_at'   => $pubDate ?: date('Y-m-d H:i:s'),
                 'updated_at'   => date('Y-m-d H:i:s'),
             ], true);

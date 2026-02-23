@@ -13,7 +13,7 @@ class CreateTagsToPostsTable extends Migration
             'post_id' => ['type' => 'INT', 'unsigned' => true],
         ]);
         $this->forge->addKey(['tag_id', 'post_id'], true);
-        $this->forge->createTable('tags_to_posts');
+        $this->forge->createTable('tags_to_posts', true);
     }
 
     public function down()

@@ -2,7 +2,7 @@
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
-    bootstrap="vendor/codeigniter4/framework/system/Test/bootstrap.php"
+    bootstrap="tests/bootstrap.php"
     backupGlobals="false"
     beStrictAboutOutputDuringTests="true"
     colors="true"
@@ -23,8 +23,23 @@
         </report>
     </coverage>
     <testsuites>
-        <testsuite name="App">
-            <directory>./tests</directory>
+        <testsuite name="Unit">
+            <directory>./tests/unit</directory>
+        </testsuite>
+        <testsuite name="Model">
+            <directory>./tests/model</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>./tests/feature</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>./tests/integration</directory>
+        </testsuite>
+        <testsuite name="All">
+            <directory>./tests/unit</directory>
+            <directory>./tests/model</directory>
+            <directory>./tests/feature</directory>
+            <directory>./tests/integration</directory>
         </testsuite>
     </testsuites>
     <logging>
@@ -50,14 +65,13 @@
         <const name="CONFIGPATH" value="./app/Config/"/>
         <!-- Directory containing the front controller (index.php) -->
         <const name="PUBLICPATH" value="./public/"/>
-        <!-- Database configuration -->
-        <!-- Uncomment to provide your own database for testing
-            <env name="database.tests.hostname" value="localhost"/>
-            <env name="database.tests.database" value="tests"/>
-            <env name="database.tests.username" value="tests_user"/>
-            <env name="database.tests.password" value=""/>
-            <env name="database.tests.DBDriver" value="MySQLi"/>
-            <env name="database.tests.DBPrefix" value="tests_"/>
-            -->
+        <!-- Database configuration for test suite (MySQLi, separate test DB) -->
+        <env name="database.tests.hostname" value="localhost"/>
+        <env name="database.tests.database" value="pubvana_test"/>
+        <env name="database.tests.username" value="ci4"/>
+        <env name="database.tests.password" value="swish1485"/>
+        <env name="database.tests.DBDriver" value="MySQLi"/>
+        <env name="database.tests.DBPrefix" value=""/>
+        <env name="auth.hashCost" value="4"/>
     </php>
 </phpunit>

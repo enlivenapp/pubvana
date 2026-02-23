@@ -23,7 +23,7 @@ class CreatePostRevisionsTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addKey('post_id');
-        $this->forge->createTable('post_revisions');
+        $this->forge->createTable('post_revisions', true);
     }
 
     public function down(): void

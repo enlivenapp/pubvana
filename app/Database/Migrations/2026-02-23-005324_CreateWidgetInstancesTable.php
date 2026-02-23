@@ -17,7 +17,7 @@ class CreateWidgetInstancesTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addKey('widget_area_id');
-        $this->forge->createTable('widget_instances');
+        $this->forge->createTable('widget_instances', true);
     }
 
     public function down()

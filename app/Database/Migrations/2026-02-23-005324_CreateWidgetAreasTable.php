@@ -16,7 +16,7 @@ class CreateWidgetAreasTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addKey(['theme_id', 'slug']);
-        $this->forge->createTable('widget_areas');
+        $this->forge->createTable('widget_areas', true);
     }
 
     public function down()

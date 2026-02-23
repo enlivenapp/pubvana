@@ -20,7 +20,7 @@ class CreateSettingsTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey(['class', 'key', 'context']);
-        $this->forge->createTable('settings');
+        $this->forge->createTable('settings', true);
     }
 
     public function down()

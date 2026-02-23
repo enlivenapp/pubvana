@@ -17,7 +17,7 @@ class CreateSocialTable extends Migration
             'is_active'  => ['type' => 'TINYINT', 'constraint' => 1, 'default' => 1],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('social');
+        $this->forge->createTable('social', true);
     }
 
     public function down()

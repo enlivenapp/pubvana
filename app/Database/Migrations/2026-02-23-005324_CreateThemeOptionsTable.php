@@ -16,7 +16,7 @@ class CreateThemeOptionsTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addKey('theme_id');
-        $this->forge->createTable('theme_options');
+        $this->forge->createTable('theme_options', true);
     }
 
     public function down()

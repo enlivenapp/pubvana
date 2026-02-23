@@ -19,7 +19,7 @@ class CreateCategoriesTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('slug');
-        $this->forge->createTable('categories');
+        $this->forge->createTable('categories', true);
     }
 
     public function down()

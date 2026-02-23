@@ -21,7 +21,7 @@ class CreateMediaTable extends Migration
             'updated_at'  => ['type' => 'DATETIME', 'null' => true],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('media');
+        $this->forge->createTable('media', true);
     }
 
     public function down()

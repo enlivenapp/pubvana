@@ -20,7 +20,7 @@ class CreateThemesTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('folder');
-        $this->forge->createTable('themes');
+        $this->forge->createTable('themes', true);
     }
 
     public function down()

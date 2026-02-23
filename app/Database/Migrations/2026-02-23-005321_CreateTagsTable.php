@@ -15,7 +15,7 @@ class CreateTagsTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('slug');
-        $this->forge->createTable('tags');
+        $this->forge->createTable('tags', true);
     }
 
     public function down()

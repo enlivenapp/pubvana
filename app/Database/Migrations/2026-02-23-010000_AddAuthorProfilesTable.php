@@ -23,7 +23,7 @@ class AddAuthorProfilesTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('user_id');
-        $this->forge->createTable('author_profiles');
+        $this->forge->createTable('author_profiles', true);
     }
 
     public function down(): void

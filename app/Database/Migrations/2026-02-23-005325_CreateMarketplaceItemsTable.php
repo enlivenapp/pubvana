@@ -25,7 +25,7 @@ class CreateMarketplaceItemsTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('slug');
-        $this->forge->createTable('marketplace_items');
+        $this->forge->createTable('marketplace_items', true);
     }
 
     public function down()
