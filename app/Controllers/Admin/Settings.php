@@ -21,6 +21,9 @@ class Settings extends BaseAdminController
 
     public function saveGeneral()
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         setting()->set('App.siteName',      $this->request->getPost('site_name'));
         setting()->set('App.siteTagline',   $this->request->getPost('site_tagline'));
         setting()->set('App.siteEmail',     $this->request->getPost('site_email'));
@@ -41,6 +44,9 @@ class Settings extends BaseAdminController
 
     public function saveSeo()
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         setting()->set('Seo.metaDescription', $this->request->getPost('meta_description'));
         setting()->set('Seo.googleAnalytics', $this->request->getPost('google_analytics'));
         setting()->set('Seo.sitemapEnabled',  (bool) $this->request->getPost('sitemap_enabled'));
@@ -49,6 +55,9 @@ class Settings extends BaseAdminController
 
     public function saveEmail()
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         setting()->set('Email.fromName',  $this->request->getPost('from_name'));
         setting()->set('Email.fromEmail', $this->request->getPost('from_email'));
         return redirect()->to('/admin/settings#email')->with('success', 'Email settings saved.');

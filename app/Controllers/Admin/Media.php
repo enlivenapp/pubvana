@@ -9,6 +9,9 @@ class Media extends BaseAdminController
 {
     public function index(): string
     {
+        if (! auth()->user()->can('media.upload')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $model  = new MediaModel();
         $media  = $model->orderBy('created_at', 'DESC')->paginate(24);
         return $this->adminView('media/index', array_merge($this->baseData('Media Library', 'media'), [
@@ -19,6 +22,9 @@ class Media extends BaseAdminController
 
     public function upload()
     {
+        if (! auth()->user()->can('media.upload')) {
+            return $this->response->setJSON(['error' => 'Permission denied.'])->setStatusCode(403);
+        }
         $file = $this->request->getFile('file');
         if (! $file || ! $file->isValid()) {
             return $this->response->setJSON(['error' => 'No valid file uploaded.'])->setStatusCode(400);
@@ -34,6 +40,9 @@ class Media extends BaseAdminController
 
     public function delete(int $id)
     {
+        if (! auth()->user()->can('media.upload')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         (new MediaService())->delete($id);
         return redirect()->to('/admin/media')->with('success', 'Media deleted.');
     }

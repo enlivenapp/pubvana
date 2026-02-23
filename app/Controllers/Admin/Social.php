@@ -8,12 +8,18 @@ class Social extends BaseAdminController
 {
     public function index(): string
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $links = (new SocialModel())->orderBy('sort_order')->findAll();
         return $this->adminView('social/index', array_merge($this->baseData('Social Links', 'social'), ['links' => $links]));
     }
 
     public function store()
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         if (! $this->validate(['platform' => 'required', 'url' => 'required|valid_url_strict'])) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
@@ -29,6 +35,9 @@ class Social extends BaseAdminController
 
     public function delete(int $id)
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         (new SocialModel())->delete($id);
         return redirect()->to('/admin/social')->with('success', 'Link deleted.');
     }

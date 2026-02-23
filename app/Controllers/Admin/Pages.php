@@ -19,17 +19,26 @@ class Pages extends BaseAdminController
 
     public function index(): string
     {
+        if (! auth()->user()->can('pages.manage')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $pages = $this->pageModel->orderBy('sort_order')->findAll();
         return $this->adminView('pages/index', array_merge($this->baseData('Pages', 'pages'), ['pages' => $pages]));
     }
 
     public function create(): string
     {
+        if (! auth()->user()->can('pages.manage')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         return $this->adminView('pages/create', $this->baseData('New Page', 'pages'));
     }
 
     public function store()
     {
+        if (! auth()->user()->can('pages.manage')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         if (! $this->validate(['title' => 'required|max_length[255]', 'slug' => 'required|max_length[255]'])) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
@@ -52,6 +61,9 @@ class Pages extends BaseAdminController
 
     public function edit(int $id): string
     {
+        if (! auth()->user()->can('pages.manage')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $page = $this->pageModel->find($id);
         if (! $page) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
@@ -61,6 +73,9 @@ class Pages extends BaseAdminController
 
     public function update(int $id)
     {
+        if (! auth()->user()->can('pages.manage')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $page = $this->pageModel->find($id);
         if (! $page) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
@@ -81,6 +96,9 @@ class Pages extends BaseAdminController
 
     public function delete(int $id)
     {
+        if (! auth()->user()->can('pages.manage')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $page = $this->pageModel->find($id);
         if (! $page || $page->is_system) {
             return redirect()->to('/admin/pages')->with('error', 'Cannot delete this page.');

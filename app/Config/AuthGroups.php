@@ -74,11 +74,6 @@ class AuthGroups extends ShieldAuthGroups
         ],
         'admin' => [
             'admin.access',
-            'admin.settings',
-            'admin.themes',
-            'admin.widgets',
-            'admin.marketplace',
-            'admin.navigation',
             'posts.create',
             'posts.edit.own',
             'posts.edit.any',

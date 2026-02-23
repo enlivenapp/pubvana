@@ -43,6 +43,9 @@ class Posts extends BaseAdminController
 
     public function create(): string
     {
+        if (! auth()->user()->can('posts.create')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         return $this->adminView('posts/create', array_merge($this->baseData('New Post', 'posts'), [
             'categories' => (new CategoryModel())->findAll(),
             'tags'       => (new TagModel())->findAll(),
@@ -51,6 +54,9 @@ class Posts extends BaseAdminController
 
     public function store()
     {
+        if (! auth()->user()->can('posts.create')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         if (! $this->validate([
             'title'   => 'required|max_length[255]',
             'content' => 'permit_empty',

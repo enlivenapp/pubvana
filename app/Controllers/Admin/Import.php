@@ -8,6 +8,9 @@ class Import extends BaseAdminController
 {
     public function index(): string
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         return $this->adminView('import/index', $this->baseData('Import', 'import'));
     }
 

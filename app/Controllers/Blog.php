@@ -7,6 +7,7 @@ use App\Models\CategoryModel;
 use App\Models\CommentModel;
 use App\Models\PostModel;
 use App\Models\TagModel;
+use App\Services\HCaptchaService;
 use App\Services\SeoService;
 use App\Services\ThemeService;
 
@@ -70,6 +71,16 @@ class Blog extends BaseController
         // Handle comment submission
         $commentSaved = false;
         if ($this->request->getMethod() === 'post' && setting('App.commentsEnabled')) {
+            if (! auth()->loggedIn()) {
+                return redirect()->to('/login')->with('error', 'You must be logged in to comment.');
+            }
+
+            $throttler = \Config\Services::throttler();
+            if (! $throttler->check('comment_' . auth()->id(), 5, MINUTE * 10)) {
+                return $this->response->setStatusCode(429)
+                    ->setBody('<h1>Too Many Requests</h1><p>You are commenting too quickly. Please wait a few minutes before trying again.</p>');
+            }
+
             $commentSaved = $this->handleComment($post);
             if ($commentSaved) {
                 return redirect()->to(post_url($slug) . '#comments')->with('success', 'Your comment is awaiting moderation.');
@@ -105,23 +116,40 @@ class Blog extends BaseController
 
     protected function handleComment(object $post): bool
     {
+        $captcha = new HCaptchaService();
+        if (! $captcha->verify($this->request->getPost('h-captcha-response') ?? '')) {
+            return false;
+        }
+
         if (! $this->validate([
-            'author_name'  => 'required|max_length[100]',
-            'author_email' => 'required|valid_email|max_length[255]',
-            'content'      => 'required|min_length[3]|max_length[2000]',
+            'content' => 'required|min_length[3]|max_length[2000]',
         ])) {
             return false;
         }
+
+        // Auto-fill author details from the logged-in user
+        $userRow = db_connect()->table('users u')
+            ->select('u.username, ai.secret AS email')
+            ->join('auth_identities ai', 'ai.user_id = u.id AND ai.type = \'email_password\'', 'left')
+            ->where('u.id', auth()->id())
+            ->get()->getRowObject();
+
+        $profileModel = new AuthorProfileModel();
+        $profile      = $profileModel->getByUserId((int) auth()->id());
+        $displayName  = ($profile && ! empty($profile->display_name))
+            ? $profile->display_name
+            : ($userRow->username ?? '');
+        $authorEmail  = $userRow->email ?? '';
 
         $status = setting('App.commentModeration') ? 'pending' : 'approved';
         $model  = new CommentModel();
         $model->insert([
             'post_id'      => $post->id,
-            'author_name'  => $this->request->getPost('author_name'),
-            'author_email' => $this->request->getPost('author_email'),
+            'author_name'  => $displayName,
+            'author_email' => $authorEmail,
             'content'      => $this->request->getPost('content'),
             'parent_id'    => $this->validatedParentId($this->request->getPost('parent_id'), $post->id),
-            'user_id'      => auth()->loggedIn() ? auth()->id() : null,
+            'user_id'      => auth()->id(),
             'status'       => $status,
         ]);
 

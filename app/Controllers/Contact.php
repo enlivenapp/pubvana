@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Services\HCaptchaService;
+
 class Contact extends BaseController
 {
     public function index(): string
@@ -24,6 +26,11 @@ class Contact extends BaseController
 
     public function send()
     {
+        $captcha = new HCaptchaService();
+        if (! $captcha->verify($this->request->getPost('h-captcha-response') ?? '')) {
+            return redirect()->back()->withInput()->with('error', 'Captcha verification failed. Please try again.');
+        }
+
         if (! $this->validate([
             'name'    => 'required|max_length[100]',
             'email'   => 'required|valid_email',

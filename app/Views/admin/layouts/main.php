@@ -109,12 +109,14 @@
         </li>
         <?php endif; ?>
 
+        <?php if (auth()->user()->can('admin.navigation')): ?>
         <li class="nav-item <?= ($active_nav ?? '') === 'navigation' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= base_url('admin/navigation') ?>">
                 <i class="fas fa-fw fa-bars"></i>
                 <span>Navigation</span>
             </a>
         </li>
+        <?php endif; ?>
 
         <hr class="sidebar-divider">
         <div class="sidebar-heading">Users &amp; Site</div>
@@ -128,19 +130,23 @@
         </li>
         <?php endif; ?>
 
+        <?php if (auth()->user()->can('admin.settings')): ?>
         <li class="nav-item <?= ($active_nav ?? '') === 'social' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= base_url('admin/social') ?>">
                 <i class="fas fa-fw fa-share-alt"></i>
                 <span>Social Links</span>
             </a>
         </li>
+        <?php endif; ?>
 
+        <?php if (auth()->user()->can('admin.settings')): ?>
         <li class="nav-item <?= ($active_nav ?? '') === 'redirects' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= base_url('admin/redirects') ?>">
                 <i class="fas fa-fw fa-exchange-alt"></i>
                 <span>Redirects</span>
             </a>
         </li>
+        <?php endif; ?>
 
         <?php if (auth()->user()->can('admin.settings')): ?>
         <li class="nav-item <?= ($active_nav ?? '') === 'settings' ? 'active' : '' ?>">

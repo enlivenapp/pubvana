@@ -80,6 +80,7 @@ class Users extends BaseAdminController
         } elseif ($id !== auth()->id() && $id !== $ownerId) {
             $user->ban('Deactivated by admin');
             $db->table('users')->where('id', $id)->update(['active' => 0]);
+            $db->table('auth_remember_tokens')->where('user_id', $id)->delete();
         }
 
         // Password (optional)

@@ -8,6 +8,9 @@ class Navigation extends BaseAdminController
 {
     public function index(): string
     {
+        if (! auth()->user()->can('admin.navigation')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $model = new NavigationModel();
         $group = $this->request->getGet('group') ?? 'primary';
         if (! in_array($group, ['primary', 'footer'], true)) {

@@ -11,6 +11,9 @@ class Widgets extends BaseAdminController
 {
     public function areas(): string
     {
+        if (! auth()->user()->can('admin.widgets')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         (new WidgetService())->sync();
 
         $theme    = $this->themeService->getActive();
@@ -34,6 +37,9 @@ class Widgets extends BaseAdminController
 
     public function addToArea()
     {
+        if (! auth()->user()->can('admin.widgets')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $areaId   = (int) $this->request->getPost('widget_area_id');
         $widgetId = (int) $this->request->getPost('widget_id');
         $model    = new WidgetInstanceModel();
@@ -48,12 +54,18 @@ class Widgets extends BaseAdminController
 
     public function removeFromArea(int $instanceId)
     {
+        if (! auth()->user()->can('admin.widgets')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         (new WidgetInstanceModel())->delete($instanceId);
         return redirect()->to('/admin/widgets')->with('success', 'Widget removed.');
     }
 
     public function configure(int $instanceId): string
     {
+        if (! auth()->user()->can('admin.widgets')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $db = db_connect();
         $instance = $db->table('widget_instances wi')
             ->select('wi.*, w.folder, w.name as widget_name')
@@ -77,6 +89,9 @@ class Widgets extends BaseAdminController
 
     public function saveConfig(int $instanceId)
     {
+        if (! auth()->user()->can('admin.widgets')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $options = $this->request->getPost('options') ?? [];
         (new WidgetInstanceModel())->update($instanceId, ['options_json' => json_encode($options)]);
         return redirect()->to('/admin/widgets')->with('success', 'Widget configured.');
@@ -84,6 +99,9 @@ class Widgets extends BaseAdminController
 
     public function reorder()
     {
+        if (! auth()->user()->can('admin.widgets')) {
+            return $this->response->setStatusCode(403)->setJSON(['error' => 'Permission denied.']);
+        }
         $order = $this->request->getPost('order') ?? [];
         $model = new WidgetInstanceModel();
         foreach ($order as $i => $instanceId) {

@@ -10,6 +10,7 @@
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#email">Email</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#social">Social Login</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#sharing">Social Sharing</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#spam">Spam Protection</a></li>
 </ul>
 
 <div class="tab-content">
@@ -287,6 +288,23 @@
                         <button type="submit" class="btn btn-primary">Save Sharing Settings</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Spam Protection -->
+    <div class="tab-pane fade" id="spam">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Spam Protection (hCaptcha)</h6></div>
+            <div class="card-body">
+                <p>Pubvana uses <a href="https://www.hcaptcha.com" target="_blank">hCaptcha</a> (privacy-respecting, non-Google) to protect comment forms and the contact form from spam bots.</p>
+                <p>hCaptcha is <strong>free</strong> for most sites. Sign up at <a href="https://www.hcaptcha.com" target="_blank">hcaptcha.com</a>, create a site, and add the following two keys to your <code>.env</code> file:</p>
+                <pre class="bg-light p-3 rounded"><code>HCAPTCHA_SITE_KEY = your-site-key
+HCAPTCHA_SECRET_KEY = your-secret-key</code></pre>
+                <div class="alert alert-info mb-0">
+                    <strong>Note:</strong> If these keys are not set, hCaptcha is silently skipped — safe for local development. Once keys are present in <code>.env</code>, the widget appears automatically on the comment form and contact page without any further configuration.
+                </div>
             </div>
         </div>
     </div>

@@ -19,6 +19,9 @@ class Marketplace extends BaseAdminController
 
     public function index(): string
     {
+        if (! auth()->user()->can('admin.marketplace')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         return $this->adminView('marketplace/index', array_merge($this->baseData('Marketplace', 'marketplace'), [
             'items'   => $this->service->fetchAll(),
             'filter'  => '',
@@ -28,6 +31,9 @@ class Marketplace extends BaseAdminController
 
     public function themes(): string
     {
+        if (! auth()->user()->can('admin.marketplace')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         return $this->adminView('marketplace/index', array_merge($this->baseData('Themes — Marketplace', 'marketplace'), [
             'items'   => $this->service->fetchThemes(),
             'filter'  => 'theme',
@@ -37,6 +43,9 @@ class Marketplace extends BaseAdminController
 
     public function widgets(): string
     {
+        if (! auth()->user()->can('admin.marketplace')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         return $this->adminView('marketplace/index', array_merge($this->baseData('Widgets — Marketplace', 'marketplace'), [
             'items'   => $this->service->fetchWidgets(),
             'filter'  => 'widget',
@@ -46,6 +55,9 @@ class Marketplace extends BaseAdminController
 
     public function refresh()
     {
+        if (! auth()->user()->can('admin.marketplace')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $this->service->refreshCache();
         return redirect()->to('/admin/marketplace')->with('success', 'Marketplace cache refreshed.');
     }
@@ -72,6 +84,9 @@ class Marketplace extends BaseAdminController
 
     public function update(string $slug)
     {
+        if (! auth()->user()->can('admin.marketplace')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $item = db_connect()->table('marketplace_items')->where('slug', $slug)->get()->getRowObject();
         if (! $item || ! $item->download_url) {
             return redirect()->to('/admin/marketplace')->with('error', 'Cannot update this item.');

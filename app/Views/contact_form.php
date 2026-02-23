@@ -18,5 +18,9 @@
         <label class="form-label">Message</label>
         <textarea name="message" class="form-control" rows="6" required><?= esc(old('message')) ?></textarea>
     </div>
+    <?php if (getenv('HCAPTCHA_SITE_KEY')): ?>
+        <div class="h-captcha mb-3" data-sitekey="<?= esc(getenv('HCAPTCHA_SITE_KEY')) ?>"></div>
+        <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <?php endif; ?>
     <button type="submit" class="btn btn-primary">Send Message</button>
 </form>

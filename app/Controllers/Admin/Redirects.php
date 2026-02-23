@@ -8,6 +8,9 @@ class Redirects extends BaseAdminController
 {
     public function index(): string
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $model     = new RedirectModel();
         $redirects = $model->orderBy('created_at', 'DESC')->paginate(20);
         return $this->adminView('redirects/index', array_merge($this->baseData('Redirects', 'redirects'), [
@@ -18,6 +21,9 @@ class Redirects extends BaseAdminController
 
     public function store()
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         if (! $this->validate([
             'from_url' => 'required|string|max_length[500]',
             'to_url'   => 'required|string|max_length[500]',
@@ -43,6 +49,9 @@ class Redirects extends BaseAdminController
 
     public function delete(int $id)
     {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         (new RedirectModel())->delete($id);
         return redirect()->to('/admin/redirects')->with('success', 'Redirect deleted.');
     }

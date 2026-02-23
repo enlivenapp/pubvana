@@ -1,5 +1,12 @@
 # Pubvana
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/enlivenapp/pubvana)](https://github.com/enlivenapp/pubvana/releases)
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net)
+[![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-orange.svg)](https://codeigniter.com)
+[![Stars](https://img.shields.io/github/stars/enlivenapp/pubvana?style=flat)](https://github.com/enlivenapp/pubvana/stargazers)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/enlivenapp/pubvana/issues)
+
 ### Blogging and Small Business CMS
 
 Pubvana is a re-brand of Open Blog v3 (with added functionality). v2 is a full rewrite on CodeIgniter 4 with a modern admin UI, dual content editor, theme & widget system, and built-in marketplace.
@@ -77,6 +84,25 @@ Point your web server `DocumentRoot` at the `public/` folder.
 ### Reporting a Vulnerability
 
 Please **do not** open a public issue for security vulnerabilities. Email security reports to **cs@pubvana.net**. We aim to respond within 48 hours and will credit reporters in the changelog.
+
+### hCaptcha (Spam Protection)
+
+Pubvana uses [hCaptcha](https://www.hcaptcha.com) (privacy-respecting, non-Google) to protect comment forms and the contact form from spam bots. hCaptcha is free for most sites.
+
+**Setup:**
+
+1. Sign up at [hcaptcha.com](https://www.hcaptcha.com) (free)
+2. Create a new site and copy the site key and secret key
+3. Add to your `.env`:
+
+```
+HCAPTCHA_SITE_KEY = your-site-key
+HCAPTCHA_SECRET_KEY = your-secret-key
+```
+
+If these keys are not set, hCaptcha is silently skipped — safe for local development. Once configured, the widget appears automatically on the comment form and contact page.
+
+---
 
 ### Production Hardening Checklist
 

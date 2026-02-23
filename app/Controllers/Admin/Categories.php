@@ -19,6 +19,9 @@ class Categories extends BaseAdminController
 
     public function index(): string
     {
+        if (! auth()->user()->can('posts.edit.any')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         return $this->adminView('categories/index', array_merge($this->baseData('Categories', 'categories'), [
             'categories' => $this->model->getWithPostCount(),
         ]));
@@ -26,11 +29,17 @@ class Categories extends BaseAdminController
 
     public function create(): string
     {
+        if (! auth()->user()->can('posts.edit.any')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         return $this->adminView('categories/create', $this->baseData('New Category', 'categories'));
     }
 
     public function store()
     {
+        if (! auth()->user()->can('posts.edit.any')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         if (! $this->validate(['name' => 'required|max_length[255]'])) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
@@ -45,6 +54,9 @@ class Categories extends BaseAdminController
 
     public function edit(int $id): string
     {
+        if (! auth()->user()->can('posts.edit.any')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $cat = $this->model->find($id);
         if (! $cat) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
@@ -54,6 +66,9 @@ class Categories extends BaseAdminController
 
     public function update(int $id)
     {
+        if (! auth()->user()->can('posts.edit.any')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         if (! $this->validate(['name' => 'required|max_length[255]'])) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
@@ -67,6 +82,9 @@ class Categories extends BaseAdminController
 
     public function delete(int $id)
     {
+        if (! auth()->user()->can('posts.edit.any')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
         $this->model->delete($id);
         return redirect()->to('/admin/categories')->with('success', 'Category deleted.');
     }
