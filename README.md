@@ -72,6 +72,47 @@ Point your web server `DocumentRoot` at the `public/` folder.
 - WordPress importer (admin UI + `php spark wp:import` CLI)
 - Post revision history with one-click restore
 
+## Security
+
+### Reporting a Vulnerability
+
+Please **do not** open a public issue for security vulnerabilities. Email security reports to **security@pubvana.net**. We aim to respond within 48 hours and will credit reporters in the changelog.
+
+### Production Hardening Checklist
+
+Before deploying to a public server:
+
+- [ ] Set `CI_ENVIRONMENT = production` in `.env` — disables stack traces and debug output
+- [ ] Change the default admin password (`admin@example.com` / `Admin@12345`) immediately after first login
+- [ ] Set `app.baseURL` to your actual domain in `.env`
+- [ ] Set `app.forceGlobalSecureRequests = true` in `app/Config/App.php` to enforce HTTPS and send HSTS headers
+- [ ] Enable CSP: set `app.CSPEnabled = true` in `app/Config/App.php` and configure a policy appropriate to your theme
+- [ ] Ensure `writable/` is not web-accessible (it is outside `public/` by default — do not move it)
+- [ ] Ensure `.env` has permissions `600` and is not committed to version control
+- [ ] Run `php spark key:generate` once per installation — do not reuse encryption keys across sites
+- [ ] Set `chown www-data:www-data public/themes/` so only the web server can create theme symlinks
+
+### Content Security Note
+
+Post, page, and widget content is stored and rendered as raw HTML. This is intentional — administrators are trusted to write HTML directly. If your site allows editors or authors to submit HTML content, consider adding server-side HTML sanitization (e.g. [HTML Purifier](http://htmlpurifier.org/)) to your post-save pipeline before rendering untrusted content.
+
+### Security Fixes Log
+
+| Version | Fix |
+|---------|-----|
+| 2.0.2 | Marketplace ZIP installs: download URL restricted to `pubvana.net`; ZIP entries checked for path traversal |
+| 2.0.2 | WordPress importer: switched to `LIBXML_NONET` to block XXE network fetches |
+| 2.0.2 | User profile IDOR: `profile` and `saveProfile` now verify ownership or `users.manage` permission |
+| 2.0.2 | Theme options: `options` and `saveOptions` now require `admin.themes` permission |
+| 2.0.2 | Navigation: `store`, `delete`, `reorder` now require `admin.navigation` permission |
+| 2.0.2 | Settings `.env` writer: key whitelist prevents arbitrary env key injection |
+| 2.0.2 | Post list status filter validated against whitelist before use in query |
+| 2.0.2 | Comment `parent_id` validated against same post to prevent cross-post injection |
+| 2.0.2 | RSS feed: `]]>` escaped inside CDATA sections |
+| 2.0.2 | WordPress import: 50 MB file size limit to prevent DoS via XML parse |
+
+---
+
 ## Bug Reports & Feature Requests
 
 Please use the [Issues Tracker](https://github.com/enlivenapp/pubvana/issues).
