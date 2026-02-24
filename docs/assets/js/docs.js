@@ -74,8 +74,8 @@ const NAV_GROUPS = [
       { label: 'Broken Link Checker',   href: '/docs/premium/broken-links.html',          premium: true },
       { label: 'Affiliate Links',       href: '/docs/premium/affiliates.html',            premium: true },
       { label: 'Two-Factor Auth',       href: '/docs/premium/two-factor.html',            premium: true },
-      { label: 'SEO',                   href: '/docs/settings/seo.html',                  premium: true },
-      { label: 'Social Sharing',        href: '/docs/settings/social-sharing.html',       premium: true },
+      { label: 'SEO',                   href: '/docs/premium/seo.html',                   premium: true },
+      { label: 'Social Sharing',        href: '/docs/premium/social-sharing.html',        premium: true },
     ]
   },
 ];
