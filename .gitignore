@@ -41,3 +41,17 @@ Thumbs.db
 
 # Spark (generated)
 /spark
+
+# Premium themes (distributed via pubvana.net store)
+themes/cyborg/
+themes/darkly/
+themes/ember/
+themes/flatly/
+themes/lux/
+themes/sandstone/
+themes/slate/
+themes/ember.zip
+
+# Premium widgets (local testing only)
+widgets/author_bio/
+widgets/ad_unit/
