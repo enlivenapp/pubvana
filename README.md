@@ -206,9 +206,6 @@ Please include a README.md update under 'Translators' with your name and a link 
 - [x] Recent Comments
 - [x] Table of Contents
 - [x] Related Posts
-- [x] Author Bio (sidebar)
-- [x] Ad Unit / Custom HTML
-- [ ] Social Follow Buttons
 - [ ] Reading Progress Bar
 - [ ] Enhanced Search (AJAX live preview)
 - [ ] Email Opt-in / Lead Capture
@@ -239,6 +236,9 @@ Please include a README.md update under 'Translators' with your name and a link 
 - [ ] E-commerce (products, cart, checkout, orders)
 
 ### Premium Widgets (pubvana.net/store)
+- [x] Author Bio (sidebar)
+- [x] Ad Unit / Custom HTML
+- [x] Social Follow Buttons
 - [ ] Advanced Login
 - [ ] Gallery (masonry + lightbox)
 - [ ] Google Calendar & Maps
