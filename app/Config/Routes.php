@@ -142,6 +142,10 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
     $routes->post('marketplace/refresh',     'Marketplace::refresh');
     $routes->post('marketplace/update/(:segment)', 'Marketplace::update/$1');
 
+    // Updates
+    $routes->get('updates',                  'Updates::index');
+    $routes->post('updates/check',           'Updates::check');
+
     // Import
     $routes->get('import',                   'Import::index');
     $routes->post('import',                  'Import::upload');

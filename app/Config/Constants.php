@@ -85,3 +85,4 @@ defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125);    // highest a
  */
 defined('THEMES_PATH')  || define('THEMES_PATH',  ROOTPATH . 'themes/');
 defined('WIDGETS_PATH') || define('WIDGETS_PATH', ROOTPATH . 'widgets/');
+defined('APP_VERSION')  || define('APP_VERSION',  '2.0.6');

@@ -6,6 +6,7 @@ use App\Models\CategoryModel;
 use App\Models\CommentModel;
 use App\Models\PageModel;
 use App\Models\PostModel;
+use App\Services\UpdateService;
 
 class Dashboard extends BaseAdminController
 {
@@ -35,10 +36,13 @@ class Dashboard extends BaseAdminController
             ->limit(5)
             ->findAll();
 
+        $update = (new UpdateService())->checkForUpdate();
+
         return $this->adminView('dashboard/index', array_merge($this->baseData('Dashboard', 'dashboard'), [
             'stats'           => $stats,
             'recent_posts'    => $recentPosts,
             'pending_comments'=> $pendingComments,
+            'update'          => $update,
         ]));
     }
 }

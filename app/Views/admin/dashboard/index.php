@@ -1,6 +1,10 @@
 <?php $layout = 'admin/layouts/main'; ?>
 <?php ob_start(); ?>
 
+<?php if (!empty($update['available'])): ?>
+    <?= view('admin/partials/update_banner', ['update' => $update]) ?>
+<?php endif; ?>
+
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>

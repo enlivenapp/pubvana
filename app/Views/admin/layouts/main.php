@@ -174,6 +174,18 @@
         </li>
         <?php endif; ?>
 
+        <?php if (!empty($update['available'] ?? false)): ?>
+        <hr class="sidebar-divider">
+        <li class="nav-item <?= ($active_nav ?? '') === 'updates' ? 'active' : '' ?>">
+            <a class="nav-link" href="<?= base_url('admin/updates') ?>">
+                <i class="fas fa-fw fa-arrow-circle-up text-warning"></i>
+                <span>Update Available
+                    <span class="badge badge-warning ml-1"><?= esc($update['latest_version'] ?? '') ?></span>
+                </span>
+            </a>
+        </li>
+        <?php endif; ?>
+
         <hr class="sidebar-divider d-none d-md-block">
 
         <!-- Sidebar Toggler -->
@@ -204,6 +216,15 @@
                 </a>
 
                 <ul class="navbar-nav ml-auto">
+                    <?php if (!empty($update['available'] ?? false)): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('admin/updates') ?>"
+                           title="Pubvana <?= esc($update['latest_version'] ?? '') ?> available">
+                            <i class="fas fa-arrow-circle-up text-warning"></i>
+                            <span class="badge badge-warning badge-counter">!</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <div class="topbar-divider d-none d-sm-block"></div>
 
                     <!-- User Info -->
@@ -251,6 +272,10 @@
                         <?php endforeach; ?>
                         <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
                     </div>
+                <?php endif; ?>
+
+                <?php if (!empty($update['available'] ?? false)): ?>
+                    <?= view('admin/partials/update_banner', ['update' => $update]) ?>
                 <?php endif; ?>
 
                 <?= $content ?>
