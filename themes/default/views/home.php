@@ -35,5 +35,5 @@ ob_start();
 
 <?php
 $main_content = ob_get_clean();
-echo theme_view(THEMES_PATH . 'default/views/layout.php', ['seo' => $seo ?? [], 'primary_nav' => $primary_nav ?? [], 'social_links' => $social_links ?? [], 'main_content' => $main_content]);
+echo theme_view(theme_layout(), ['seo' => $seo ?? [], 'primary_nav' => $primary_nav ?? [], 'social_links' => $social_links ?? [], 'main_content' => $main_content]);
 ?>

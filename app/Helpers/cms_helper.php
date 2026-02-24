@@ -33,6 +33,25 @@ if (! function_exists('theme_url')) {
     }
 }
 
+if (! function_exists('theme_layout')) {
+    /**
+     * Returns the absolute path to the active theme's layout.php,
+     * falling back to the default theme's layout if the active theme
+     * doesn't have its own (i.e. it's a child/parent theme).
+     */
+    function theme_layout(): string
+    {
+        $theme = active_theme();
+        if ($theme) {
+            $path = THEMES_PATH . $theme->folder . '/views/layout.php';
+            if (is_file($path)) {
+                return $path;
+            }
+        }
+        return THEMES_PATH . 'default/views/layout.php';
+    }
+}
+
 if (! function_exists('site_name')) {
     function site_name(): string
     {

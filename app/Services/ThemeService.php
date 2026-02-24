@@ -23,6 +23,29 @@ class ThemeService
         return $themes;
     }
 
+    public function sync(): void
+    {
+        $model = new ThemeModel();
+        $now   = date('Y-m-d H:i:s');
+
+        foreach ($this->discover() as $info) {
+            $folder = $info['folder'];
+            if (! $model->where('folder', $folder)->first()) {
+                $model->insert([
+                    'name'         => $info['name']    ?? $folder,
+                    'folder'       => $folder,
+                    'version'      => $info['version'] ?? '1.0.0',
+                    'is_active'    => 0,
+                    'installed_at' => $now,
+                    'created_at'   => $now,
+                    'updated_at'   => $now,
+                ]);
+            }
+            // Ensure asset symlink exists even if theme has never been activated
+            $this->symlinkAssets($folder);
+        }
+    }
+
     public function getActive(): ?object
     {
         if ($this->activeTheme !== null) {
@@ -91,14 +114,32 @@ class ThemeService
         $areas = $info['widget_areas'] ?? [];
 
         $areaModel = new WidgetAreaModel();
-        $areaModel->where('theme_id', $theme->id)->delete();
 
+        // Build a map of existing areas by slug so we don't delete instances
+        $existing = [];
+        foreach ($areaModel->where('theme_id', $theme->id)->findAll() as $row) {
+            $existing[$row->slug] = $row;
+        }
+
+        // Insert only areas that don't already exist; update name if it changed
         foreach ($areas as $slug => $name) {
-            $areaModel->insert([
-                'name'     => $name,
-                'slug'     => $slug,
-                'theme_id' => $theme->id,
-            ]);
+            if (isset($existing[$slug])) {
+                if ($existing[$slug]->name !== $name) {
+                    $areaModel->update($existing[$slug]->id, ['name' => $name]);
+                }
+                unset($existing[$slug]);
+            } else {
+                $areaModel->insert([
+                    'name'     => $name,
+                    'slug'     => $slug,
+                    'theme_id' => $theme->id,
+                ]);
+            }
+        }
+
+        // Remove areas no longer in theme_info (slug removed from theme)
+        foreach ($existing as $obsolete) {
+            $areaModel->delete($obsolete->id);
         }
     }
 

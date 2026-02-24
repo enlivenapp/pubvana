@@ -127,6 +127,7 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
     $routes->get('social',                   'Social::index');
     $routes->post('social/store',            'Social::store');
     $routes->post('social/(:num)/delete',    'Social::delete/$1');
+    $routes->post('social/(:num)/toggle',    'Social::toggle/$1');
 
     // Redirects
     $routes->get('redirects',                'Redirects::index');

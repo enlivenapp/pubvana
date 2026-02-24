@@ -10,12 +10,11 @@ class Themes extends BaseAdminController
     public function index(): string
     {
         $themeService = new ThemeService();
-        $discovered   = $themeService->discover();
-        $themes       = (new ThemeModel())->findAll();
+        $themeService->sync();
+        $themes = (new ThemeModel())->findAll();
 
         return $this->adminView('themes/index', array_merge($this->baseData('Themes', 'themes'), [
-            'themes'     => $themes,
-            'discovered' => $discovered,
+            'themes' => $themes,
         ]));
     }
 

@@ -1,6 +1,7 @@
 <?php
 return [
     'name'        => 'Flatly',
+    'premium'     => true,
     'version'     => '1.0.0',
     'author'      => 'Bootswatch / Pubvana',
     'description' => 'Clean, flat design with a teal accent. Ships with Pubvana.',

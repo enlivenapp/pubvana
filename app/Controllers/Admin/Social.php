@@ -33,6 +33,19 @@ class Social extends BaseAdminController
         return redirect()->to('/admin/social')->with('success', 'Social link added.');
     }
 
+    public function toggle(int $id)
+    {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
+        $model = new SocialModel();
+        $link  = $model->find($id);
+        if ($link) {
+            $model->update($id, ['is_active' => $link->is_active ? 0 : 1]);
+        }
+        return redirect()->to('/admin/social')->with('success', 'Link updated.');
+    }
+
     public function delete(int $id)
     {
         if (! auth()->user()->can('admin.settings')) {

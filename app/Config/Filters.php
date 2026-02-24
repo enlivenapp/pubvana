@@ -59,7 +59,7 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
-            ['maintenance', 'except' => ['admin*', 'login', 'logout', 'register']],
+            'maintenance' => ['except' => ['admin*', 'login', 'logout', 'register']],
         ],
         'after'  => [],
     ];

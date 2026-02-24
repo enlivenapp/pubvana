@@ -10,16 +10,17 @@
     ?>
     <div class="col-md-4 mb-4">
         <div class="card shadow h-100 <?= $theme->is_active ? 'border-primary' : '' ?>">
-            <?php if (!empty($info['screenshot'])): ?>
-                <img src="<?= theme_url($info['screenshot']) ?>" class="card-img-top" style="height:180px;object-fit:cover" alt="">
-            <?php else: ?>
-                <div class="card-img-top bg-gradient-primary d-flex align-items-center justify-content-center" style="height:180px">
-                    <i class="fas fa-palette fa-3x text-white-50"></i>
-                </div>
-            <?php endif; ?>
+            <div class="card-img-top bg-gradient-primary d-flex align-items-center justify-content-center" style="height:180px">
+                <i class="fas fa-palette fa-3x text-white-50"></i>
+            </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
-                    <h5 class="card-title"><?= esc($theme->name) ?></h5>
+                    <h5 class="card-title">
+                        <?= esc($theme->name) ?>
+                        <?php if (!empty($info['premium'])): ?>
+                            <span class="badge badge-warning text-dark" style="font-size:0.65rem">Premium</span>
+                        <?php endif; ?>
+                    </h5>
                     <?php if ($theme->is_active): ?>
                         <span class="badge badge-primary">Active</span>
                     <?php endif; ?>

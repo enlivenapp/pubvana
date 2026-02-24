@@ -27,7 +27,12 @@ class MediaService
             throw new \RuntimeException('Image must be 10 MB or smaller.');
         }
 
-        $ext     = $this->mimeToExt($file->getMimeType());
+        // Capture these before move() — temp file is gone afterwards
+        $mimeType  = $file->getMimeType();
+        $fileSize  = $file->getSize();
+        $origName  = $file->getName();
+
+        $ext     = $this->mimeToExt($mimeType);
         $name    = bin2hex(random_bytes(16));
         $relDir  = 'uploads/' . date('Y/m');
         $absDir  = WRITEPATH . $relDir;
@@ -61,10 +66,10 @@ class MediaService
         @unlink($tmpPath);
 
         $mediaId = db_connect()->table('media')->insert([
-            'filename'    => $file->getClientFilename(),
+            'filename'    => $origName,
             'path'        => $relPath,
-            'mime_type'   => $file->getMimeType(),
-            'size'        => $file->getSize(),
+            'mime_type'   => $mimeType,
+            'size'        => $fileSize,
             'uploaded_by' => $uploadedBy,
             'created_at'  => date('Y-m-d H:i:s'),
             'updated_at'  => date('Y-m-d H:i:s'),

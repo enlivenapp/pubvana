@@ -1,7 +1,6 @@
 # Pubvana
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![CI](https://github.com/enlivenapp/pubvana/actions/workflows/ci.yml/badge.svg)](https://github.com/enlivenapp/pubvana/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/enlivenapp/pubvana)](https://github.com/enlivenapp/pubvana/releases)
 [![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-orange.svg)](https://codeigniter.com)
@@ -40,6 +39,14 @@ Point your web server `DocumentRoot` at the `public/` folder.
 > ```bash
 > chown www-data:www-data public/themes/
 > ```
+
+> **Media / uploads symlink**
+> Uploaded images (avatars, featured images, media library) are stored in `writable/uploads/` which is outside the web root. To serve them, create a symlink once after installation:
+> ```bash
+> mkdir -p public/writable
+> ln -s /path/to/pubvana/writable/uploads public/writable/uploads
+> ```
+> Only the `uploads/` subdirectory is exposed — sessions, cache, and logs remain inaccessible.
 
 ## Requirements
 
@@ -115,7 +122,7 @@ Before deploying to a public server:
 - [ ] Set `app.baseURL` to your actual domain in `.env`
 - [ ] Set `app.forceGlobalSecureRequests = true` in `app/Config/App.php` to enforce HTTPS and send HSTS headers
 - [ ] Enable CSP: set `app.CSPEnabled = true` in `app/Config/App.php` and configure a policy appropriate to your theme
-- [ ] Ensure `writable/` is not web-accessible (it is outside `public/` by default — do not move it)
+- [ ] Ensure only `writable/uploads/` is web-accessible (via the symlink above) — never symlink or move `writable/` itself into `public/`, as it contains sessions, cache, and logs
 - [ ] Ensure `.env` has permissions `600` and is not committed to version control
 - [ ] Run `php spark key:generate` once per installation — do not reuse encryption keys across sites
 - [ ] Set `chown www-data:www-data public/themes/` so only the web server can create theme symlinks
@@ -199,8 +206,8 @@ Please include a README.md update under 'Translators' with your name and a link 
 - [x] Recent Comments
 - [x] Table of Contents
 - [x] Related Posts
-- [ ] Author Bio (sidebar)
-- [ ] Ad Unit / Custom HTML
+- [x] Author Bio (sidebar)
+- [x] Ad Unit / Custom HTML
 - [ ] Social Follow Buttons
 - [ ] Reading Progress Bar
 - [ ] Enhanced Search (AJAX live preview)
@@ -223,7 +230,7 @@ Please include a README.md update under 'Translators' with your name and a link 
 - [ ] Two-Factor Authentication (TOTP admin UI)
 - [ ] Backup & Export (DB + uploads zip)
 - [ ] Activity / Audit Log
-- [ ] Maintenance Mode toggle
+- [x] Maintenance Mode toggle
 
 ### Monetisation
 - [ ] Membership / Paywalled Posts

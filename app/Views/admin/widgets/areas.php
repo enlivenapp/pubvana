@@ -69,14 +69,20 @@
                     <h6 class="m-0 font-weight-bold text-primary">Available Widgets</h6>
                 </div>
                 <div class="card-body p-2">
-                    <?php foreach ($available as $w): ?>
+                    <?php foreach ($available as $w):
+                        $wInfoFile = WIDGETS_PATH . $w->folder . '/widget_info.php';
+                        $wInfo = is_file($wInfoFile) ? require $wInfoFile : [];
+                    ?>
                     <form method="POST" action="<?= base_url('admin/widgets/add') ?>" class="mb-1">
                         <?= csrf_field() ?>
                         <input type="hidden" name="widget_id" value="<?= $w->id ?>">
                         <input type="hidden" name="widget_area_id" value="<?= $area->id ?>">
                         <div class="d-flex justify-content-between align-items-center border rounded p-2">
                             <div>
-                                <strong><?= esc($w->name) ?></strong><br>
+                                <strong><?= esc($w->name) ?></strong>
+                                <?php if (!empty($wInfo['premium'])): ?>
+                                    <span class="badge badge-warning text-dark" style="font-size:0.6rem">Premium</span>
+                                <?php endif; ?><br>
                                 <small class="text-muted"><?= esc($w->description) ?></small>
                             </div>
                             <button class="btn btn-sm btn-outline-primary ml-2">Add</button>

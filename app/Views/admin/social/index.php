@@ -12,7 +12,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Add Social Link</h6>
             </div>
             <div class="card-body">
-                <form method="POST" action="<?= base_url('admin/social') ?>">
+                <form method="POST" action="<?= base_url('admin/social/store') ?>">
                     <?= csrf_field() ?>
                     <div class="form-group">
                         <label>Platform</label>
@@ -41,13 +41,28 @@
             </div>
             <div class="card-body p-0">
                 <table class="table table-hover mb-0">
-                    <thead class="bg-light"><tr><th>Platform</th><th>URL</th><th>Icon</th><th>Status</th><th>Actions</th></tr></thead>
+                    <thead class="bg-light">
+                        <tr>
+                            <th style="width:20%">Platform</th>
+                            <th>URL</th>
+                            <th style="width:18%">Icon Class</th>
+                            <th style="width:10%">Status</th>
+                            <th style="width:10%">Actions</th>
+                        </tr>
+                    </thead>
                     <tbody>
                     <?php foreach ($links as $link): ?>
                         <tr>
-                            <td><i class="<?= esc($link->icon) ?> fa-lg mr-2 text-primary"></i> <?= esc($link->platform) ?></td>
-                            <td><a href="<?= esc($link->url) ?>" target="_blank" class="text-truncate d-inline-block" style="max-width:200px"><?= esc($link->url) ?></a></td>
-                            <td><code><?= esc($link->icon) ?></code></td>
+                            <td>
+                                <i class="<?= esc($link->icon) ?> fa-fw fa-lg me-2 text-primary"></i><?= esc($link->platform) ?>
+                            </td>
+                            <td>
+                                <a href="<?= esc($link->url) ?>" target="_blank" rel="noopener"
+                                   class="text-truncate d-inline-block" style="max-width:220px">
+                                    <?= esc($link->url) ?>
+                                </a>
+                            </td>
+                            <td><small class="text-muted"><?= esc($link->icon) ?></small></td>
                             <td>
                                 <form method="POST" action="<?= base_url('admin/social/' . $link->id . '/toggle') ?>" class="d-inline">
                                     <?= csrf_field() ?>
@@ -57,7 +72,7 @@
                                 </form>
                             </td>
                             <td>
-                                <form method="POST" action="<?= base_url('admin/social/' . $link->id . '/delete') ?>" class="d-inline" onsubmit="return confirm('Delete?')">
+                                <form method="POST" action="<?= base_url('admin/social/' . $link->id . '/delete') ?>" class="d-inline" onsubmit="return confirm('Delete this link?')">
                                     <?= csrf_field() ?>
                                     <button class="btn btn-xs btn-outline-danger">Delete</button>
                                 </form>
