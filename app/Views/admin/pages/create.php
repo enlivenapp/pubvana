@@ -52,8 +52,8 @@
                 <div class="form-group">
                     <label>Status</label>
                     <select name="status" class="form-control">
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
+                        <option value="draft" <?= old('status','draft')==='draft' ? 'selected' : '' ?>>Draft</option>
+                        <option value="published" <?= old('status','draft')==='published' ? 'selected' : '' ?>>Published</option>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Save Page</button>
@@ -78,7 +78,25 @@ function switchEditor(t) {
     if(t==='html' && !mdeInit){ $('#content-html').summernote({height:400,toolbar:[['style',['bold','italic','underline','clear']],['para',['ul','ol','paragraph']],['insert',['link','picture','hr']],['view',['codeview','fullscreen']]]}); mdeInit=true; }
     if(t==='markdown' && !sme){ sme=new SimpleMDE({element:document.getElementById('content-md')}); }
 }
-document.addEventListener('DOMContentLoaded',function(){ switchEditor('html'); document.querySelectorAll('input[name="editor_type"]').forEach(r=>r.addEventListener('change',function(){switchEditor(this.value);})); });
+document.addEventListener('DOMContentLoaded',function(){
+    switchEditor('html');
+    document.querySelectorAll('input[name="editor_type"]').forEach(r=>r.addEventListener('change',function(){switchEditor(this.value);}));
+    var slugEdited = false;
+    var titleEl = document.querySelector('[name="title"]');
+    var slugEl  = document.querySelector('[name="slug"]');
+    if(slugEl.value !== '') slugEdited = true;
+    slugEl.addEventListener('input', function(){ if(this.value !== '') slugEdited = true; else slugEdited = false; });
+    titleEl.addEventListener('input', function(){
+        if(slugEdited) return;
+        var s = this.value.toLowerCase().trim()
+            .replace(/&/g,'and')
+            .replace(/[^a-z0-9\s-]/g,'')
+            .replace(/[\s]+/g,'-')
+            .replace(/-+/g,'-')
+            .replace(/^-|-$/g,'');
+        slugEl.value = s;
+    });
+});
 </script>
 HTML;
 ?>
