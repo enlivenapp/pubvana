@@ -3,6 +3,7 @@
 namespace Config;
 
 use App\Filters\AdminFilter;
+use App\Filters\MaintenanceFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -32,6 +33,7 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'session'       => SessionAuth::class,
         'admin_auth'    => AdminFilter::class,
+        'maintenance'   => MaintenanceFilter::class,
     ];
 
     /**
@@ -56,7 +58,9 @@ class Filters extends BaseFilters
      * }
      */
     public array $globals = [
-        'before' => [],
+        'before' => [
+            ['maintenance', 'except' => ['admin*', 'login', 'logout', 'register']],
+        ],
         'after'  => [],
     ];
 

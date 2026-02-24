@@ -55,6 +55,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label font-weight-bold">Maintenance Mode</label>
+                        <div class="col-sm-9">
+                            <div class="custom-control custom-switch">
+                                <input type="hidden" name="maintenance_mode" value="0">
+                                <input type="checkbox" class="custom-control-input" id="maintenance_mode" name="maintenance_mode" value="1"
+                                       <?= setting('App.maintenanceMode') ? 'checked' : '' ?>>
+                                <label class="custom-control-label" for="maintenance_mode">
+                                    Enable maintenance mode
+                                    <small class="text-muted d-block">Visitors see a "We'll be back soon" page. Admins can still access the site.</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                     <hr>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label font-weight-bold">Front Page</label>

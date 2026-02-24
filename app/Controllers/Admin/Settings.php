@@ -30,6 +30,7 @@ class Settings extends BaseAdminController
         setting()->set('App.postsPerPage',  (int) $this->request->getPost('posts_per_page'));
         setting()->set('App.commentsEnabled', (bool) $this->request->getPost('comments_enabled'));
         setting()->set('App.commentModeration', (bool) $this->request->getPost('comment_moderation'));
+        setting()->set('App.maintenanceMode', (bool) $this->request->getPost('maintenance_mode'));
 
         $fpType = $this->request->getPost('front_page_type');
         if (! in_array($fpType, ['blog', 'page'], true)) {
