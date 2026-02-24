@@ -64,7 +64,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 <script>
 var mdeInit=false,sme=null;
-function switchEditor(t){document.getElementById('content_type').value=t;document.getElementById('editor-html').style.display=t==='html'?'block':'none';document.getElementById('editor-md').style.display=t==='markdown'?'block':'none';if(t==='html'&&!mdeInit){$('#content-html').summernote({height:400,toolbar:[['style',['bold','italic','underline','clear']],['para',['ul','ol','paragraph']],['insert',['link','picture','hr']],['view',['codeview','fullscreen']]]});mdeInit=true;}if(t==='markdown'&&!sme){sme=new SimpleMDE({element:document.getElementById('content-md')});}}
+function switchEditor(t){document.getElementById('content_type').value=t;document.getElementById('editor-html').style.display=t==='html'?'block':'none';document.getElementById('editor-md').style.display=t==='markdown'?'block':'none';if(t==='html'&&!mdeInit){var _c=document.getElementById('content-html').value;$('#content-html').summernote({height:400,toolbar:[['style',['bold','italic','underline','clear']],['para',['ul','ol','paragraph']],['insert',['link','picture','hr']],['view',['codeview','fullscreen']]]});if(_c)$('#content-html').summernote('code',_c);mdeInit=true;}if(t==='markdown'&&!sme){sme=new SimpleMDE({element:document.getElementById('content-md')});}}
 document.addEventListener('DOMContentLoaded',function(){var t=document.getElementById('content_type').value;switchEditor(t);document.querySelectorAll('input[name="editor_type"]').forEach(r=>r.addEventListener('change',function(){switchEditor(this.value);}));});
 </script>
 HTML;
