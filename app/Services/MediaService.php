@@ -28,9 +28,10 @@ class MediaService
         }
 
         // Capture these before move() — temp file is gone afterwards
-        $mimeType  = $file->getMimeType();
-        $fileSize  = $file->getSize();
-        $origName  = $file->getName();
+        $mimeType       = $file->getMimeType();
+        $fileSize       = $file->getSize();
+        $origName       = $file->getName();
+        $convertToWebP  = in_array($mimeType, ['image/jpeg', 'image/png'], true);
 
         $ext     = $this->mimeToExt($mimeType);
         $name    = bin2hex(random_bytes(16));
@@ -44,24 +45,40 @@ class MediaService
         $tmpPath = WRITEPATH . 'tmp/' . 'tmp_' . $name . '.' . $ext;
         $file->move(WRITEPATH . 'tmp/', 'tmp_' . $name . '.' . $ext);
 
-        $relPath = $relDir . '/' . $name . '.' . $ext;
-        $absPath = WRITEPATH . $relPath;
+        // CI4's GD handler always encodes in the source format, so we let it
+        // write to original-extension intermediates, then convert to WebP ourselves.
+        $absIntermediate      = WRITEPATH . $relDir . '/' . $name . '.' . $ext;
+        $thumbDir             = WRITEPATH . $relDir . '/thumbs';
+        $thumbIntermediate    = $thumbDir . '/' . $name . '.' . $ext;
+
+        if (! is_dir($thumbDir)) {
+            mkdir($thumbDir, 0755, true);
+        }
 
         Services::image('gd')
             ->withFile($tmpPath)
             ->resize(1920, 1200, true, 'width')
-            ->save($absPath, 85);
+            ->save($absIntermediate, 85);
 
-        // Create thumbnail
-        $thumbDir  = $absDir . '/thumbs';
-        $thumbPath = $thumbDir . '/' . $name . '.' . $ext;
-        if (! is_dir($thumbDir)) {
-            mkdir($thumbDir, 0755, true);
-        }
         Services::image('gd')
             ->withFile($tmpPath)
             ->fit(300, 200, 'center')
-            ->save($thumbPath, 80);
+            ->save($thumbIntermediate, 80);
+
+        if ($convertToWebP) {
+            $relPath   = $relDir . '/' . $name . '.webp';
+            $absPath   = WRITEPATH . $relPath;
+            $thumbPath = $thumbDir . '/' . $name . '.webp';
+            $mimeType  = 'image/webp';
+            $this->saveAsWebP($absIntermediate, $absPath, 85);
+            $this->saveAsWebP($thumbIntermediate, $thumbPath, 80);
+            @unlink($absIntermediate);
+            @unlink($thumbIntermediate);
+        } else {
+            $relPath   = $relDir . '/' . $name . '.' . $ext;
+            $absPath   = $absIntermediate;
+            $thumbPath = $thumbIntermediate;
+        }
 
         @unlink($tmpPath);
 
@@ -95,6 +112,23 @@ class MediaService
         }
         $db->table('media')->where('id', $id)->delete();
         return true;
+    }
+
+    private function saveAsWebP(string $src, string $dest, int $quality): void
+    {
+        $mime = mime_content_type($src);
+        $img  = match ($mime) {
+            'image/png'  => imagecreatefrompng($src),
+            default      => imagecreatefromjpeg($src),
+        };
+        if ($mime === 'image/png') {
+            // Preserve PNG transparency
+            imagepalettetotruecolor($img);
+            imagealphablending($img, true);
+            imagesavealpha($img, true);
+        }
+        imagewebp($img, $dest, $quality);
+        imagedestroy($img);
     }
 
     private function mimeToExt(string $mime): string

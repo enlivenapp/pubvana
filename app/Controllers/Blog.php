@@ -114,6 +114,45 @@ class Blog extends BaseController
             'comments'       => $comments,
             'author_profile' => $authorProfile,
             'seo'            => $this->seoService->getMeta($post),
+            'json_ld'        => $this->seoService->getJsonLd($post, $authorProfile),
+        ]));
+    }
+
+    public function preview(string $token)
+    {
+        $post = $this->postModel->findByPreviewToken($token);
+        if (! $post) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $commentModel = new CommentModel();
+        $comments     = $commentModel->getTree((int) $post->id);
+
+        $authorProfile = null;
+        if ($post->author_id) {
+            $profileModel = new AuthorProfileModel();
+            $profile      = $profileModel->getByUserId((int) $post->author_id);
+            if ($profile) {
+                $userRow = db_connect()->table('users u')
+                    ->select('u.username, ai.secret AS email')
+                    ->join('auth_identities ai', 'ai.user_id = u.id AND ai.type = \'email_password\'', 'left')
+                    ->where('u.id', $post->author_id)
+                    ->get()->getRowObject();
+                if ($userRow) {
+                    $profile->username = $userRow->username;
+                    $profile->email    = $userRow->email;
+                }
+                $authorProfile = $profile;
+            }
+        }
+
+        return $this->themeService->view('post', array_merge($this->data, [
+            'post'           => $post,
+            'comments'       => $comments,
+            'author_profile' => $authorProfile,
+            'seo'            => $this->seoService->getMeta($post),
+            'json_ld'        => $this->seoService->getJsonLd($post, $authorProfile),
+            'preview_mode'   => true,
         ]));
     }
 
@@ -186,11 +225,17 @@ class Blog extends BaseController
             ->orderBy('posts.published_at', 'DESC')
             ->paginate($perPage, 'default');
 
+        $breadcrumb = $this->seoService->getBreadcrumbJsonLd([
+            ['name' => 'Home',     'url' => base_url()],
+            ['name' => $category->name, 'url' => base_url('category/' . $category->slug)],
+        ]);
+
         return $this->themeService->view('category', array_merge($this->data, [
             'category' => $category,
             'posts'    => $posts,
             'pager'    => $this->postModel->pager,
             'seo'      => $this->seoService->getMeta($category),
+            'json_ld'  => $breadcrumb,
         ]));
     }
 
@@ -208,11 +253,17 @@ class Blog extends BaseController
             ->orderBy('posts.published_at', 'DESC')
             ->paginate($perPage, 'default');
 
+        $breadcrumb = $this->seoService->getBreadcrumbJsonLd([
+            ['name' => 'Home', 'url' => base_url()],
+            ['name' => $tag->name, 'url' => base_url('tag/' . $tag->slug)],
+        ]);
+
         return $this->themeService->view('tag', array_merge($this->data, [
-            'tag'   => $tag,
-            'posts' => $posts,
-            'pager' => $this->postModel->pager,
-            'seo'   => $this->seoService->getMeta($tag),
+            'tag'     => $tag,
+            'posts'   => $posts,
+            'pager'   => $this->postModel->pager,
+            'seo'     => $this->seoService->getMeta($tag),
+            'json_ld' => $breadcrumb,
         ]));
     }
 
@@ -225,7 +276,13 @@ class Blog extends BaseController
             ->orderBy('published_at', 'DESC')
             ->paginate($perPage);
 
-        $fake = (object) ['title' => date('F Y', mktime(0, 0, 0, $month, 1, $year))];
+        $archiveTitle = date('F Y', mktime(0, 0, 0, $month, 1, $year));
+        $fake = (object) ['title' => $archiveTitle];
+        $breadcrumb = $this->seoService->getBreadcrumbJsonLd([
+            ['name' => 'Home',        'url' => base_url()],
+            ['name' => $archiveTitle, 'url' => base_url("archive/{$year}/{$month}")],
+        ]);
+
         return $this->themeService->view('archive', array_merge($this->data, [
             'posts'   => $posts,
             'pager'   => $this->postModel->pager,
@@ -233,6 +290,7 @@ class Blog extends BaseController
             'month'   => $month,
             'archive' => $fake,
             'seo'     => $this->seoService->getMeta($fake),
+            'json_ld' => $breadcrumb,
         ]));
     }
 }

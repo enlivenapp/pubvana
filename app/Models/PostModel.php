@@ -15,7 +15,7 @@ class PostModel extends Model
     protected $allowedFields = [
         'title', 'slug', 'content', 'content_type', 'excerpt', 'status',
         'featured_image', 'author_id', 'published_at', 'views', 'is_featured',
-        'meta_title', 'meta_description', 'lang',
+        'meta_title', 'meta_description', 'lang', 'share_on_publish', 'preview_token',
     ];
 
     public function published(): static
@@ -53,5 +53,17 @@ class PostModel extends Model
     public function findBySlug(string $slug): ?object
     {
         return $this->where('slug', $slug)->first();
+    }
+
+    public function generateToken(int $id): string
+    {
+        $token = bin2hex(random_bytes(32));
+        $this->update($id, ['preview_token' => $token]);
+        return $token;
+    }
+
+    public function findByPreviewToken(string $token): ?object
+    {
+        return $this->where('preview_token', $token)->first();
     }
 }

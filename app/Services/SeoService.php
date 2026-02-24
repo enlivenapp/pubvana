@@ -32,4 +32,58 @@ class SeoService
             'og_image'       => '',
         ];
     }
+
+    public function getJsonLd(object $post, ?object $authorProfile = null): string
+    {
+        $siteName = setting('App.siteName') ?? 'Pubvana';
+        $baseUrl  = rtrim(base_url(), '/');
+
+        $data = [
+            '@context'      => 'https://schema.org',
+            '@type'         => 'Article',
+            'headline'      => $post->title ?? '',
+            'datePublished' => $post->published_at
+                ? (new \DateTime($post->published_at))->format(\DateTime::ATOM)
+                : '',
+            'dateModified'  => $post->updated_at
+                ? (new \DateTime($post->updated_at))->format(\DateTime::ATOM)
+                : '',
+            'publisher'     => [
+                '@type' => 'Organization',
+                'name'  => $siteName,
+            ],
+        ];
+
+        if (! empty($post->featured_image)) {
+            $data['image'] = strpos($post->featured_image, '://') !== false
+                ? $post->featured_image
+                : $baseUrl . '/' . ltrim($post->featured_image, '/');
+        }
+
+        $authorName = $authorProfile->display_name ?? ($authorProfile->username ?? 'Author');
+        $data['author'] = ['@type' => 'Person', 'name' => $authorName];
+
+        return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getBreadcrumbJsonLd(array $items): string
+    {
+        $list = [];
+        foreach ($items as $position => $item) {
+            $list[] = [
+                '@type'    => 'ListItem',
+                'position' => $position + 1,
+                'name'     => $item['name'],
+                'item'     => $item['url'],
+            ];
+        }
+
+        $data = [
+            '@context'        => 'https://schema.org',
+            '@type'           => 'BreadcrumbList',
+            'itemListElement' => $list,
+        ];
+
+        return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
 }

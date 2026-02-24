@@ -4,6 +4,37 @@
     <h1 class="h3 mb-0 text-gray-800">Edit Post: <?= esc($post->title) ?></h1>
     <div>
         <a href="<?= post_url($post->slug) ?>" class="btn btn-sm btn-outline-secondary" target="_blank">View Post</a>
+        <?php if (!empty($preview_url)): ?>
+        <button type="button" class="btn btn-sm btn-outline-warning ml-1"
+                id="copyPreviewBtn"
+                data-url="<?= esc($preview_url) ?>"
+                title="<?= esc($preview_url) ?>">
+            Copy Preview Link
+        </button>
+        <script>
+        document.getElementById('copyPreviewBtn').addEventListener('click', function() {
+            var url = this.dataset.url;
+            var btn = this;
+            function markCopied() {
+                btn.textContent = 'Copied!';
+                setTimeout(function() { btn.textContent = 'Copy Preview Link'; }, 2000);
+            }
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url).then(markCopied);
+            } else {
+                var ta = document.createElement('textarea');
+                ta.value = url;
+                ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                markCopied();
+            }
+        });
+        </script>
+        <?php endif; ?>
         <a href="<?= base_url('admin/posts') ?>" class="btn btn-sm btn-outline-secondary ml-1">Back</a>
     </div>
 </div>

@@ -42,7 +42,7 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $extra_scripts = <<<'SCRIPT'
+<?php ob_start(); ?>
 <script>
 document.getElementById('file-input').addEventListener('change', function(e) {
     var files = e.target.files;
@@ -51,9 +51,9 @@ document.getElementById('file-input').addEventListener('change', function(e) {
     progress.classList.remove('d-none');
     var formData = new FormData();
     for (var i = 0; i < files.length; i++) { formData.append('file', files[i]); }
-    fetch(baseUrl + 'admin/media/upload', {
+    formData.append('csrf_test_name', '<?= csrf_hash() ?>');
+    fetch('<?= base_url('admin/media/upload') ?>', {
         method: 'POST',
-        headers: { 'X-CSRF-TOKEN': document.querySelector('[name="csrf_token"]') ? document.querySelector('[name="csrf_token"]').value : '' },
         body: formData
     }).then(r => r.json()).then(data => {
         progress.classList.add('d-none');
@@ -61,8 +61,6 @@ document.getElementById('file-input').addEventListener('change', function(e) {
         else { alert('Upload failed: ' + (data.error || 'Unknown error')); }
     }).catch(err => { progress.classList.add('d-none'); alert('Upload error: ' + err); });
 });
-var baseUrl = '<?= base_url() ?>';
 </script>
-SCRIPT;
-?>
+<?php $extra_scripts = ob_get_clean(); ?>
 <?= view($layout, array_merge(get_defined_vars(), ['content' => $content, 'extra_scripts' => $extra_scripts])) ?>

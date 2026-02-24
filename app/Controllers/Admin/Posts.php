@@ -99,6 +99,7 @@ class Posts extends BaseAdminController
 
         $this->syncCategories($id, $this->request->getPost('categories') ?? []);
         $this->syncTags($id, $this->request->getPost('tags_raw') ?? '');
+        $this->postModel->generateToken($id);
 
         if ($status === 'published') {
             $this->saveRevision($id);
@@ -131,12 +132,19 @@ class Posts extends BaseAdminController
 
         $revisionCount = db_connect()->table('post_revisions')->where('post_id', $id)->countAllResults();
 
+        if (empty($post->preview_token)) {
+            $this->postModel->generateToken($id);
+            $post = $this->postModel->find($id);
+        }
+        $previewUrl = base_url('preview/' . $post->preview_token);
+
         return $this->adminView('posts/edit', array_merge($this->baseData('Edit Post', 'posts'), [
             'post'           => $post,
             'categories'     => (new CategoryModel())->findAll(),
             'selected_cats'  => $catIds,
             'tags_raw'       => $tagNames,
             'revision_count' => $revisionCount,
+            'preview_url'    => $previewUrl,
         ]));
     }
 
@@ -194,6 +202,26 @@ class Posts extends BaseAdminController
         }
 
         return redirect()->to('/admin/posts')->with('success', 'Post updated.');
+    }
+
+    public function bulk()
+    {
+        $action = $this->request->getPost('action');
+        $ids    = $this->request->getPost('ids') ?? [];
+
+        if (empty($ids) || ! in_array($action, ['publish', 'unpublish', 'delete'], true)) {
+            return redirect()->back()->with('error', 'Invalid bulk action.');
+        }
+
+        foreach ($ids as $id) {
+            match ($action) {
+                'publish'   => $this->postModel->update($id, ['status' => 'published', 'published_at' => date('Y-m-d H:i:s')]),
+                'unpublish' => $this->postModel->update($id, ['status' => 'draft']),
+                'delete'    => $this->postModel->delete($id),
+            };
+        }
+
+        return redirect()->to('/admin/posts')->with('success', count($ids) . ' post(s) updated.');
     }
 
     public function delete(int $id)

@@ -167,11 +167,24 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="<?= base_url('admin/store') ?>">
+            <a class="nav-link" href="https://pubvana.net" target="_blank" rel="noopener">
                 <i class="fas fa-fw fa-shopping-cart"></i>
                 <span>Pubvana Store</span>
             </a>
         </li>
+        <?php endif; ?>
+
+        <?php if (!empty($plugin_menu_items ?? [])): ?>
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading">Plugins</div>
+        <?php foreach ($plugin_menu_items as $pluginItem): ?>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= esc($pluginItem['url']) ?>">
+                <i class="fas fa-fw <?= esc($pluginItem['icon'] ?? 'fa-plug') ?>"></i>
+                <span><?= esc($pluginItem['label']) ?></span>
+            </a>
+        </li>
+        <?php endforeach; ?>
         <?php endif; ?>
 
         <?php if (!empty($update['available'] ?? false)): ?>

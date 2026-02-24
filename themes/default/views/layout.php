@@ -27,8 +27,17 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?= esc($ga) ?>"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= esc($ga, 'js') ?>');</script>
     <?php endif; ?>
+    <?php if (!empty($json_ld)): ?>
+    <script type="application/ld+json"><?= $json_ld ?></script>
+    <?php endif; ?>
 </head>
 <body>
+
+<?php if (!empty($preview_mode)): ?>
+<div style="background:#f59e0b;color:#000;text-align:center;padding:8px 16px;font-size:14px;font-weight:600;position:sticky;top:0;z-index:9999;">
+    &#128065; Preview Mode — This post is not publicly visible
+</div>
+<?php endif; ?>
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">

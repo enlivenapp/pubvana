@@ -22,6 +22,7 @@ $routes->get('robots.txt',                  'Sitemap::robots');
 $routes->get('feed',                        'Feed::index');
 $routes->get('contact',                     'Contact::index');
 $routes->post('contact',                    'Contact::send');
+$routes->get('preview/(:segment)',          'Blog::preview/$1');
 
 // ===================================================
 // SHIELD AUTH (login, register, logout, forgot-password, etc.)
@@ -44,6 +45,7 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
     $routes->get('posts',                    'Posts::index');
     $routes->get('posts/create',             'Posts::create');
     $routes->post('posts/create',            'Posts::store');
+    $routes->post('posts/bulk',              'Posts::bulk');
     $routes->get('posts/(:num)/edit',        'Posts::edit/$1');
     $routes->post('posts/(:num)/edit',       'Posts::update/$1');
     $routes->post('posts/(:num)/delete',     'Posts::delete/$1');
@@ -162,6 +164,13 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
 $routes->set404Override(static function (): void {
     service('response')->setStatusCode(404)->send();
 });
+
+// ===================================================
+// PLUGIN ROUTES — each plugin may provide its own Config/Routes.php
+// ===================================================
+foreach (glob(ROOTPATH . 'plugins/*/Config/Routes.php') as $pluginRoutes) {
+    require $pluginRoutes;
+}
 
 // ===================================================
 // CATCH-ALL: Static pages (must be last)
