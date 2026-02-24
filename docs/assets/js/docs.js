@@ -48,7 +48,7 @@ const NAV_GROUPS = [
     id: 'settings',
     items: [
       { label: 'General',          href: '/docs/settings/general.html' },
-      { label: 'SEO',              href: '/docs/settings/seo.html' },
+      { label: 'SEO',              href: '/docs/settings/seo.html',      premium: true },
       { label: 'Social Sharing',   href: '/docs/settings/social-sharing.html' },
       { label: 'Maintenance Mode', href: '/docs/settings/maintenance.html' },
     ]
