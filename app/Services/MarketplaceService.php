@@ -7,6 +7,16 @@ class MarketplaceService
     protected string $apiBase = 'https://pubvana.net/api/marketplace';
     protected int    $cacheTtl = 3600; // 1 hour
 
+    protected int    $revalidateDays = 90;
+    protected int    $dailyCheckTtl  = 86400;   // 1 day
+    protected string $dailyCacheKey  = 'license_due_check';
+
+    private function isDevDomain(): bool
+    {
+        $host = strtolower(parse_url(base_url(), PHP_URL_HOST) ?? '');
+        return $host === 'localhost' || str_ends_with($host, '.local');
+    }
+
     /**
      * Fetch items from the live API, with 1-hour cache and mock fallback.
      */
@@ -56,7 +66,7 @@ class MarketplaceService
     {
         return [
             [
-                'item_type'      => 'theme',
+                'type'           => 'theme',
                 'name'           => 'Ember',
                 'slug'           => 'ember',
                 'description'    => 'A warm, modern theme with amber accents. Inter + Lora typography, hero homepage, reading-time badges, author cards, and full sidebar support.',
@@ -214,10 +224,14 @@ class MarketplaceService
                 return false;
             }
 
-            // Persist the license key against the marketplace item
+            // Persist the license key and initial validation state
             db_connect()->table('marketplace_items')
                 ->where('slug', $slug)
-                ->update(['license_key' => $licenseKey]);
+                ->update([
+                    'license_key'          => $licenseKey,
+                    'license_last_checked' => date('Y-m-d H:i:s'),
+                    'license_valid'        => 1,
+                ]);
 
             return true;
 
@@ -234,5 +248,90 @@ class MarketplaceService
             ->where('installed_version IS NOT NULL')
             ->where('installed_version != version')
             ->get()->getResultArray();
+    }
+
+    /**
+     * Re-validate all (or overdue) licensed items against the pubvana.net API.
+     *
+     * Returns an array of per-item status records:
+     *   ['slug' => string, 'status' => 'valid'|'invalid'|'unreachable'|'skipped']
+     */
+    public function revalidateLicenses(bool $force = false): array
+    {
+        if ($this->isDevDomain()) {
+            return [];
+        }
+
+        $db    = db_connect();
+        $rows  = $db->table('marketplace_items')
+            ->whereNotNull('license_key')
+            ->where('license_key !=', '')
+            ->get()->getResult();
+
+        $cutoff = date('Y-m-d H:i:s', strtotime('-' . $this->revalidateDays . ' days'));
+        $client = \Config\Services::curlrequest(['timeout' => 10]);
+        $results = [];
+
+        foreach ($rows as $item) {
+            // Skip items that are not yet overdue (unless force mode)
+            if (! $force && $item->license_last_checked !== null && $item->license_last_checked > $cutoff) {
+                $results[] = ['slug' => $item->slug, 'status' => 'skipped'];
+                continue;
+            }
+
+            try {
+                $response = $client->post('https://pubvana.net/api/license/validate', [
+                    'json' => [
+                        'license_key' => $item->license_key,
+                        'domain'      => base_url(),
+                        'item_slug'   => $item->slug,
+                    ],
+                    'http_errors' => false,
+                ]);
+
+                $status = $response->getStatusCode();
+                $body   = json_decode($response->getBody(), true);
+
+                if ($status === 200 && isset($body['valid'])) {
+                    $valid = (bool) $body['valid'];
+                    $db->table('marketplace_items')->where('slug', $item->slug)->update([
+                        'license_last_checked' => date('Y-m-d H:i:s'),
+                        'license_valid'        => $valid ? 1 : 0,
+                    ]);
+                    $results[] = ['slug' => $item->slug, 'status' => $valid ? 'valid' : 'invalid'];
+                } else {
+                    // Non-200 or malformed — reset clock but leave license_valid unchanged
+                    $db->table('marketplace_items')->where('slug', $item->slug)->update([
+                        'license_last_checked' => date('Y-m-d H:i:s'),
+                    ]);
+                    $results[] = ['slug' => $item->slug, 'status' => 'unreachable'];
+                }
+            } catch (\Throwable $e) {
+                log_message('warning', 'MarketplaceService::revalidateLicenses unreachable for ' . $item->slug . ': ' . $e->getMessage());
+                $results[] = ['slug' => $item->slug, 'status' => 'unreachable'];
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Called on every request (from BaseController). Uses a daily cache gate so
+     * actual DB/API work happens at most once per day.
+     */
+    public function checkAndRevalidateIfDue(): void
+    {
+        if ($this->isDevDomain()) {
+            return;
+        }
+
+        if (cache($this->dailyCacheKey) !== null) {
+            return;
+        }
+
+        // Set the cache key first to prevent concurrent requests double-firing
+        cache()->save($this->dailyCacheKey, true, $this->dailyCheckTtl);
+
+        $this->revalidateLicenses(false);
     }
 }

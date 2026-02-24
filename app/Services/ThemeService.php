@@ -94,6 +94,18 @@ class ThemeService
             return false;
         }
 
+        // Dev domains bypass all license checks
+        $host        = strtolower(parse_url(base_url(), PHP_URL_HOST) ?? '');
+        $isDevDomain = $host === 'localhost' || str_ends_with($host, '.local');
+
+        if (! $isDevDomain) {
+            $mItem = db_connect()->table('marketplace_items')
+                ->where('slug', $theme->folder)->get()->getRowObject();
+            if ($mItem && ! empty($mItem->license_key) && (int) $mItem->license_valid === 0) {
+                return false;
+            }
+        }
+
         $model->where('id !=', $id)->set('is_active', 0)->update();
         $model->update($id, ['is_active' => 1]);
 

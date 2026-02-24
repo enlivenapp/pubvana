@@ -218,10 +218,10 @@ Please include a README.md update under 'Translators' with your name and a link 
 - [x] Post Revision History
 - [x] Maintenance Mode toggle
 - [x] Core update notifications + `php spark pubvana:update` CLI
-- [ ] Content Preview Links (shareable draft URLs)
-- [ ] Bulk Post Actions (publish / unpublish / delete many)
-- [ ] Schema.org Markup (Article, BreadcrumbList, Author JSON-LD)
-- [ ] Image WebP Auto-Convert on Upload
+- [x] Content Preview Links (shareable draft URLs)
+- [x] Bulk Post Actions (publish / unpublish / delete many)
+- [x] Schema.org Markup (Article, BreadcrumbList, Author JSON-LD)
+- [x] Image WebP Auto-Convert on Upload
 
 ---
 

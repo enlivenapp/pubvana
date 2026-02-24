@@ -23,7 +23,10 @@ class Themes extends BaseAdminController
         if (! auth()->user()->can('admin.themes')) {
             return redirect()->to('/admin/themes')->with('error', 'Permission denied.');
         }
-        (new ThemeService())->activate($id);
+        $ok = (new ThemeService())->activate($id);
+        if (! $ok) {
+            return redirect()->to('/admin/themes')->with('error', 'Cannot activate theme — license is invalid. Re-install or contact support.');
+        }
         return redirect()->to('/admin/themes')->with('success', 'Theme activated.');
     }
 

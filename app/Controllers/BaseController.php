@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\NavigationModel;
 use App\Models\SocialModel;
+use App\Services\PluginManager;
 use App\Services\ThemeService;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\RequestInterface;
@@ -37,6 +38,20 @@ abstract class BaseController extends Controller
             $this->data['primary_nav']  = [];
             $this->data['footer_nav']   = [];
             $this->data['social_links'] = [];
+        }
+
+        try {
+            $pm = PluginManager::instance();
+            $pm->loadAll();
+            $this->data['plugin_menu_items'] = $pm->getMenuItems();
+        } catch (\Throwable $e) {
+            $this->data['plugin_menu_items'] = [];
+        }
+
+        try {
+            (new \App\Services\MarketplaceService())->checkAndRevalidateIfDue();
+        } catch (\Throwable $e) {
+            log_message('error', 'BaseController: license revalidation error: ' . $e->getMessage());
         }
     }
 }

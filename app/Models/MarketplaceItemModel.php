@@ -14,5 +14,6 @@ class MarketplaceItemModel extends Model
     protected $allowedFields = [
         'item_type', 'name', 'slug', 'description', 'version', 'price',
         'is_free', 'download_url', 'store_url', 'screenshot_url', 'author', 'installed_version',
+        'license_key', 'license_last_checked', 'license_valid',
     ];
 }
