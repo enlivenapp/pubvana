@@ -1,7 +1,7 @@
 # Pubvana
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v2.1.0-blue)](https://github.com/enlivenapp/pubvana/releases)
+[![Release](https://img.shields.io/badge/release-v2.1.1-blue)](https://github.com/enlivenapp/pubvana/releases)
 [![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-orange.svg)](https://codeigniter.com)
 [![Installs](https://img.shields.io/packagist/dt/enlivenapp/pubvana.svg)](https://packagist.org/packages/enlivenapp/pubvana)
