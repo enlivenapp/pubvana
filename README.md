@@ -195,7 +195,9 @@ Please include a README.md update under 'Translators' with your name and a link 
 
 ## Roadmap / Todo
 
-### Widgets
+### Pubvana Core
+
+**Built-in Widgets**
 - [x] Recent Posts
 - [x] Tag Cloud
 - [x] Categories List
@@ -207,34 +209,40 @@ Please include a README.md update under 'Translators' with your name and a link 
 - [x] Table of Contents
 - [x] Related Posts
 
-### Admin / Platform
+**Platform Features**
 - [x] Author Profiles & Bio Card
 - [x] Social OAuth Login (Google, Facebook)
 - [x] Social Auto-Share on Publish (Twitter, Facebook)
 - [x] Marketplace API with cache + refresh
-- [x] WordPress Importer (UI + CLI)
+- [x] WordPress Importer (admin UI + `php spark wp:import` CLI)
 - [x] Post Revision History
-- [ ] Scheduled Post Queue (calendar view)
-- [ ] Content Preview Links (shareable draft URLs)
-- [ ] Bulk Post Actions (publish/unpublish/delete many)
-- [ ] Schema.org Markup (Article, BreadcrumbList, Author JSON-LD)
-- [ ] Broken Link Checker
-- [ ] Image WebP Auto-Convert on Upload
-- [ ] Two-Factor Authentication (TOTP admin UI)
-- [ ] Backup & Export (DB + uploads zip)
-- [ ] Activity / Audit Log
 - [x] Maintenance Mode toggle
+- [x] Core update notifications + `php spark pubvana:update` CLI
+- [ ] Content Preview Links (shareable draft URLs)
+- [ ] Bulk Post Actions (publish / unpublish / delete many)
+- [ ] Schema.org Markup (Article, BreadcrumbList, Author JSON-LD)
+- [ ] Image WebP Auto-Convert on Upload
 
-### Monetisation
+---
+
+### Pubvana Premium
+
+**Premium Core Features** *(pubvana.net — license required)*
+- [ ] Scheduled Post Queue (calendar view)
+- [ ] Content Analytics (page views, popular posts, referrers)
+- [ ] Advanced SEO (OG image generation, schema breadcrumbs, news sitemap)
+- [ ] Two-Factor Authentication (TOTP)
+- [ ] Backup & Export (DB + uploads zip)
 - [ ] Membership / Paywalled Posts
-- [ ] Tip Jar / Per-post donations
-- [ ] Affiliate Link Manager (/go/ short links)
-- [ ] E-commerce (products, cart, checkout, orders)
+- [ ] Affiliate Link Manager (`/go/` short links + click tracking)
+- [ ] Broken Link Checker
+- [ ] Activity / Audit Log
 
-### Premium Widgets (pubvana.net/store)
+**Premium Widgets** *(pubvana.net/store)*
 - [x] Author Bio (sidebar)
 - [x] Ad Unit / Custom HTML
 - [x] Social Follow Buttons
+- [ ] Tip Jar / Per-post donations
 - [ ] Reading Progress Bar
 - [ ] Enhanced Search (AJAX live preview)
 - [ ] Email Opt-in / Lead Capture
@@ -243,3 +251,6 @@ Please include a README.md update under 'Translators' with your name and a link 
 - [ ] Gallery (masonry + lightbox)
 - [ ] Google Calendar & Maps
 - [ ] YouTube Channel Feed
+
+**Premium Plugins** *(pubvana.net/store)*
+- [ ] E-commerce (products, cart, checkout, orders)
