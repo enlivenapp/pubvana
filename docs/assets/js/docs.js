@@ -48,8 +48,6 @@ const NAV_GROUPS = [
     id: 'settings',
     items: [
       { label: 'General',          href: '/docs/settings/general.html' },
-      { label: 'SEO',              href: '/docs/settings/seo.html',      premium: true },
-      { label: 'Social Sharing',   href: '/docs/settings/social-sharing.html', premium: true },
       { label: 'Maintenance Mode', href: '/docs/settings/maintenance.html' },
     ]
   },
@@ -68,14 +66,16 @@ const NAV_GROUPS = [
     id: 'premium',
     premium: true,
     items: [
-      { label: 'Overview & Activation', href: '/docs/premium/overview.html',      premium: true },
-      { label: 'Analytics',             href: '/docs/premium/analytics.html',     premium: true },
-      { label: 'Activity Log',          href: '/docs/premium/activity-log.html',  premium: true },
-      { label: 'Post Schedule',         href: '/docs/premium/schedule.html',      premium: true },
-      { label: 'Backup & Export',       href: '/docs/premium/backup.html',        premium: true },
-      { label: 'Broken Link Checker',   href: '/docs/premium/broken-links.html',  premium: true },
-      { label: 'Affiliate Links',       href: '/docs/premium/affiliates.html',    premium: true },
-      { label: 'Two-Factor Auth',       href: '/docs/premium/two-factor.html',    premium: true },
+      { label: 'Overview & Activation', href: '/docs/premium/overview.html',              premium: true },
+      { label: 'Analytics',             href: '/docs/premium/analytics.html',             premium: true },
+      { label: 'Activity Log',          href: '/docs/premium/activity-log.html',          premium: true },
+      { label: 'Post Schedule',         href: '/docs/premium/schedule.html',              premium: true },
+      { label: 'Backup & Export',       href: '/docs/premium/backup.html',                premium: true },
+      { label: 'Broken Link Checker',   href: '/docs/premium/broken-links.html',          premium: true },
+      { label: 'Affiliate Links',       href: '/docs/premium/affiliates.html',            premium: true },
+      { label: 'Two-Factor Auth',       href: '/docs/premium/two-factor.html',            premium: true },
+      { label: 'SEO',                   href: '/docs/settings/seo.html',                  premium: true },
+      { label: 'Social Sharing',        href: '/docs/settings/social-sharing.html',       premium: true },
     ]
   },
 ];
