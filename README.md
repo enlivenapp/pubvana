@@ -48,6 +48,28 @@ Point your web server `DocumentRoot` at the `public/` folder.
 > ```
 > Only the `uploads/` subdirectory is exposed — sessions, cache, and logs remain inaccessible.
 
+## CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `php spark wp:import <file>` | Import posts/pages/tags from a WordPress WXR export file |
+| `php spark posts:publish` | Publish scheduled posts whose publish date has passed |
+| `php spark links:check` | Scan all published posts and pages for broken external links |
+| `php spark marketplace:revalidate` | Re-validate installed premium item licences against pubvana.net |
+| `php spark pubvana:update [--dry-run]` | Check for and apply Pubvana core updates |
+
+### Cron Jobs
+
+Scheduled post publishing requires a cron job. Add to crontab:
+
+```
+* * * * * php /path/to/pubvana/spark posts:publish >> /dev/null 2>&1
+```
+
+Run `links:check` as needed (e.g. weekly) — results appear in Admin → Broken Links.
+
+---
+
 ## Requirements
 
 - PHP 8.2+
