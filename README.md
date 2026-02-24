@@ -207,9 +207,6 @@ Please include a README.md update under 'Translators' with your name and a link 
 - [x] Table of Contents
 - [x] Related Posts
 - [ ] Reading Progress Bar
-- [ ] Enhanced Search (AJAX live preview)
-- [ ] Email Opt-in / Lead Capture
-- [ ] Countdown Timer
 
 ### Admin / Platform
 - [x] Author Profiles & Bio Card
@@ -239,6 +236,9 @@ Please include a README.md update under 'Translators' with your name and a link 
 - [x] Author Bio (sidebar)
 - [x] Ad Unit / Custom HTML
 - [x] Social Follow Buttons
+- [ ] Enhanced Search (AJAX live preview)
+- [ ] Email Opt-in / Lead Capture
+- [ ] Countdown Timer
 - [ ] Advanced Login
 - [ ] Gallery (masonry + lightbox)
 - [ ] Google Calendar & Maps
