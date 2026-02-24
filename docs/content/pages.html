@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pages — Pubvana Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="../assets/css/docs.css" rel="stylesheet">
+</head>
+<body>
+  <header id="docs-header">
+    <button id="hamburger" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
+    <a href="/docs/index.html" class="brand">
+      <i class="fa fa-fire-flame-curved" style="color:var(--ember-accent)"></i>
+      Pubvana <span class="docs-label">Docs</span>
+    </a>
+    <div class="header-links"><a href="https://pubvana.net" target="_blank">pubvana.net</a></div>
+  </header>
+  <div id="docs-wrapper">
+    <aside id="docs-sidebar"><div id="docs-sidebar-nav"></div></aside>
+    <main id="docs-content">
+      <div class="docs-article">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+          <a href="/docs/index.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Content</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>Pages</span>
+        </nav>
+        <h1>Pages</h1>
+<p>Pages are static content pieces &mdash; About, Contact, Privacy Policy &mdash; that sit outside the blog feed.</p>
+
+<h2>Pages vs Posts</h2>
+<table>
+  <thead><tr><th></th><th>Posts</th><th>Pages</th></tr></thead>
+  <tbody>
+    <tr><td>Appear in blog feed</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Have categories/tags</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Date-stamped</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Can be front page</td><td>No</td><td>Yes</td></tr>
+  </tbody>
+</table>
+
+<h2>Creating a Page</h2>
+<p>Go to <strong>Pages &rarr; New Page</strong>. Enter a title, write the content, and click <strong>Save Page</strong>. The slug is auto-generated from the title.</p>
+
+<h2>Setting a Static Front Page</h2>
+<p>By default, the homepage shows the blog feed. To display a page instead, go to <strong>Settings &rarr; General</strong> and set <em>Front Page</em> to the desired page.</p>
+
+<h2>System Pages</h2>
+<p>Some pages are marked as <em>system pages</em> and cannot be deleted. You can still edit their content.</p>
+
+<h2>Page Order</h2>
+<p>Each page has a <strong>Sort Order</strong> field. Lower numbers appear first in navigation menus that auto-populate from pages.</p>
+
+<nav class="docs-prevnext">
+  <a href="posts.html">
+    <span class="pn-label">&larr; Previous</span>
+    <span class="pn-title">Posts</span>
+  </a>
+  <a href="categories-tags.html" class="next">
+    <span class="pn-label">Next</span>
+    <span class="pn-title">Categories &amp; Tags &rarr;</span>
+  </a>
+</nav>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

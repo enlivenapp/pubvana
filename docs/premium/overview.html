@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Premium Core Overview — Pubvana Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="../assets/css/docs.css" rel="stylesheet">
+</head>
+<body>
+  <header id="docs-header">
+    <button id="hamburger" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
+    <a href="/docs/index.html" class="brand">
+      <i class="fa fa-fire-flame-curved" style="color:var(--ember-accent)"></i>
+      Pubvana <span class="docs-label">Docs</span>
+    </a>
+    <div class="header-links"><a href="https://pubvana.net" target="_blank">pubvana.net</a></div>
+  </header>
+  <div id="docs-wrapper">
+    <aside id="docs-sidebar"><div id="docs-sidebar-nav"></div></aside>
+    <main id="docs-content">
+      <div class="docs-article">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+          <a href="/docs/index.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Premium Core</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>Overview &amp; Activation</span>
+        </nav>
+        <h1>Premium Core <span class="badge-premium">Premium</span></h1>
+<div class="premium-callout">
+  <span class="pc-icon">⭐</span>
+  <p>This feature requires a <strong>Premium Core</strong> licence. <a href="/admin/settings#premium">Activate &rarr;</a></p>
+</div>
+
+<p>Premium Core is an add-on licence that unlocks eight advanced features in your Pubvana installation.</p>
+
+<h2>What Premium Core Unlocks</h2>
+<ul>
+  <li><strong>Analytics</strong> &mdash; page view tracking, top posts, referrer breakdown, daily charts</li>
+  <li><strong>Activity Log</strong> &mdash; full audit trail of admin actions</li>
+  <li><strong>Post Schedule</strong> &mdash; calendar view and automatic timed publishing</li>
+  <li><strong>Backup &amp; Export</strong> &mdash; one-click database + uploads ZIP download</li>
+  <li><strong>Broken Link Checker</strong> &mdash; scan and report broken external links</li>
+  <li><strong>Affiliate Links</strong> &mdash; create tracked <code>/go/{slug}</code> redirect links</li>
+  <li><strong>Two-Factor Auth</strong> &mdash; TOTP-based 2FA for admin accounts</li>
+  <li><strong>Premium widgets</strong> &mdash; Author Bio, Social Links, Table of Contents, Ad Unit/HTML</li>
+</ul>
+
+<h2>Purchasing a Licence</h2>
+<p>Visit <a href="https://pubvana.net/store" target="_blank">pubvana.net/store</a> and purchase the Premium Core product. After checkout you&rsquo;ll receive a licence key by email and in your account dashboard.</p>
+
+<h2>Activating Your Licence</h2>
+<ol>
+  <li>In your Pubvana admin, go to <strong>Settings &rarr; Premium</strong></li>
+  <li>Paste your licence key into the <em>Licence Key</em> field</li>
+  <li>Click <strong>Save &amp; Activate</strong></li>
+  <li>Pubvana validates the key against pubvana.net and ties it to your domain</li>
+  <li>Premium features appear immediately in the admin sidebar</li>
+</ol>
+
+<h2>90-Day Re-Validation</h2>
+<p>Pubvana automatically re-validates your licence every 90 days in the background. You do not need to do anything &mdash; as long as your licence remains active and your domain matches, the features stay enabled.</p>
+
+<h2>Licence Status Indicators</h2>
+<table>
+  <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><span style="color:#10b981">&#10003; Active</span></td><td>Licence is valid and features are enabled</td></tr>
+    <tr><td><span style="color:#f59e0b">&#9888; Expiring soon</span></td><td>Licence renewal due within 14 days</td></tr>
+    <tr><td><span style="color:#ef4444">&#10007; Invalid</span></td><td>Key not recognised or domain mismatch &mdash; check your licence</td></tr>
+  </tbody>
+</table>
+
+<h2>Manual Re-Validation</h2>
+<pre><code>php spark marketplace:revalidate</code></pre>
+<p>Run this command if you&rsquo;ve renewed your licence or changed your domain and want to refresh the status immediately.</p>
+
+<nav class="docs-prevnext">
+  <a href="../tools/cli-commands.html">
+    <span class="pn-label">&larr; Previous</span>
+    <span class="pn-title">CLI Commands</span>
+  </a>
+  <a href="analytics.html" class="next">
+    <span class="pn-label">Next</span>
+    <span class="pn-title">Analytics &rarr;</span>
+  </a>
+</nav>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

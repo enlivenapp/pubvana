@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analytics — Pubvana Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="../assets/css/docs.css" rel="stylesheet">
+</head>
+<body>
+  <header id="docs-header">
+    <button id="hamburger" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
+    <a href="/docs/index.html" class="brand">
+      <i class="fa fa-fire-flame-curved" style="color:var(--ember-accent)"></i>
+      Pubvana <span class="docs-label">Docs</span>
+    </a>
+    <div class="header-links"><a href="https://pubvana.net" target="_blank">pubvana.net</a></div>
+  </header>
+  <div id="docs-wrapper">
+    <aside id="docs-sidebar"><div id="docs-sidebar-nav"></div></aside>
+    <main id="docs-content">
+      <div class="docs-article">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+          <a href="/docs/index.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Premium Core</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>Analytics</span>
+        </nav>
+        <h1>Analytics <span class="badge-premium">Premium</span></h1>
+<div class="premium-callout">
+  <span class="pc-icon">⭐</span>
+  <p>This feature requires a <strong>Premium Core</strong> licence. <a href="/admin/settings#premium">Activate &rarr;</a></p>
+</div>
+
+<p>Built-in page view analytics &mdash; no external service required. Data is stored in your own database.</p>
+
+<h2>Accessing Analytics</h2>
+<p>Go to <strong>Admin &rarr; Analytics</strong>. The dashboard shows:</p>
+<ul>
+  <li><strong>Total views</strong> for the selected period (7 / 30 / 90 days)</li>
+  <li><strong>Top posts</strong> &mdash; ranked bar chart of most-viewed content</li>
+  <li><strong>Referrer breakdown</strong> &mdash; where traffic is coming from</li>
+  <li><strong>Daily view chart</strong> &mdash; line graph of views over time</li>
+</ul>
+
+<h2>View Periods</h2>
+<p>Use the period selector at the top of the analytics page to switch between 7-day, 30-day, and 90-day windows.</p>
+
+<h2>How Tracking Works</h2>
+<p>Pubvana records a page view each time a post or page is loaded on the front end. Bot traffic is filtered using a basic user-agent check. Views are stored in the <code>page_views</code> table in your database &mdash; no cookies are set and no data leaves your server.</p>
+
+<h2>JSON Data Endpoint</h2>
+<p>For custom integrations, the analytics data is available as JSON:</p>
+<pre><code>GET /api/analytics/views?period=30</code></pre>
+<p>Returns an array of <code>{ date, views }</code> objects for the specified period. Requires an authenticated admin session.</p>
+
+<nav class="docs-prevnext">
+  <a href="overview.html">
+    <span class="pn-label">&larr; Previous</span>
+    <span class="pn-title">Overview &amp; Activation</span>
+  </a>
+  <a href="activity-log.html" class="next">
+    <span class="pn-label">Next</span>
+    <span class="pn-title">Activity Log &rarr;</span>
+  </a>
+</nav>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

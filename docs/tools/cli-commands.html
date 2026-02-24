@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLI Commands — Pubvana Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="../assets/css/docs.css" rel="stylesheet">
+</head>
+<body>
+  <header id="docs-header">
+    <button id="hamburger" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
+    <a href="/docs/index.html" class="brand">
+      <i class="fa fa-fire-flame-curved" style="color:var(--ember-accent)"></i>
+      Pubvana <span class="docs-label">Docs</span>
+    </a>
+    <div class="header-links"><a href="https://pubvana.net" target="_blank">pubvana.net</a></div>
+  </header>
+  <div id="docs-wrapper">
+    <aside id="docs-sidebar"><div id="docs-sidebar-nav"></div></aside>
+    <main id="docs-content">
+      <div class="docs-article">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+          <a href="/docs/index.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Tools</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>CLI Commands</span>
+        </nav>
+        <h1>CLI Commands</h1>
+<p>Pubvana includes several <code>php spark</code> commands for automation and maintenance.</p>
+
+<h2>Available Commands</h2>
+<table>
+  <thead><tr><th>Command</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>php spark wp:import &lt;file&gt;</code></td>
+      <td>Import a WordPress WXR export file. Add <code>--dry-run</code> for preview mode.</td>
+    </tr>
+    <tr>
+      <td><code>php spark posts:publish</code></td>
+      <td>Publish all scheduled posts whose publish date has passed. Run via cron.</td>
+    </tr>
+    <tr>
+      <td><code>php spark links:check</code></td>
+      <td>Scan all post and page content for broken external links. Results appear in Admin &rarr; Broken Links.</td>
+    </tr>
+    <tr>
+      <td><code>php spark marketplace:revalidate</code></td>
+      <td>Re-validate all installed premium licence keys against pubvana.net.</td>
+    </tr>
+    <tr>
+      <td><code>php spark db:seed PubvanaSeeder</code></td>
+      <td>Seed the database with default data (run once during installation).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Cron Job: Post Scheduling</h2>
+<p>To enable automatic post publishing, add this cron job (runs every minute):</p>
+<pre><code>* * * * * /usr/bin/php /path/to/pubvana/spark posts:publish >> /dev/null 2>&amp;1</code></pre>
+
+<h2>Cron Job: Broken Link Checker</h2>
+<p>A weekly scan is recommended (Sundays at 2 AM here, adjust to suit):</p>
+<pre><code>0 2 * * 0 /usr/bin/php /path/to/pubvana/spark links:check >> /dev/null 2>&amp;1</code></pre>
+
+<div class="callout info">
+  <strong>Path to PHP</strong>
+  Find your PHP binary path with <code>which php</code> or <code>which php8.1</code> if you have multiple versions. Use the full absolute path in cron jobs.
+</div>
+
+<nav class="docs-prevnext">
+  <a href="redirects.html">
+    <span class="pn-label">&larr; Previous</span>
+    <span class="pn-title">Redirects</span>
+  </a>
+  <a href="../premium/overview.html" class="next">
+    <span class="pn-label">Next</span>
+    <span class="pn-title">Premium Core Overview &rarr;</span>
+  </a>
+</nav>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

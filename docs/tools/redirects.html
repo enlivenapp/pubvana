@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redirects — Pubvana Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="../assets/css/docs.css" rel="stylesheet">
+</head>
+<body>
+  <header id="docs-header">
+    <button id="hamburger" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
+    <a href="/docs/index.html" class="brand">
+      <i class="fa fa-fire-flame-curved" style="color:var(--ember-accent)"></i>
+      Pubvana <span class="docs-label">Docs</span>
+    </a>
+    <div class="header-links"><a href="https://pubvana.net" target="_blank">pubvana.net</a></div>
+  </header>
+  <div id="docs-wrapper">
+    <aside id="docs-sidebar"><div id="docs-sidebar-nav"></div></aside>
+    <main id="docs-content">
+      <div class="docs-article">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+          <a href="/docs/index.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Tools</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>Redirects</span>
+        </nav>
+        <h1>Redirects</h1>
+<p>Use redirects to send visitors from old URLs to new ones &mdash; preserving SEO value and preventing broken links.</p>
+
+<h2>Creating a Redirect</h2>
+<ol>
+  <li>Go to <strong>Tools &rarr; Redirects</strong></li>
+  <li>Click <strong>New Redirect</strong></li>
+  <li>Enter the <strong>Source</strong> (the old URL path, e.g. <code>/old-post-slug</code>)</li>
+  <li>Enter the <strong>Destination</strong> (the new URL path or full URL)</li>
+  <li>Choose the type: <strong>301 Permanent</strong> or <strong>302 Temporary</strong></li>
+  <li>Click <strong>Save</strong></li>
+</ol>
+
+<h2>301 vs 302</h2>
+<table>
+  <thead><tr><th>Type</th><th>When to use</th></tr></thead>
+  <tbody>
+    <tr><td>301 Permanent</td><td>The URL has moved forever (changed slug, retired page). Passes SEO ranking.</td></tr>
+    <tr><td>302 Temporary</td><td>Short-term redirect (A/B test, seasonal page). Does not pass SEO ranking.</td></tr>
+  </tbody>
+</table>
+
+<h2>Common Use Cases</h2>
+<ul>
+  <li>You changed a post&rsquo;s slug after it was indexed by Google</li>
+  <li>You deleted a page and want to point visitors to a replacement</li>
+  <li>You&rsquo;re migrating from WordPress and old URLs differ from new ones</li>
+</ul>
+
+<h2>Wildcard vs Exact Match</h2>
+<p>By default, redirects match the exact source path. Tick <strong>Wildcard</strong> to match any URL that <em>starts with</em> the source path &mdash; useful for redirecting an entire section (e.g. <code>/blog/*</code> &rarr; <code>/posts/*</code>).</p>
+
+<nav class="docs-prevnext">
+  <a href="wordpress-import.html">
+    <span class="pn-label">&larr; Previous</span>
+    <span class="pn-title">WordPress Import</span>
+  </a>
+  <a href="cli-commands.html" class="next">
+    <span class="pn-label">Next</span>
+    <span class="pn-title">CLI Commands &rarr;</span>
+  </a>
+</nav>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

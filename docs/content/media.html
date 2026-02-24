@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Media Library — Pubvana Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="../assets/css/docs.css" rel="stylesheet">
+</head>
+<body>
+  <header id="docs-header">
+    <button id="hamburger" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
+    <a href="/docs/index.html" class="brand">
+      <i class="fa fa-fire-flame-curved" style="color:var(--ember-accent)"></i>
+      Pubvana <span class="docs-label">Docs</span>
+    </a>
+    <div class="header-links"><a href="https://pubvana.net" target="_blank">pubvana.net</a></div>
+  </header>
+  <div id="docs-wrapper">
+    <aside id="docs-sidebar"><div id="docs-sidebar-nav"></div></aside>
+    <main id="docs-content">
+      <div class="docs-article">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+          <a href="/docs/index.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Content</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>Media Library</span>
+        </nav>
+        <h1>Media Library</h1>
+<p>The Media Library is where all uploaded images and documents are stored and managed.</p>
+
+<h2>Uploading Files</h2>
+<p>Go to <strong>Media &rarr; Upload</strong>. Drag files onto the upload area or click to browse. Supported types include JPEG, PNG, GIF, WebP, and PDF. Uploaded images are automatically converted to WebP format to reduce file size.</p>
+
+<h2>Inserting Media into Posts</h2>
+<p>In the post editor, click the <strong>Add Media</strong> button (image icon in the toolbar). The media picker opens &mdash; click any image to insert it at the cursor position. You can resize, align, or add a caption directly in the editor.</p>
+
+<h2>Managing Files</h2>
+<p>The media grid at <strong>Media &rarr; Library</strong> shows all uploads. Click any item to:</p>
+<ul>
+  <li>View its URL (for manual linking)</li>
+  <li>See which posts use it</li>
+  <li>Delete it &mdash; note that deleting removes the file from all posts where it is used</li>
+</ul>
+
+<div class="callout warning">
+  <strong>Before deleting</strong>
+  Check that the file is not in use. The media detail panel shows &ldquo;Used in N posts&rdquo; &mdash; delete only when that count is 0.
+</div>
+
+<nav class="docs-prevnext">
+  <a href="revisions.html">
+    <span class="pn-label">&larr; Previous</span>
+    <span class="pn-title">Revisions</span>
+  </a>
+  <a href="../design/themes.html" class="next">
+    <span class="pn-label">Next</span>
+    <span class="pn-title">Themes &rarr;</span>
+  </a>
+</nav>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

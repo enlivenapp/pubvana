@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Affiliate Links — Pubvana Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="../assets/css/docs.css" rel="stylesheet">
+</head>
+<body>
+  <header id="docs-header">
+    <button id="hamburger" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
+    <a href="/docs/index.html" class="brand">
+      <i class="fa fa-fire-flame-curved" style="color:var(--ember-accent)"></i>
+      Pubvana <span class="docs-label">Docs</span>
+    </a>
+    <div class="header-links"><a href="https://pubvana.net" target="_blank">pubvana.net</a></div>
+  </header>
+  <div id="docs-wrapper">
+    <aside id="docs-sidebar"><div id="docs-sidebar-nav"></div></aside>
+    <main id="docs-content">
+      <div class="docs-article">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+          <a href="/docs/index.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Premium Core</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>Affiliate Links</span>
+        </nav>
+        <h1>Affiliate Links <span class="badge-premium">Premium</span></h1>
+<div class="premium-callout">
+  <span class="pc-icon">⭐</span>
+  <p>This feature requires a <strong>Premium Core</strong> licence. <a href="/admin/settings#premium">Activate &rarr;</a></p>
+</div>
+
+<p>Create short, trackable redirect links at <code>/go/{slug}</code> for affiliate programmes, sponsored content, or campaign tracking.</p>
+
+<h2>Creating a Link</h2>
+<ol>
+  <li>Go to <strong>Admin &rarr; Affiliate Links</strong></li>
+  <li>Click <strong>New Link</strong></li>
+  <li>Enter a <strong>Slug</strong> &mdash; the short code used in the URL (e.g. <code>hosting-deal</code>)</li>
+  <li>Enter the <strong>Destination URL</strong> &mdash; the full affiliate URL</li>
+  <li>Add an optional <strong>Note</strong> to identify the campaign</li>
+  <li>Click <strong>Save</strong></li>
+</ol>
+<p>Visitors who go to <code>https://yourdomain.com/go/hosting-deal</code> are immediately redirected (301) to the destination URL, and the click is recorded.</p>
+
+<h2>Toggling Active / Inactive</h2>
+<p>Click the status toggle next to any link to enable or disable it. Inactive links return a 404 instead of redirecting.</p>
+
+<h2>Viewing Click History</h2>
+<p>Click <strong>View Stats</strong> next to any link to see:</p>
+<ul>
+  <li>Total click count</li>
+  <li>Daily click chart (last 30 days)</li>
+  <li>Recent click timestamps</li>
+</ul>
+
+<h2>Use Cases</h2>
+<ul>
+  <li>Affiliate programme links (Amazon, ShareASale, etc.)</li>
+  <li>Sponsored content &mdash; track clicks to a sponsor&rsquo;s site</li>
+  <li>Campaign tracking &mdash; compare performance of different placements</li>
+  <li>Clean URLs &mdash; hide long, ugly affiliate parameters from readers</li>
+</ul>
+
+<nav class="docs-prevnext">
+  <a href="broken-links.html">
+    <span class="pn-label">&larr; Previous</span>
+    <span class="pn-title">Broken Link Checker</span>
+  </a>
+  <a href="two-factor.html" class="next">
+    <span class="pn-label">Next</span>
+    <span class="pn-title">Two-Factor Auth &rarr;</span>
+  </a>
+</nav>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

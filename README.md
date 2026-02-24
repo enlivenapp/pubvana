@@ -176,13 +176,11 @@ Please use the [Issues Tracker](https://github.com/enlivenapp/pubvana/issues).
 
 ## Links
 
-[pubvana.net Home](http://pubvana.net)
+[pubvana.net](https://pubvana.net) — Home & Addon Store (Themes, Widgets, and other Addons)
 
-Pubvana Addon Store (Themes, Widgets, and other Addons) — Coming Soon
+[User Docs](https://pubvana.net/docs)
 
 [Facebook Page](https://www.facebook.com/pubvana.net)
-
-[User Docs](http://pubvana.net)
 
 ## License
 

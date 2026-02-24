@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WordPress Import — Pubvana Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="../assets/css/docs.css" rel="stylesheet">
+</head>
+<body>
+  <header id="docs-header">
+    <button id="hamburger" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
+    <a href="/docs/index.html" class="brand">
+      <i class="fa fa-fire-flame-curved" style="color:var(--ember-accent)"></i>
+      Pubvana <span class="docs-label">Docs</span>
+    </a>
+    <div class="header-links"><a href="https://pubvana.net" target="_blank">pubvana.net</a></div>
+  </header>
+  <div id="docs-wrapper">
+    <aside id="docs-sidebar"><div id="docs-sidebar-nav"></div></aside>
+    <main id="docs-content">
+      <div class="docs-article">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+          <a href="/docs/index.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Tools</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>WordPress Import</span>
+        </nav>
+        <h1>WordPress Import</h1>
+<p>Migrate your existing WordPress site to Pubvana using the WXR (WordPress eXtended RSS) export format.</p>
+
+<h2>Step 1 &mdash; Export from WordPress</h2>
+<ol>
+  <li>In your WordPress admin, go to <strong>Tools &rarr; Export</strong></li>
+  <li>Select <strong>All content</strong></li>
+  <li>Click <strong>Download Export File</strong></li>
+  <li>You&rsquo;ll receive an XML file (the WXR)</li>
+</ol>
+
+<h2>Step 2 &mdash; Upload the WXR File</h2>
+<p>In Pubvana, go to <strong>Tools &rarr; Import &rarr; WordPress</strong>. Upload the XML file (maximum 50 MB). For larger exports, use the CLI method below.</p>
+
+<h2>Dry-Run Preview</h2>
+<p>Tick <strong>Dry run (preview only)</strong> before importing. Pubvana will parse the file and show you a summary of what will be imported without actually creating any records. This lets you verify counts before committing.</p>
+
+<h2>What Gets Imported</h2>
+<ul>
+  <li><strong>Posts</strong> &mdash; title, content, excerpt, date, status, featured image URL</li>
+  <li><strong>Pages</strong> &mdash; title, content, date, status</li>
+  <li><strong>Categories</strong> &mdash; name, slug, description</li>
+  <li><strong>Tags</strong> &mdash; name, slug</li>
+  <li><strong>Authors</strong> &mdash; created as Subscriber accounts (set passwords separately)</li>
+  <li><strong>Comments</strong> &mdash; approved comments with author name and email</li>
+</ul>
+
+<h2>CLI Alternative</h2>
+<p>For large files or automated pipelines, use the Spark command:</p>
+<pre><code>php spark wp:import /path/to/export.xml</code></pre>
+<p>Add <code>--dry-run</code> for a preview without importing.</p>
+
+<nav class="docs-prevnext">
+  <a href="marketplace.html">
+    <span class="pn-label">&larr; Previous</span>
+    <span class="pn-title">Marketplace</span>
+  </a>
+  <a href="redirects.html" class="next">
+    <span class="pn-label">Next</span>
+    <span class="pn-title">Redirects &rarr;</span>
+  </a>
+</nav>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

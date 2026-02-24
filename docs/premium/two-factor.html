@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two-Factor Auth — Pubvana Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="../assets/css/docs.css" rel="stylesheet">
+</head>
+<body>
+  <header id="docs-header">
+    <button id="hamburger" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
+    <a href="/docs/index.html" class="brand">
+      <i class="fa fa-fire-flame-curved" style="color:var(--ember-accent)"></i>
+      Pubvana <span class="docs-label">Docs</span>
+    </a>
+    <div class="header-links"><a href="https://pubvana.net" target="_blank">pubvana.net</a></div>
+  </header>
+  <div id="docs-wrapper">
+    <aside id="docs-sidebar"><div id="docs-sidebar-nav"></div></aside>
+    <main id="docs-content">
+      <div class="docs-article">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+          <a href="/docs/index.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Premium Core</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>Two-Factor Auth</span>
+        </nav>
+        <h1>Two-Factor Auth <span class="badge-premium">Premium</span></h1>
+<div class="premium-callout">
+  <span class="pc-icon">⭐</span>
+  <p>This feature requires a <strong>Premium Core</strong> licence. <a href="/admin/settings#premium">Activate &rarr;</a></p>
+</div>
+
+<p>Add an extra layer of security to your account with time-based one-time passwords (TOTP).</p>
+
+<h2>Setting Up 2FA</h2>
+<ol>
+  <li>Go to <strong>Users &rarr; Your Profile &rarr; Security</strong></li>
+  <li>Click <strong>Enable Two-Factor Auth</strong></li>
+  <li>A QR code is displayed &mdash; scan it with an authenticator app:
+    <ul>
+      <li>Google Authenticator (iOS / Android)</li>
+      <li>Authy (iOS / Android / Desktop)</li>
+      <li>1Password, Bitwarden, or any TOTP-compatible app</li>
+    </ul>
+  </li>
+  <li>The app generates a 6-digit code that changes every 30 seconds</li>
+  <li>Enter the current code in the <strong>Verify Code</strong> field and click <strong>Confirm</strong></li>
+  <li>2FA is now active on your account</li>
+</ol>
+
+<div class="callout warning">
+  <strong>Save your backup codes</strong>
+  After enabling 2FA, Pubvana shows a set of single-use backup codes. Store them somewhere safe (password manager or printed copy). You&rsquo;ll need them if you lose access to your authenticator app.
+</div>
+
+<h2>Using 2FA at Login</h2>
+<p>After entering your email and password, you&rsquo;ll be prompted for a 6-digit code. Open your authenticator app, find the Pubvana entry, and type the current code.</p>
+
+<h2>Disabling 2FA</h2>
+<ol>
+  <li>Go to <strong>Users &rarr; Your Profile &rarr; Security</strong></li>
+  <li>Click <strong>Disable Two-Factor Auth</strong></li>
+  <li>Enter your current password to confirm</li>
+</ol>
+<p>A Superadmin can also disable 2FA for any user from <strong>Users &rarr; Edit User &rarr; Security</strong>.</p>
+
+<nav class="docs-prevnext">
+  <a href="affiliates.html">
+    <span class="pn-label">&larr; Previous</span>
+    <span class="pn-title">Affiliate Links</span>
+  </a>
+  <span></span>
+</nav>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>
