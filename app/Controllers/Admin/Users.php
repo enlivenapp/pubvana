@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\AuthorProfileModel;
+use App\Services\ActivityLogger;
 use App\Services\MediaService;
 use CodeIgniter\Shield\Models\UserModel;
 
@@ -90,6 +91,7 @@ class Users extends BaseAdminController
             $userModel->save($user);
         }
 
+        ActivityLogger::log('user.updated', 'user', $id, 'Updated user: ' . ($user->username ?? $id));
         return redirect()->to('/admin/users')->with('success', 'User updated.');
     }
 
@@ -103,6 +105,7 @@ class Users extends BaseAdminController
             return redirect()->to('/admin/users')->with('error', 'The site owner account cannot be deleted.');
         }
         (new UserModel())->delete($id, true);
+        ActivityLogger::log('user.deleted', 'user', $id, 'Deleted user ID: ' . $id);
         return redirect()->to('/admin/users')->with('success', 'User deleted.');
     }
 
@@ -142,6 +145,7 @@ class Users extends BaseAdminController
             $newUser->addGroup($this->request->getPost('role'));
         }
 
+        ActivityLogger::log('user.created', 'user', null, 'Created user: ' . $this->request->getPost('username'));
         return redirect()->to('/admin/users')->with('success', 'User created.');
     }
 

@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\ThemeModel;
+use App\Services\ActivityLogger;
 use App\Services\ThemeService;
 
 class Themes extends BaseAdminController
@@ -23,10 +24,13 @@ class Themes extends BaseAdminController
         if (! auth()->user()->can('admin.themes')) {
             return redirect()->to('/admin/themes')->with('error', 'Permission denied.');
         }
-        $ok = (new ThemeService())->activate($id);
+        $service = new ThemeService();
+        $ok      = $service->activate($id);
         if (! $ok) {
             return redirect()->to('/admin/themes')->with('error', 'Cannot activate theme — license is invalid. Re-install or contact support.');
         }
+        $theme = (new ThemeModel())->find($id);
+        ActivityLogger::log('theme.activated', 'theme', $id, 'Activated theme: ' . ($theme->name ?? $id));
         return redirect()->to('/admin/themes')->with('success', 'Theme activated.');
     }
 

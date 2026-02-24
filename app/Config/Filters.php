@@ -4,6 +4,7 @@ namespace Config;
 
 use App\Filters\AdminFilter;
 use App\Filters\MaintenanceFilter;
+use App\Filters\TotpFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -34,6 +35,7 @@ class Filters extends BaseFilters
         'session'       => SessionAuth::class,
         'admin_auth'    => AdminFilter::class,
         'maintenance'   => MaintenanceFilter::class,
+        'totp'          => TotpFilter::class,
     ];
 
     /**

@@ -105,13 +105,17 @@
                         <option value="scheduled" <?= $post->status === 'scheduled' ? 'selected' : '' ?>>Scheduled</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Publish Date</label>
+                <div class="form-group" id="published-at-group">
+                    <label>Scheduled Date &amp; Time</label>
                     <input type="datetime-local" name="published_at" class="form-control" value="<?= $post->published_at ? date('Y-m-d\TH:i', strtotime($post->published_at)) : '' ?>">
                 </div>
                 <div class="form-check mb-2">
                     <input type="checkbox" name="is_featured" id="is_featured" class="form-check-input" value="1" <?= $post->is_featured ? 'checked' : '' ?>>
                     <label class="form-check-label" for="is_featured">Featured Post</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input type="checkbox" name="is_premium" id="is_premium" class="form-check-input" value="1" <?= !empty($post->is_premium) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="is_premium"><i class="fas fa-lock fa-xs text-warning mr-1"></i>Members Only</label>
                 </div>
                 <?php if ($post->status !== 'published'): ?>
                 <div class="form-check mb-2">
@@ -161,6 +165,16 @@
     </div>
 </div>
 </form>
+
+<script>
+(function() {
+    var sel = document.querySelector('select[name="status"]');
+    var grp = document.getElementById('published-at-group');
+    function toggle() { grp.style.display = sel.value === 'scheduled' ? 'block' : 'none'; }
+    sel.addEventListener('change', toggle);
+    toggle();
+})();
+</script>
 
 <?php $content = ob_get_clean(); ?>
 <?php $extra_scripts = <<<HTML

@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\PageModel;
+use App\Services\ActivityLogger;
 
 class Settings extends BaseAdminController
 {
@@ -16,6 +17,20 @@ class Settings extends BaseAdminController
 
         return $this->adminView('settings/index', array_merge($this->baseData('Settings', 'settings'), [
             'pages' => $pages,
+        ]));
+    }
+
+    public function premiumPage(): string
+    {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
+
+        $pages = (new PageModel())->where('status', 'published')->findAll();
+
+        return $this->adminView('settings/index', array_merge($this->baseData('Premium', 'premium'), [
+            'pages'       => $pages,
+            'open_tab'    => 'premium',
         ]));
     }
 
@@ -40,6 +55,7 @@ class Settings extends BaseAdminController
         setting()->set('App.frontPageType', $fpType);
         setting()->set('App.frontPageId',   ($fpType === 'page' && $fpId) ? (int) $fpId : null);
 
+        ActivityLogger::log('settings.updated', 'setting', null, 'Updated general settings');
         return redirect()->to('/admin/settings')->with('success', 'General settings saved.');
     }
 
@@ -48,9 +64,10 @@ class Settings extends BaseAdminController
         if (! auth()->user()->can('admin.settings')) {
             return redirect()->to('/admin')->with('error', 'Permission denied.');
         }
-        setting()->set('Seo.metaDescription', $this->request->getPost('meta_description'));
-        setting()->set('Seo.googleAnalytics', $this->request->getPost('google_analytics'));
-        setting()->set('Seo.sitemapEnabled',  (bool) $this->request->getPost('sitemap_enabled'));
+        setting()->set('Seo.metaDescription',    $this->request->getPost('meta_description'));
+        setting()->set('Seo.googleAnalytics',    $this->request->getPost('google_analytics'));
+        setting()->set('Seo.sitemapEnabled',     (bool) $this->request->getPost('sitemap_enabled'));
+        setting()->set('Seo.newsSitemapEnabled', (bool) $this->request->getPost('news_sitemap_enabled'));
         return redirect()->to('/admin/settings#seo')->with('success', 'SEO settings saved.');
     }
 
@@ -62,6 +79,28 @@ class Settings extends BaseAdminController
         setting()->set('Email.fromName',  $this->request->getPost('from_name'));
         setting()->set('Email.fromEmail', $this->request->getPost('from_email'));
         return redirect()->to('/admin/settings#email')->with('success', 'Email settings saved.');
+    }
+
+    public function savePremium()
+    {
+        if (! auth()->user()->can('admin.settings')) {
+            return redirect()->to('/admin')->with('error', 'Permission denied.');
+        }
+
+        $key     = trim($this->request->getPost('license_key') ?? '');
+        $premium = new \App\Services\PremiumService();
+        $result  = $premium->setKey($key);
+
+        if ($result['valid']) {
+            ActivityLogger::log('settings.updated', 'setting', null, 'Premium Core licence activated');
+            return redirect()->to('/admin/settings#premium')->with('success', 'Licence key is valid. Pubvana Premium Core is active.');
+        }
+
+        $msg = 'Licence key is invalid or could not be verified.';
+        if (! empty($result['error'])) {
+            $msg .= ' ' . $result['error'];
+        }
+        return redirect()->to('/admin/settings#premium')->with('error', $msg);
     }
 
     public function saveSocial()

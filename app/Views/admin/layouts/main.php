@@ -43,153 +43,164 @@
             </a>
         </li>
 
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading">Content</div>
-
-        <li class="nav-item <?= ($active_nav ?? '') === 'posts' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/posts') ?>">
-                <i class="fas fa-fw fa-edit"></i>
-                <span>Posts</span>
-            </a>
-        </li>
-
-        <li class="nav-item <?= ($active_nav ?? '') === 'pages' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/pages') ?>">
-                <i class="fas fa-fw fa-file-alt"></i>
-                <span>Pages</span>
-            </a>
-        </li>
-
-        <li class="nav-item <?= ($active_nav ?? '') === 'categories' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/categories') ?>">
-                <i class="fas fa-fw fa-folder"></i>
-                <span>Categories</span>
-            </a>
-        </li>
-
-        <li class="nav-item <?= ($active_nav ?? '') === 'tags' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/tags') ?>">
-                <i class="fas fa-fw fa-tags"></i>
-                <span>Tags</span>
-            </a>
-        </li>
-
-        <li class="nav-item <?= ($active_nav ?? '') === 'comments' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/comments') ?>">
-                <i class="fas fa-fw fa-comments"></i>
-                <span>Comments</span>
-            </a>
-        </li>
-
-        <li class="nav-item <?= ($active_nav ?? '') === 'media' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/media') ?>">
-                <i class="fas fa-fw fa-photo-video"></i>
-                <span>Media</span>
-            </a>
-        </li>
+        <?php
+        // Determine which group is active so the right section stays open
+        $nav = $active_nav ?? '';
+        $contentOpen     = in_array($nav, ['posts','pages','categories','tags','comments','media','schedule','import'], true);
+        $appearanceOpen  = in_array($nav, ['themes','widgets','navigation'], true);
+        $siteOpen        = in_array($nav, ['users','social','redirects','settings'], true);
+        $toolsOpen       = in_array($nav, ['affiliates','broken_links','analytics','activity_log','backup'], true);
+        $marketplaceOpen = in_array($nav, ['marketplace'], true);
+        $pluginsOpen     = false; // plugins set their own nav key; default closed
+        ?>
 
         <hr class="sidebar-divider">
-        <div class="sidebar-heading">Appearance</div>
 
-        <?php if (auth()->user()->can('admin.themes')): ?>
-        <li class="nav-item <?= ($active_nav ?? '') === 'themes' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/themes') ?>">
+        <!-- ===== CONTENT ===== -->
+        <li class="nav-item">
+            <a class="nav-link <?= $contentOpen ? '' : 'collapsed' ?>"
+               href="#collapseContent" data-toggle="collapse" data-target="#collapseContent"
+               aria-expanded="<?= $contentOpen ? 'true' : 'false' ?>">
+                <i class="fas fa-fw fa-newspaper"></i>
+                <span>Content</span>
+            </a>
+            <div id="collapseContent"
+                 class="collapse <?= $contentOpen ? 'show' : '' ?>"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item <?= $nav === 'posts'      ? 'active' : '' ?>" href="<?= base_url('admin/posts') ?>">Posts</a>
+                    <a class="collapse-item <?= $nav === 'schedule'   ? 'active' : '' ?>" href="<?= base_url('admin/schedule') ?>"><i class="fas fa-star fa-xs text-warning mr-1"></i>Schedule</a>
+                    <a class="collapse-item <?= $nav === 'pages'      ? 'active' : '' ?>" href="<?= base_url('admin/pages') ?>">Pages</a>
+                    <a class="collapse-item <?= $nav === 'categories' ? 'active' : '' ?>" href="<?= base_url('admin/categories') ?>">Categories</a>
+                    <a class="collapse-item <?= $nav === 'tags'       ? 'active' : '' ?>" href="<?= base_url('admin/tags') ?>">Tags</a>
+                    <a class="collapse-item <?= $nav === 'comments'   ? 'active' : '' ?>" href="<?= base_url('admin/comments') ?>">Comments</a>
+                    <a class="collapse-item <?= $nav === 'media'      ? 'active' : '' ?>" href="<?= base_url('admin/media') ?>">Media</a>
+                    <?php if (auth()->user()->can('admin.settings')): ?>
+                    <a class="collapse-item <?= $nav === 'import'     ? 'active' : '' ?>" href="<?= base_url('admin/import') ?>">Import</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </li>
+
+        <!-- ===== APPEARANCE ===== -->
+        <?php if (auth()->user()->can('admin.themes') || auth()->user()->can('admin.widgets') || auth()->user()->can('admin.navigation')): ?>
+        <li class="nav-item">
+            <a class="nav-link <?= $appearanceOpen ? '' : 'collapsed' ?>"
+               href="#collapseAppearance" data-toggle="collapse" data-target="#collapseAppearance"
+               aria-expanded="<?= $appearanceOpen ? 'true' : 'false' ?>">
                 <i class="fas fa-fw fa-palette"></i>
-                <span>Themes</span>
+                <span>Appearance</span>
             </a>
+            <div id="collapseAppearance"
+                 class="collapse <?= $appearanceOpen ? 'show' : '' ?>"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <?php if (auth()->user()->can('admin.themes')): ?>
+                    <a class="collapse-item <?= $nav === 'themes'     ? 'active' : '' ?>" href="<?= base_url('admin/themes') ?>">Themes</a>
+                    <?php endif; ?>
+                    <?php if (auth()->user()->can('admin.widgets')): ?>
+                    <a class="collapse-item <?= $nav === 'widgets'    ? 'active' : '' ?>" href="<?= base_url('admin/widgets') ?>">Widgets</a>
+                    <?php endif; ?>
+                    <?php if (auth()->user()->can('admin.navigation')): ?>
+                    <a class="collapse-item <?= $nav === 'navigation' ? 'active' : '' ?>" href="<?= base_url('admin/navigation') ?>">Navigation</a>
+                    <?php endif; ?>
+                </div>
+            </div>
         </li>
         <?php endif; ?>
 
-        <?php if (auth()->user()->can('admin.widgets')): ?>
-        <li class="nav-item <?= ($active_nav ?? '') === 'widgets' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/widgets') ?>">
-                <i class="fas fa-fw fa-puzzle-piece"></i>
-                <span>Widgets</span>
-            </a>
-        </li>
-        <?php endif; ?>
-
-        <?php if (auth()->user()->can('admin.navigation')): ?>
-        <li class="nav-item <?= ($active_nav ?? '') === 'navigation' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/navigation') ?>">
-                <i class="fas fa-fw fa-bars"></i>
-                <span>Navigation</span>
-            </a>
-        </li>
-        <?php endif; ?>
-
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading">Users &amp; Site</div>
-
-        <?php if (auth()->user()->can('users.manage')): ?>
-        <li class="nav-item <?= ($active_nav ?? '') === 'users' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/users') ?>">
-                <i class="fas fa-fw fa-users"></i>
-                <span>Users</span>
-            </a>
-        </li>
-        <?php endif; ?>
-
-        <?php if (auth()->user()->can('admin.settings')): ?>
-        <li class="nav-item <?= ($active_nav ?? '') === 'social' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/social') ?>">
-                <i class="fas fa-fw fa-share-alt"></i>
-                <span>Social Links</span>
-            </a>
-        </li>
-        <?php endif; ?>
-
-        <?php if (auth()->user()->can('admin.settings')): ?>
-        <li class="nav-item <?= ($active_nav ?? '') === 'redirects' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/redirects') ?>">
-                <i class="fas fa-fw fa-exchange-alt"></i>
-                <span>Redirects</span>
-            </a>
-        </li>
-        <?php endif; ?>
-
-        <?php if (auth()->user()->can('admin.settings')): ?>
-        <li class="nav-item <?= ($active_nav ?? '') === 'settings' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/settings') ?>">
+        <!-- ===== USERS & SITE ===== -->
+        <li class="nav-item">
+            <a class="nav-link <?= $siteOpen ? '' : 'collapsed' ?>"
+               href="#collapseSite" data-toggle="collapse" data-target="#collapseSite"
+               aria-expanded="<?= $siteOpen ? 'true' : 'false' ?>">
                 <i class="fas fa-fw fa-cog"></i>
-                <span>Settings</span>
+                <span>Users &amp; Site</span>
             </a>
+            <div id="collapseSite"
+                 class="collapse <?= $siteOpen ? 'show' : '' ?>"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <?php if (auth()->user()->can('users.manage')): ?>
+                    <a class="collapse-item <?= $nav === 'users'        ? 'active' : '' ?>" href="<?= base_url('admin/users') ?>">Users</a>
+                    <?php endif; ?>
+                    <?php if (auth()->user()->can('admin.settings')): ?>
+                    <a class="collapse-item <?= $nav === 'social'       ? 'active' : '' ?>" href="<?= base_url('admin/social') ?>">Social Links</a>
+                    <a class="collapse-item <?= $nav === 'redirects'    ? 'active' : '' ?>" href="<?= base_url('admin/redirects') ?>">Redirects</a>
+                    <a class="collapse-item <?= $nav === 'settings'     ? 'active' : '' ?>" href="<?= base_url('admin/settings') ?>">Settings</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </li>
+
+        <!-- ===== TOOLS ===== -->
+        <?php if (auth()->user()->can('admin.settings')): ?>
+        <li class="nav-item">
+            <a class="nav-link <?= $toolsOpen ? '' : 'collapsed' ?>"
+               href="#collapseTools" data-toggle="collapse" data-target="#collapseTools"
+               aria-expanded="<?= $toolsOpen ? 'true' : 'false' ?>">
+                <i class="fas fa-fw fa-tools"></i>
+                <span>Tools</span>
+            </a>
+            <div id="collapseTools"
+                 class="collapse <?= $toolsOpen ? 'show' : '' ?>"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item <?= $nav === 'analytics'    ? 'active' : '' ?>" href="<?= base_url('admin/analytics') ?>"><i class="fas fa-star fa-xs text-warning mr-1"></i>Analytics</a>
+                    <a class="collapse-item <?= $nav === 'affiliates'   ? 'active' : '' ?>" href="<?= base_url('admin/affiliates') ?>"><i class="fas fa-star fa-xs text-warning mr-1"></i>Affiliate Links</a>
+                    <a class="collapse-item <?= $nav === 'broken_links' ? 'active' : '' ?>" href="<?= base_url('admin/broken-links') ?>"><i class="fas fa-star fa-xs text-warning mr-1"></i>Broken Links</a>
+                    <a class="collapse-item <?= $nav === 'activity_log' ? 'active' : '' ?>" href="<?= base_url('admin/activity-log') ?>"><i class="fas fa-star fa-xs text-warning mr-1"></i>Activity Log</a>
+                    <a class="collapse-item <?= $nav === 'backup'       ? 'active' : '' ?>" href="<?= base_url('admin/backup') ?>"><i class="fas fa-star fa-xs text-warning mr-1"></i>Backup &amp; Export</a>
+                </div>
+            </div>
         </li>
         <?php endif; ?>
 
+        <!-- ===== MARKETPLACE ===== -->
         <?php if (auth()->user()->can('admin.marketplace')): ?>
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading">Marketplace</div>
-        <li class="nav-item <?= ($active_nav ?? '') === 'marketplace' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/marketplace') ?>">
+        <li class="nav-item">
+            <a class="nav-link <?= $marketplaceOpen ? '' : 'collapsed' ?>"
+               href="#collapseMarketplace" data-toggle="collapse" data-target="#collapseMarketplace"
+               aria-expanded="<?= $marketplaceOpen ? 'true' : 'false' ?>">
                 <i class="fas fa-fw fa-store"></i>
                 <span>Marketplace</span>
             </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="https://pubvana.net" target="_blank" rel="noopener">
-                <i class="fas fa-fw fa-shopping-cart"></i>
-                <span>Pubvana Store</span>
-            </a>
+            <div id="collapseMarketplace"
+                 class="collapse <?= $marketplaceOpen ? 'show' : '' ?>"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item <?= $nav === 'marketplace' ? 'active' : '' ?>" href="<?= base_url('admin/marketplace') ?>">Browse</a>
+                </div>
+            </div>
         </li>
         <?php endif; ?>
 
+        <!-- ===== PLUGINS ===== -->
         <?php if (!empty($plugin_menu_items ?? [])): ?>
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading">Plugins</div>
-        <?php foreach ($plugin_menu_items as $pluginItem): ?>
+        <?php $pluginsOpen = in_array($nav, array_column($plugin_menu_items, 'nav_key'), true); ?>
         <li class="nav-item">
-            <a class="nav-link" href="<?= esc($pluginItem['url']) ?>">
-                <i class="fas fa-fw <?= esc($pluginItem['icon'] ?? 'fa-plug') ?>"></i>
-                <span><?= esc($pluginItem['label']) ?></span>
+            <a class="nav-link <?= $pluginsOpen ? '' : 'collapsed' ?>"
+               href="#collapsePlugins" data-toggle="collapse" data-target="#collapsePlugins"
+               aria-expanded="<?= $pluginsOpen ? 'true' : 'false' ?>">
+                <i class="fas fa-fw fa-plug"></i>
+                <span>Plugins</span>
             </a>
+            <div id="collapsePlugins"
+                 class="collapse <?= $pluginsOpen ? 'show' : '' ?>"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <?php foreach ($plugin_menu_items as $pluginItem): ?>
+                    <a class="collapse-item" href="<?= esc($pluginItem['url']) ?>"><?= esc($pluginItem['label']) ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </li>
-        <?php endforeach; ?>
         <?php endif; ?>
 
+        <!-- ===== UPDATE AVAILABLE ===== -->
         <?php if (!empty($update['available'] ?? false)): ?>
         <hr class="sidebar-divider">
-        <li class="nav-item <?= ($active_nav ?? '') === 'updates' ? 'active' : '' ?>">
+        <li class="nav-item <?= $nav === 'updates' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= base_url('admin/updates') ?>">
                 <i class="fas fa-fw fa-arrow-circle-up text-warning"></i>
                 <span>Update Available
@@ -198,6 +209,25 @@
             </a>
         </li>
         <?php endif; ?>
+
+        <hr class="sidebar-divider">
+
+        <!-- ===== PINNED BOTTOM LINKS ===== -->
+        <?php if (auth()->user()->can('admin.settings')): ?>
+        <li class="nav-item <?= $nav === 'premium' ? 'active' : '' ?>">
+            <a class="nav-link" href="<?= base_url('admin/premium') ?>">
+                <i class="fas fa-fw fa-star text-warning"></i>
+                <span>Premium</span>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <li class="nav-item">
+            <a class="nav-link" href="https://pubvana.net" target="_blank" rel="noopener">
+                <i class="fas fa-fw fa-shopping-cart"></i>
+                <span>Pubvana Store</span>
+            </a>
+        </li>
 
         <hr class="sidebar-divider d-none d-md-block">
 

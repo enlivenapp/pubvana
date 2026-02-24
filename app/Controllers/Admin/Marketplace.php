@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Admin;
 
+use App\Services\ActivityLogger;
 use App\Services\MarketplaceService;
 
 class Marketplace extends BaseAdminController
@@ -77,6 +78,7 @@ class Marketplace extends BaseAdminController
 
         $ok = $this->service->installFree($url, $type, $folder);
         if ($ok) {
+            ActivityLogger::log('marketplace.installed', 'marketplace', null, 'Installed ' . $type . ': ' . $folder);
             return redirect()->to('/admin/marketplace')->with('success', ucfirst($type) . ' installed successfully.');
         }
         return redirect()->to('/admin/marketplace')->with('error', 'Installation failed. Check logs.');

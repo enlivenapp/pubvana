@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Models\CategoryModel;
 use App\Models\PostModel;
 use App\Models\TagModel;
+use App\Services\ActivityLogger;
 use App\Services\SocialSharingService;
 
 class Posts extends BaseAdminController
@@ -92,6 +93,7 @@ class Posts extends BaseAdminController
             'author_id'        => auth()->id(),
             'published_at'     => $publishedAt,
             'is_featured'      => $this->request->getPost('is_featured') ? 1 : 0,
+            'is_premium'       => $this->request->getPost('is_premium') ? 1 : 0,
             'share_on_publish' => $shareOnPublish,
             'meta_title'       => $this->request->getPost('meta_title'),
             'meta_description' => $this->request->getPost('meta_description'),
@@ -109,6 +111,12 @@ class Posts extends BaseAdminController
             $post = $this->postModel->find($id);
             (new SocialSharingService())->share($post);
         }
+
+        $action = $status === 'published' ? 'post.published' : 'post.created';
+        ActivityLogger::log($action, 'post', $id, $action === 'post.published'
+            ? 'Published post: ' . $this->request->getPost('title')
+            : 'Created post: ' . $this->request->getPost('title')
+        );
 
         return redirect()->to('/admin/posts')->with('success', 'Post created successfully.');
     }
@@ -187,6 +195,7 @@ class Posts extends BaseAdminController
             'featured_image'   => $this->request->getPost('featured_image'),
             'published_at'     => $publishedAt,
             'is_featured'      => $this->request->getPost('is_featured') ? 1 : 0,
+            'is_premium'       => $this->request->getPost('is_premium') ? 1 : 0,
             'share_on_publish' => $shareOnPublish,
             'meta_title'       => $this->request->getPost('meta_title'),
             'meta_description' => $this->request->getPost('meta_description'),
@@ -200,6 +209,9 @@ class Posts extends BaseAdminController
             $updated = $this->postModel->find($id);
             (new SocialSharingService())->share($updated);
         }
+
+        $action = (! $wasPublished && $newStatus === 'published') ? 'post.published' : 'post.updated';
+        ActivityLogger::log($action, 'post', $id, ucfirst(str_replace('.', ' ', $action)) . ': ' . $this->request->getPost('title'));
 
         return redirect()->to('/admin/posts')->with('success', 'Post updated.');
     }
@@ -234,6 +246,7 @@ class Posts extends BaseAdminController
             return redirect()->to('/admin/posts')->with('error', 'Permission denied.');
         }
         $this->postModel->delete($id);
+        ActivityLogger::log('post.deleted', 'post', $id, 'Deleted post: ' . $post->title);
         return redirect()->to('/admin/posts')->with('success', 'Post deleted.');
     }
 

@@ -6,11 +6,12 @@
 
 <ul class="nav nav-tabs mb-3" id="settingsTabs" role="tablist">
     <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#general">General</a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#seo">SEO</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#seo"><i class="fas fa-star fa-xs text-warning mr-1"></i>SEO</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#email">Email</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#social">Social Login</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#sharing">Social Sharing</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#spam">Spam Protection</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#premium">Premium</a></li>
 </ul>
 
 <div class="tab-content">
@@ -123,11 +124,23 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label font-weight-bold">Sitemap</label>
                         <div class="col-sm-9">
-                            <div class="custom-control custom-switch">
+                            <div class="custom-control custom-switch mb-2">
                                 <input type="hidden" name="sitemap_enabled" value="0">
                                 <input type="checkbox" class="custom-control-input" id="sitemap_enabled" name="sitemap_enabled" value="1"
                                        <?= setting('Seo.sitemapEnabled') ? 'checked' : '' ?>>
-                                <label class="custom-control-label" for="sitemap_enabled">Enable sitemap.xml</label>
+                                <label class="custom-control-label" for="sitemap_enabled">
+                                    Enable sitemap.xml
+                                    <small class="text-muted d-block">Standard sitemap for all published posts and pages.</small>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input type="hidden" name="news_sitemap_enabled" value="0">
+                                <input type="checkbox" class="custom-control-input" id="news_sitemap_enabled" name="news_sitemap_enabled" value="1"
+                                       <?= setting('Seo.newsSitemapEnabled') ? 'checked' : '' ?>>
+                                <label class="custom-control-label" for="news_sitemap_enabled">
+                                    Enable news-sitemap.xml
+                                    <small class="text-muted d-block">Google News sitemap — lists posts published in the last 48 hours.</small>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -323,9 +336,75 @@ HCAPTCHA_SECRET_KEY = your-secret-key</code></pre>
         </div>
     </div>
 
+
+    <!-- Premium Core -->
+    <div class="tab-pane fade" id="premium">
+        <?php
+        $premium = new \App\Services\PremiumService();
+        $premiumStatus = $premium->status();
+        $isDev = $premiumStatus === 'dev';
+        ?>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Pubvana Premium Core</h6>
+                <?php if ($isDev): ?>
+                    <span class="badge badge-info px-3 py-2">Dev mode — always active</span>
+                <?php elseif ($premiumStatus === 'valid'): ?>
+                    <span class="badge badge-success px-3 py-2"><i class="fas fa-check-circle mr-1"></i> Valid</span>
+                <?php elseif ($premiumStatus === 'invalid'): ?>
+                    <span class="badge badge-danger px-3 py-2"><i class="fas fa-times-circle mr-1"></i> Invalid</span>
+                <?php elseif ($premiumStatus === 'unreachable'): ?>
+                    <span class="badge badge-warning px-3 py-2"><i class="fas fa-exclamation-triangle mr-1"></i> Unreachable</span>
+                <?php else: ?>
+                    <span class="badge badge-secondary px-3 py-2">Unchecked</span>
+                <?php endif; ?>
+            </div>
+            <div class="card-body">
+                <?php if ($isDev): ?>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Running on a local dev domain — all Premium Core features are active without a licence key.
+                    </div>
+                <?php else: ?>
+                    <p class="text-muted small mb-3">
+                        Enter your <strong>Pubvana Premium Core</strong> licence key to unlock premium features.
+                        Purchase at <a href="https://pubvana.net/store/premium" target="_blank" rel="noopener">pubvana.net/store/premium</a>.
+                    </p>
+                    <form method="POST" action="<?= base_url('admin/settings/premium') ?>">
+                        <?= csrf_field() ?>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label font-weight-bold">Licence Key</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="license_key" class="form-control font-monospace"
+                                       placeholder="XXXX-XXXX-XXXX-XXXX"
+                                       value="<?= esc(setting('Premium.licenseKey') ?? '') ?>">
+                                <?php if ($premiumStatus === 'valid'): ?>
+                                    <small class="text-success"><i class="fas fa-check-circle"></i> Licence verified.</small>
+                                <?php elseif ($premiumStatus === 'invalid'): ?>
+                                    <small class="text-danger"><i class="fas fa-times-circle"></i> This key was not accepted. Check the key and try again.</small>
+                                <?php elseif ($premiumStatus === 'unreachable'): ?>
+                                    <small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Could not reach the licence server during last check.</small>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary">Activate Licence</button>
+                        </div>
+                    </form>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<?php $content = ob_get_clean(); ?>
+<?php
+// Inject open_tab into page content while PHP is still active, before the NOWDOC
+$content = ob_get_clean();
+if (! empty($open_tab)) {
+    $content .= '<script>window._settingsOpenTab=' . json_encode($open_tab) . ';</script>';
+}
+?>
 <?php $extra_scripts = <<<'SCRIPT'
 <script>
 function toggleSmtp() {
@@ -334,6 +413,14 @@ function toggleSmtp() {
 }
 document.querySelector('[name="email_protocol"]').addEventListener('change', toggleSmtp);
 toggleSmtp();
+
+// Activate a specific tab — server open_tab takes priority, then URL hash
+(function () {
+    var target = (window._settingsOpenTab || window.location.hash.replace('#', ''));
+    if (target) {
+        $('#settingsTabs a[href="#' + target + '"]').tab('show');
+    }
+})();
 </script>
 SCRIPT;
 ?>

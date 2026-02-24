@@ -22,9 +22,16 @@ ob_start();
                 <i class="fas fa-eye"></i> <?= number_format($post->views) ?> views
             </div>
 
+            <?php if (!empty($paywall)): ?>
+                <?php if (!empty($post->excerpt)): ?>
+                    <div class="post-content"><?= nl2br(esc($post->excerpt)) ?></div>
+                <?php endif; ?>
+                <?= view('partials/paywall') ?>
+            <?php else: ?>
             <div class="post-content">
                 <?= render_content($post) ?>
             </div>
+            <?php endif; ?>
 
             <?php if (!empty($author_profile)): ?>
                 <?= theme_view(THEMES_PATH . 'default/views/partials/author-card.php', ['author_profile' => $author_profile, 'post' => $post]) ?>

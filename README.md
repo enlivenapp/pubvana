@@ -1,7 +1,7 @@
 # Pubvana
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/enlivenapp/pubvana)](https://github.com/enlivenapp/pubvana/releases)
+[![Release](https://img.shields.io/badge/release-v2.1.0-blue)](https://github.com/enlivenapp/pubvana/releases)
 [![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net)
 [![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.7-orange.svg)](https://codeigniter.com)
 [![Installs](https://img.shields.io/packagist/dt/enlivenapp/pubvana.svg)](https://packagist.org/packages/enlivenapp/pubvana)
@@ -228,15 +228,15 @@ Please include a README.md update under 'Translators' with your name and a link 
 ### Pubvana Premium
 
 **Premium Core Features** *(pubvana.net — license required)*
-- [ ] Scheduled Post Queue (calendar view)
-- [ ] Content Analytics (page views, popular posts, referrers)
-- [ ] Advanced SEO (OG image generation, schema breadcrumbs, news sitemap)
-- [ ] Two-Factor Authentication (TOTP)
-- [ ] Backup & Export (DB + uploads zip)
-- [ ] Membership / Paywalled Posts
-- [ ] Affiliate Link Manager (`/go/` short links + click tracking)
-- [ ] Broken Link Checker
-- [ ] Activity / Audit Log
+- [x] Scheduled Post Queue (calendar view)
+- [x] Content Analytics (page views, popular posts, referrers)
+- [x] Advanced SEO (OG image generation, schema breadcrumbs, news sitemap)
+- [x] Two-Factor Authentication (TOTP)
+- [x] Backup & Export (DB + uploads zip)
+- [x] Membership / Paywalled Posts
+- [x] Affiliate Link Manager (`/go/` short links + click tracking)
+- [x] Broken Link Checker
+- [x] Activity / Audit Log
 
 **Premium Widgets** *(pubvana.net/store)*
 - [x] Author Bio (sidebar)

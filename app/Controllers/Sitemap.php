@@ -55,6 +55,9 @@ class Sitemap extends BaseController
         if (setting('Seo.sitemapEnabled')) {
             $body .= "Sitemap: " . base_url('sitemap.xml') . "\n";
         }
+        if (setting('Seo.newsSitemapEnabled')) {
+            $body .= "Sitemap: " . base_url('news-sitemap.xml') . "\n";
+        }
 
         return $this->response
             ->setContentType('text/plain')

@@ -88,20 +88,34 @@ class MarketplaceService
 
     public function fetchThemes(): array
     {
-        $items = $this->fetchFromApi('theme');
-        return array_map(fn($item) => (object) array_merge((array) $item, ['installed_version' => null]), $items);
+        return array_map([$this, 'normalizeItem'], $this->fetchFromApi('theme'));
     }
 
     public function fetchWidgets(): array
     {
-        $items = $this->fetchFromApi('widget');
-        return array_map(fn($item) => (object) array_merge((array) $item, ['installed_version' => null]), $items);
+        return array_map([$this, 'normalizeItem'], $this->fetchFromApi('widget'));
     }
 
     public function fetchAll(): array
     {
-        $items = $this->fetchFromApi();
-        return array_map(fn($item) => (object) array_merge((array) $item, ['installed_version' => null]), $items);
+        return array_map([$this, 'normalizeItem'], $this->fetchFromApi());
+    }
+
+    /**
+     * Normalise a raw item array (from API or mock) into a consistent stdClass.
+     * The live API uses item_type (DB column name); mock data uses type.
+     * Ensures both ->type and ->item_type are always set.
+     */
+    private function normalizeItem(array $item): object
+    {
+        // Unify type field: prefer item_type from API, fall back to type from mock
+        if (! isset($item['type']) && isset($item['item_type'])) {
+            $item['type'] = $item['item_type'];
+        } elseif (! isset($item['item_type']) && isset($item['type'])) {
+            $item['item_type'] = $item['type'];
+        }
+        $item['installed_version'] = $item['installed_version'] ?? null;
+        return (object) $item;
     }
 
     public function installFree(string $downloadUrl, string $type, string $folder): bool

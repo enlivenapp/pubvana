@@ -129,5 +129,58 @@
     </div>
 </div>
 
+<?php
+// 2FA status — only shown to the user viewing their own profile
+$isOwnProfile = auth()->loggedIn() && auth()->id() === (int) $subject_user->id;
+$totpRow = $isOwnProfile
+    ? db_connect()->table('users')->select('totp_enabled')->where('id', $subject_user->id)->get()->getRowObject()
+    : null;
+$totpEnabled = $totpRow ? (bool) $totpRow->totp_enabled : false;
+?>
+
+<?php if ($isOwnProfile): ?>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Two-Factor Authentication</h6>
+        <?php if ($totpEnabled): ?>
+            <span class="badge badge-success px-3 py-2"><i class="fas fa-check-circle mr-1"></i> Enabled</span>
+        <?php else: ?>
+            <span class="badge badge-secondary px-3 py-2">Disabled</span>
+        <?php endif; ?>
+    </div>
+    <div class="card-body">
+        <?php if ($totpEnabled): ?>
+            <p class="text-muted small mb-3">
+                TOTP two-factor authentication is active on your account. You will be asked for a
+                6-digit code from your authenticator app each time you log in.
+            </p>
+            <form method="POST" action="<?= base_url('admin/users/2fa/disable') ?>">
+                <?= csrf_field() ?>
+                <div class="form-group row align-items-center mb-2">
+                    <label class="col-sm-4 col-form-label font-weight-bold">Current Code</label>
+                    <div class="col-sm-5">
+                        <input type="text" name="totp_code" class="form-control text-center font-monospace"
+                               inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
+                               placeholder="000000" autocomplete="one-time-code"
+                               style="letter-spacing:0.3em">
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="submit" class="btn btn-danger btn-block">Disable</button>
+                    </div>
+                </div>
+            </form>
+        <?php else: ?>
+            <p class="text-muted small mb-3">
+                Add an extra layer of security to your account. Once enabled, you will need to enter
+                a code from your authenticator app on each login.
+            </p>
+            <a href="<?= base_url('admin/users/2fa/setup') ?>" class="btn btn-primary">
+                <i class="fas fa-shield-alt mr-1"></i> Enable Two-Factor Authentication
+            </a>
+        <?php endif; ?>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php $content = ob_get_clean(); ?>
 <?= view($layout, array_merge(get_defined_vars(), ['content' => $content])) ?>

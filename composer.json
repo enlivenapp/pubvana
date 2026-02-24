@@ -24,7 +24,8 @@
         "erusev/parsedown": "^1.8",
         "league/oauth2-client": "^2.9",
         "league/oauth2-facebook": "^2.2",
-        "league/oauth2-google": "^4.1"
+        "league/oauth2-google": "^4.1",
+        "spomky-labs/otphp": "^11.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",

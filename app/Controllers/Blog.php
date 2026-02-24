@@ -8,6 +8,7 @@ use App\Models\CommentModel;
 use App\Models\PostModel;
 use App\Models\TagModel;
 use App\Services\HCaptchaService;
+use App\Services\OgImageService;
 use App\Services\SeoService;
 use App\Services\ThemeService;
 
@@ -64,6 +65,7 @@ class Blog extends BaseController
         }
 
         $this->postModel->incrementViews($post->id);
+        $this->logPageView((int) $post->id, 'post');
 
         $commentModel = new CommentModel();
         $comments     = $commentModel->getTree((int) $post->id);
@@ -109,12 +111,20 @@ class Blog extends BaseController
             }
         }
 
+        $seo = $this->seoService->getMeta($post);
+        if (empty($seo['og_image'])) {
+            $seo['og_image'] = (new OgImageService())->generate($post->title, $post->slug);
+        }
+
+        $paywall = ! empty($post->is_premium) && ! auth()->loggedIn();
+
         return $this->themeService->view('post', array_merge($this->data, [
             'post'           => $post,
             'comments'       => $comments,
             'author_profile' => $authorProfile,
-            'seo'            => $this->seoService->getMeta($post),
+            'seo'            => $seo,
             'json_ld'        => $this->seoService->getJsonLd($post, $authorProfile),
+            'paywall'        => $paywall,
         ]));
     }
 
@@ -196,6 +206,28 @@ class Blog extends BaseController
         ]);
 
         return true;
+    }
+
+    private function logPageView(int $entityId, string $entityType): void
+    {
+        if ($this->request->getUserAgent()->isRobot()) {
+            return;
+        }
+
+        $referer = $this->request->getServer('HTTP_REFERER') ?? '';
+        $domain  = $referer ? (parse_url($referer, PHP_URL_HOST) ?: null) : null;
+
+        try {
+            (new \App\Models\PageViewModel())->insert([
+                'entity_type'     => $entityType,
+                'entity_id'       => $entityId,
+                'referrer_domain' => $domain,
+                'viewed_at'       => date('Y-m-d H:i:s'),
+            ]);
+        } catch (\Throwable $e) {
+            // Never break page delivery due to analytics failure
+            log_message('error', 'PageView log failed: ' . $e->getMessage());
+        }
     }
 
     protected function validatedParentId(mixed $raw, int $postId): ?int

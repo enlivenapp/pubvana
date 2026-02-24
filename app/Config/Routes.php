@@ -18,11 +18,13 @@ $routes->get('tag/(:segment)',              'Blog::tag/$1');
 $routes->get('archive/(:num)/(:num)',       'Blog::archive/$1/$2');
 $routes->get('search',                      'Search::index');
 $routes->get('sitemap.xml',                 'Sitemap::index');
+$routes->get('news-sitemap.xml',            'NewsSitemap::index');
 $routes->get('robots.txt',                  'Sitemap::robots');
 $routes->get('feed',                        'Feed::index');
 $routes->get('contact',                     'Contact::index');
 $routes->post('contact',                    'Contact::send');
 $routes->get('preview/(:segment)',          'Blog::preview/$1');
+$routes->get('go/(:segment)',               'AffiliateRedirect::go/$1');
 
 // ===================================================
 // SHIELD AUTH (login, register, logout, forgot-password, etc.)
@@ -33,10 +35,14 @@ service('auth')->routes($routes);
 $routes->get('auth/social/(:segment)',          'SocialAuth::redirect/$1');
 $routes->get('auth/social/(:segment)/callback', 'SocialAuth::callback/$1');
 
+// TOTP 2FA verification (post-login, before admin access)
+$routes->get('auth/2fa',  'TwoFactor::verify');
+$routes->post('auth/2fa', 'TwoFactor::verify');
+
 // ===================================================
 // ADMIN ROUTES
 // ===================================================
-$routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controllers\Admin'], function ($routes) {
+$routes->group('admin', ['filter' => ['admin_auth', 'totp'], 'namespace' => 'App\Controllers\Admin'], function ($routes) {
 
     // Dashboard
     $routes->get('',                         'Dashboard::index');
@@ -116,14 +122,19 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
     $routes->post('users/(:num)/delete',     'Users::delete/$1');
     $routes->get('users/(:num)/profile',     'Users::profile/$1');
     $routes->post('users/(:num)/profile',    'Users::saveProfile/$1');
+    $routes->get('users/2fa/setup',          'TwoFactor::setup');
+    $routes->post('users/2fa/confirm',       'TwoFactor::confirm');
+    $routes->post('users/2fa/disable',       'TwoFactor::disable');
 
     // Settings
     $routes->get('settings',                 'Settings::index');
+    $routes->get('premium',                  'Settings::premiumPage');
     $routes->post('settings/general',        'Settings::saveGeneral');
     $routes->post('settings/seo',            'Settings::saveSeo');
     $routes->post('settings/email',          'Settings::saveEmail');
     $routes->post('settings/social',         'Settings::saveSocial');
     $routes->post('settings/sharing',        'Settings::saveSocialSharing');
+    $routes->post('settings/premium',        'Settings::savePremium');
 
     // Social
     $routes->get('social',                   'Social::index');
@@ -144,9 +155,39 @@ $routes->group('admin', ['filter' => 'admin_auth', 'namespace' => 'App\Controlle
     $routes->post('marketplace/refresh',     'Marketplace::refresh');
     $routes->post('marketplace/update/(:segment)', 'Marketplace::update/$1');
 
+    // Schedule
+    $routes->get('schedule',                 'Schedule::view');
+    $routes->get('schedule/events',          'Schedule::index');
+
     // Updates
     $routes->get('updates',                  'Updates::index');
     $routes->post('updates/check',           'Updates::check');
+
+    // Analytics
+    $routes->get('analytics',                'Analytics::index');
+    $routes->get('analytics/data',           'Analytics::data');
+
+    // Activity Log
+    $routes->get('activity-log',             'ActivityLog::index');
+
+    // Backup & Export
+    $routes->get('backup',                   'Backup::index');
+    $routes->post('backup/download',         'Backup::download');
+    $routes->post('backup/delete',           'Backup::deleteFile');
+
+    // Broken Links
+    $routes->get('broken-links',                        'BrokenLinks::index');
+    $routes->post('broken-links/(:num)/recheck',        'BrokenLinks::recheck/$1');
+    $routes->post('broken-links/(:num)/dismiss',        'BrokenLinks::dismiss/$1');
+
+    // Affiliate Links
+    $routes->get('affiliates',               'Affiliates::index');
+    $routes->get('affiliates/create',        'Affiliates::create');
+    $routes->post('affiliates/create',       'Affiliates::store');
+    $routes->get('affiliates/(:num)/edit',   'Affiliates::edit/$1');
+    $routes->post('affiliates/(:num)/edit',  'Affiliates::update/$1');
+    $routes->post('affiliates/(:num)/delete','Affiliates::delete/$1');
+    $routes->get('affiliates/(:num)/clicks', 'Affiliates::clicks/$1');
 
     // Import
     $routes->get('import',                   'Import::index');

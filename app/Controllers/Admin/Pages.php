@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\PageModel;
+use App\Services\ActivityLogger;
 
 class Pages extends BaseAdminController
 {
@@ -60,6 +61,8 @@ class Pages extends BaseAdminController
             'meta_description' => $this->request->getPost('meta_description'),
             'is_system'        => 0,
         ]);
+        $newId = $this->pageModel->getInsertID();
+        ActivityLogger::log('page.created', 'page', $newId ?: null, 'Created page: ' . $this->request->getPost('title'));
         return redirect()->to('/admin/pages')->with('success', 'Page created.');
     }
 
@@ -99,6 +102,7 @@ class Pages extends BaseAdminController
             'meta_title'       => $this->request->getPost('meta_title'),
             'meta_description' => $this->request->getPost('meta_description'),
         ]);
+        ActivityLogger::log('page.updated', 'page', $id, 'Updated page: ' . $this->request->getPost('title'));
         return redirect()->to('/admin/pages')->with('success', 'Page updated.');
     }
 
@@ -112,6 +116,7 @@ class Pages extends BaseAdminController
             return redirect()->to('/admin/pages')->with('error', 'Cannot delete this page.');
         }
         $this->pageModel->delete($id);
+        ActivityLogger::log('page.deleted', 'page', $id, 'Deleted page: ' . $page->title);
         return redirect()->to('/admin/pages')->with('success', 'Page deleted.');
     }
 }
