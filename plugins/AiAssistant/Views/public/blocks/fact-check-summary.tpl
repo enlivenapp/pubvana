@@ -24,7 +24,8 @@
         </div>
         <p class="small text-secondary mb-0">
             Checked {{ checked_at | date('M j, Y') }} under Pubvana fact-check prompt v{{ prompt_version }}.
-            <a href="{{ about_url }}" target="_blank" rel="noopener">How Pubvana fact checking works</a>
+            <a href="{{ about_url }}" target="_blank" rel="noopener">How Pubvana fact checking works</a><br>
+            Note: AI can make mistakes or miss facts. We encourage you to research the subject yourself.
         </p>
     </div>
 </div>
