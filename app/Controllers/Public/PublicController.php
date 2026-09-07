@@ -261,8 +261,48 @@ abstract class PublicController
             'comments_html'  => $this->buildCommentsHtml($routeData),
             'theme_options'  => $this->getThemeOptions(),
             'breadcrumbs'    => $this->buildBreadcrumbs($routeData),
+            'flash'          => $this->buildFlash(),
             'scripts_footer' => $this->buildFooterScripts(),
         ];
+    }
+
+    // -----------------------------------------------------------------
+    // Flash Messages
+    // -----------------------------------------------------------------
+
+    /**
+     * Collect one-shot session flash messages for the theme templates.
+     *
+     * Reads the standard type keys (success, info, warning, danger,
+     * error) from the session and hands themes a shaped list so they can
+     * render alerts wherever they like in the layout. 'error' normalizes
+     * to 'danger' so every type maps onto a CSS class both themes ship.
+     * Non-string values and empty messages are dropped.
+     *
+     * @return list<array{type: string, message: string}>
+     */
+    protected function buildFlash(): array
+    {
+        $flash = [];
+        $session = $this->app->session();
+
+        foreach (['success', 'info', 'warning', 'danger', 'error'] as $type) {
+            if (!$session->hasFlash($type)) {
+                continue;
+            }
+
+            $message = $session->pullFlash($type);
+            if (!is_string($message) || $message === '') {
+                continue;
+            }
+
+            $flash[] = [
+                'type'    => $type === 'error' ? 'danger' : $type,
+                'message' => $message,
+            ];
+        }
+
+        return $flash;
     }
 
     // -----------------------------------------------------------------

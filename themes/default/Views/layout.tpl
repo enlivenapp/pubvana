@@ -32,6 +32,9 @@
     {# A region with nothing placed in it prints nothing, so it is safe to always output. #}
     {% region 'before-content' %}
 
+    {# Include: one-shot flash messages (login notices, form feedback, etc.), before the page body. #}
+    {% include 'partials/alerts' %}
+
     {# Vision block: the page body. Every page template (home, post, page, ...) overrides this one slot. #}
     {# Each page template renders the after-content region itself, so blocks land inside the #}
     {# content column on split pages instead of full width below the whole layout. #}
