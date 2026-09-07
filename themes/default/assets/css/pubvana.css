@@ -230,3 +230,150 @@ footer .block-input {
 footer .block-content {
     color: rgba(255, 255, 255, .7);
 }
+
+/* ==========================================================================
+   Auth pages (Shield view overrides + password reset)
+   Standalone pre-auth screens: centered single card. Own classes so the
+   screens match on both themes; buttons come from Bootstrap (.btn).
+   ========================================================================== */
+.auth-shell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    background-color: #f8f9fa;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    padding: 2rem;
+}
+
+.auth-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 0.15rem;
+}
+
+.auth-sub {
+    color: #6c757d;
+    margin: 0 0 1.5rem;
+}
+
+.auth-field {
+    margin-bottom: 1rem;
+}
+
+.auth-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.3rem;
+}
+
+.auth-input {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    color: #212529;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15);
+}
+
+.auth-code {
+    text-align: center;
+    letter-spacing: 0.4rem;
+    font-size: 1.4rem;
+}
+
+.auth-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.auth-submit {
+    width: 100%;
+    margin-top: 0.25rem;
+}
+
+.auth-links {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.auth-links a {
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+.auth-sep {
+    color: #adb5bd;
+    margin: 0 0.4rem;
+}
+
+.auth-note {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+}
+
+.auth-alert {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e9ecef;
+    border-left: 4px solid #0dcaf0;
+    border-radius: 0.375rem;
+    background-color: #f8f9fa;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+}
+
+.auth-alert-ok {
+    border-left-color: #198754;
+}
+
+.auth-alert-err {
+    border-left-color: #dc3545;
+}
+
+.auth-error-list {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.auth-linklike {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #2c3e50;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.auth-linklike:disabled {
+    color: #adb5bd;
+    text-decoration: none;
+    cursor: default;
+}

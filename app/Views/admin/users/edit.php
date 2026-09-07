@@ -7,6 +7,9 @@
  * @var \Enlivenapp\FlightShield\Models\AuthGroup[] $groups
  * @var string[] $userGroups
  * @var string[] $userPermissions
+ * @var bool   $banned        Whether the user is banned
+ * @var string|null $banMessage  Admin-set ban reason
+ * @var bool   $requiresReset Whether a forced password reset is pending
  */
 ?>
 
@@ -85,6 +88,43 @@
                                 formaction="/admin/users/<?= (int) $editUser->id ?>/toggle"
                                 class="btn btn-sm btn-outline-<?= (int) $editUser->active ? 'warning' : 'success' ?>">
                             <?= (int) $editUser->active ? 'Deactivate' : 'Activate' ?>
+                        </button>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span>
+                            Banned
+                            <?php if (!empty($banned)): ?>
+                                <span class="badge bg-danger-lt ms-1">Banned</span>
+                            <?php endif; ?>
+                        </span>
+                        <?php if (!empty($banned)): ?>
+                            <button type="submit"
+                                    formaction="/admin/users/<?= (int) $editUser->id ?>/unban"
+                                    class="btn btn-sm btn-outline-success">Lift Ban</button>
+                        <?php else: ?>
+                            <button type="submit"
+                                    formaction="/admin/users/<?= (int) $editUser->id ?>/ban"
+                                    class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Ban this user? They will not be able to log in.')">Ban</button>
+                        <?php endif; ?>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="ban_message">Ban message <small class="text-secondary">(shown to admins, optional)</small></label>
+                        <input type="text" name="ban_message" id="ban_message" class="form-control form-control-sm"
+                               value="<?= htmlspecialchars((string) ($banMessage ?? '')) ?>"
+                               placeholder="Reason for the ban">
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span>
+                            Password reset required
+                            <?php if (!empty($requiresReset)): ?>
+                                <span class="badge bg-warning-lt ms-1">Pending</span>
+                            <?php endif; ?>
+                        </span>
+                        <button type="submit"
+                                formaction="/admin/users/<?= (int) $editUser->id ?>/force-reset"
+                                class="btn btn-sm btn-outline-<?= !empty($requiresReset) ? 'success' : 'warning' ?>">
+                            <?= !empty($requiresReset) ? 'Clear' : 'Force Reset' ?>
                         </button>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">

@@ -7,6 +7,7 @@ namespace Pubvana\Controllers\Admin;
 use Enlivenapp\FlightShield\Models\User;
 use Enlivenapp\FlightShield\Models\UserIdentity;
 use flight\Engine;
+use Pubvana\Services\UserAdminService;
 
 /**
  * UsersController - Admin CRUD for user management.
@@ -220,6 +221,9 @@ class UsersController extends AdminController
             'userGroups'      => $user->getGroups(),
             'userPermissions' => $user->getPermissions(),
             'email'           => $this->app->auth()->users()->getEmail($user) ?? '',
+            'banned'          => $user->isBanned(),
+            'banMessage'      => $user->getBanMessage(),
+            'requiresReset'   => $user->requiresPasswordReset(),
         ]);
     }
 
@@ -309,5 +313,84 @@ class UsersController extends AdminController
 
         $this->app->session()->flash('success', 'User status toggled.');
         $this->app->redirect('/admin/users/' . $id . '/edit');
+    }
+
+    /**
+     * Ban a user with an optional message.
+     *
+     * Banned users are rejected by Shield at login (and remember-me).
+     * Admins cannot ban themselves.
+     *
+     * @param string $id User ID
+     * @return void
+     */
+    public function ban(string $id): void
+    {
+        $user = $this->app->auth()->users()->find((int) $id, $this->viewerIsSuperadmin());
+
+        if ($user === null) {
+            $this->app->redirect('/admin/users');
+            return;
+        }
+
+        if ((string) $user->id === (string) $this->app->auth()->id()) {
+            $this->app->session()->flash('error', 'You cannot ban your own account.');
+            $this->app->redirect('/admin/users/' . $id . '/edit');
+            return;
+        }
+
+        $message = trim((string) ($this->app->request()->data->ban_message ?? ''));
+
+        $this->userAdmin()->ban($user, $message !== '' ? $message : null);
+
+        $this->app->session()->flash('success', 'User banned.');
+        $this->app->redirect('/admin/users/' . $id . '/edit');
+    }
+
+    /**
+     * Lift a ban.
+     *
+     * @param string $id User ID
+     * @return void
+     */
+    public function unban(string $id): void
+    {
+        $user = $this->app->auth()->users()->find((int) $id, $this->viewerIsSuperadmin());
+
+        if ($user !== null) {
+            $this->userAdmin()->unBan($user);
+        }
+
+        $this->app->session()->flash('success', 'Ban lifted.');
+        $this->app->redirect('/admin/users/' . $id . '/edit');
+    }
+
+    /**
+     * Toggle Shield's force password reset flag for a user.
+     *
+     * With the flag set, the user's next guarded request redirects to the
+     * reset page until a new password is saved.
+     *
+     * @param string $id User ID
+     * @return void
+     */
+    public function forceReset(string $id): void
+    {
+        $user = $this->app->auth()->users()->find((int) $id, $this->viewerIsSuperadmin());
+
+        if ($user !== null) {
+            $this->userAdmin()->forceReset($user, !$user->requiresPasswordReset());
+        }
+
+        $this->app->session()->flash('success', 'Password reset requirement updated.');
+        $this->app->redirect('/admin/users/' . $id . '/edit');
+    }
+
+    /**
+     * Account status actions (ban/unban/force reset) via the local service.
+     */
+    protected function userAdmin(): UserAdminService
+    {
+        return new UserAdminService($this->app);
     }
 }

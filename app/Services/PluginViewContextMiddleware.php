@@ -44,13 +44,39 @@ class PluginViewContextMiddleware
     /**
      * Set the active plugin context before the controller runs.
      *
+     * Also syncs the theme override tier with the active theme from the
+     * database: services.php keys themePath off the 'active_theme' config
+     * key, which nothing sets, so it would stay 'default' (see
+     * PublicController::render for the same sync on public pages). Without
+     * the sync here, theme overrides for plugin views resolve against the
+     * wrong theme whenever the active theme is not the default one.
+     *
      * @return void
      */
     public function before(): void
     {
         $view = $this->app->view();
-        if ($view instanceof PluginView) {
-            $view->setCurrentPlugin($this->pluginId);
+        if (!$view instanceof PluginView) {
+            return;
+        }
+
+        $view->setCurrentPlugin($this->pluginId);
+
+        try {
+            $activeTheme = $this->app->themes()->getActive();
+
+            if ($activeTheme !== null) {
+                $activeThemePath = PROJECT_ROOT . DIRECTORY_SEPARATOR . 'themes'
+                    . DIRECTORY_SEPARATOR . $activeTheme->folder
+                    . DIRECTORY_SEPARATOR . 'Views';
+
+                if ($view->getThemePath() !== rtrim($activeThemePath, DIRECTORY_SEPARATOR)) {
+                    $view->setThemePath($activeThemePath);
+                }
+            }
+        } catch (\Throwable) {
+            // Themes table missing on fresh installs; boot already placed
+            // a fallback theme path.
         }
     }
 

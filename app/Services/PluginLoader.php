@@ -170,6 +170,14 @@ class PluginLoader
             $this->runPluginMigrations($all);
         }
 
+        // DB-backed config overrides. The settings table now exists (core
+        // migrations), and plugins have not registered yet, so admin-stored
+        // Shield toggles can fold into the plugin's config before Shield's
+        // Plugin::register() snapshots it into the auth service. Anything
+        // stored under the 'Shield' settings namespace lands in the
+        // flight-shield config; see applyShieldSettingOverrides().
+        $this->applyShieldSettingOverrides();
+
         // Sort by priority (lower = earlier), from plugin_state
         uasort($all, fn($a, $b) => ($a['priority'] ?? 50) <=> ($b['priority'] ?? 50));
 
@@ -188,6 +196,81 @@ class PluginLoader
         $this->pluginsLoaded = true;
 
         return $this->loaded;
+    }
+
+    /**
+     * Fold admin-stored Shield toggles into the shield plugin config.
+     *
+     * The Login admin page (Admin > Settings > Login) stores boolean
+     * settings in the settings store under the 'Shield' namespace. This
+     * method translates them onto the flight-shield config keys that
+     * Shield reads at boot:
+     *
+     *   Shield.email_2fa          -> actions.login            (Email2FA or null)
+     *   Shield.email_activation   -> actions.register         (EmailActivator or null)
+     *   Shield.allow_registration -> allow_registration
+     *   Shield.magic_link         -> allow_magic_link
+     *   Shield.remember_me        -> session.allow_remembering
+     *
+     * Only stored rows apply here (defaults stay in app/config/shield.php),
+     * so unchecking nothing stores nothing and package defaults rule until
+     * an admin saves the page. Runs after core migrations (settings table
+     * exists) and before the plugin registration loop (Shield has not
+     * snapshotted its config into the auth service yet).
+     */
+    protected function applyShieldSettingOverrides(): void
+    {
+        if (!array_key_exists('enlivenapp/flight-shield', $this->enabledPlugins)) {
+            return;
+        }
+
+        try {
+            $stored = $this->app->settings()->all('Shield');
+        } catch (\Throwable $e) {
+            // Settings store unreadable (fresh install edge). Package and
+            // app config file stand in as-is.
+            return;
+        }
+
+        if ($stored === []) {
+            return;
+        }
+
+        $overrides = [];
+        foreach ($stored as $key => $value) {
+            // all() returns full settings keys ('Shield.email_2fa'); strip
+            // the namespace for the translation switch below.
+            $short = str_starts_with($key, 'Shield.') ? substr($key, strlen('Shield.')) : $key;
+
+            switch ($short) {
+                case 'email_2fa':
+                    $overrides['actions']['login'] = $value === true
+                        ? \Enlivenapp\FlightShield\Authentication\Actions\Email2FA::class
+                        : null;
+                    break;
+                case 'email_activation':
+                    $overrides['actions']['register'] = $value === true
+                        ? \Enlivenapp\FlightShield\Authentication\Actions\EmailActivator::class
+                        : null;
+                    break;
+                case 'allow_registration':
+                    $overrides['allow_registration'] = (bool) $value;
+                    break;
+                case 'magic_link':
+                    $overrides['allow_magic_link'] = (bool) $value;
+                    break;
+                case 'remember_me':
+                    $overrides['session']['allow_remembering'] = (bool) $value;
+                    break;
+            }
+        }
+
+        if ($overrides !== []) {
+            $this->enabledPlugins['enlivenapp/flight-shield'] = array_replace_recursive(
+                $this->enabledPlugins['enlivenapp/flight-shield'],
+                $overrides
+            );
+        }
     }
 
     /**

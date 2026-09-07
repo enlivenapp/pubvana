@@ -62,6 +62,7 @@ The theme includes a template for every public view. Templates are Vision `.tpl`
 | `profile_edit.tpl` | Profile editing form |
 | `partials/` | Reusable fragments: navbar, footer, hero, breadcrumbs, pagination, post list, comments |
 | `blocks/` | Block templates: HTML content, Recent Posts, Tag Cloud |
+| `enlivenapp/flight-shield/` | Auth screen overrides: Shield login/register/2FA/activation/magic-link pages, auth email bodies, and the forgot/reset password pages (`auth/`) |
 
 ## Assets
 

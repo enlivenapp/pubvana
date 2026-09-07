@@ -4,7 +4,7 @@
 
 # Pubvana CMS
 
-Pubvana v3 is a full-featured CMS built on the FlightPHP microframework with plugin support and shared-host friendly setup for personal blogs and small to medium businesses.
+Pubvana v3 is a full-featured CMS built on the [FlightPHP](https://github.com/flightphp) microframework with plugin support and shared-host friendly setup for personal blogs and small to medium businesses.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net)
@@ -25,7 +25,7 @@ Pubvana v3 is a full-featured CMS built on the FlightPHP microframework with plu
 
 ---
 ## Notice: 
-v3 is currently in Alpha developement. Thing change rapidly, and no update ability is available yet(you'd be stuck with composer for updates). If you need a stable release *right now* consider [Pubvana v2](https://github.com/Pubvana-CMS/pubvana/releases/tag/v2.3.6).  Thanks for considering Pubvana!
+v3 is currently in Alpha developement. Thing change rapidly, and untested update ability is available. If you need a stable release *right now* consider [Pubvana v2](https://github.com/Pubvana-CMS/pubvana/releases/tag/v2.3.6).  Thanks for considering Pubvana!
 ---
 
 ## Installation
@@ -114,3 +114,5 @@ MIT. [LICENSE](LICENSE.md)
 ## Contributors
 
 - Enliven Applications
+
+- [FlightPHP](https://github.com/flightphp):  While the folks over at flightPHP hasn't contributed code to this project directly, they have provided the basis of the project with core, active record and others. Consider using FlightPHP for your next project! 

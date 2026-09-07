@@ -179,5 +179,129 @@ final class Sqlite
                 UNIQUE (source_type, source_id, url_hash)
             )'
         );
+
+        /*
+         * Shield tables. Column shapes mirror the vendor migrations in
+         * vendor/enlivenapp/flight-shield/Database/Migrations/ so the auth
+         * services and models behave under tests exactly as they do under
+         * MySQL.
+         */
+        $pdo->exec(
+            'CREATE TABLE users (
+                id             INTEGER PRIMARY KEY AUTOINCREMENT,
+                username       TEXT UNIQUE,
+                status         TEXT,
+                status_message TEXT,
+                active         INTEGER NOT NULL DEFAULT 0,
+                last_active    TEXT,
+                created_at     TEXT,
+                updated_at     TEXT,
+                deleted_at     TEXT
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE auth_identities (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                type          TEXT NOT NULL,
+                name          TEXT,
+                secret        TEXT NOT NULL,
+                secret2       TEXT,
+                expires       TEXT,
+                extra         TEXT,
+                force_reset   INTEGER NOT NULL DEFAULT 0,
+                last_used_at  TEXT,
+                created_at    TEXT,
+                updated_at    TEXT,
+                UNIQUE (type, secret)
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE auth_logins (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                ip_address  TEXT NOT NULL,
+                user_agent  TEXT,
+                id_type     TEXT NOT NULL,
+                identifier  TEXT NOT NULL,
+                user_id     INTEGER,
+                date        TEXT NOT NULL,
+                success     INTEGER NOT NULL DEFAULT 0
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE auth_token_logins (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                ip_address  TEXT NOT NULL,
+                user_agent  TEXT,
+                id_type     TEXT NOT NULL,
+                identifier  TEXT NOT NULL,
+                user_id     INTEGER,
+                date        TEXT NOT NULL,
+                success     INTEGER NOT NULL DEFAULT 0
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE auth_remember_tokens (
+                id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                selector         TEXT NOT NULL UNIQUE,
+                hashed_validator TEXT NOT NULL,
+                user_id          INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                expires          TEXT NOT NULL,
+                created_at       TEXT,
+                updated_at       TEXT
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE auth_groups_users (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                group_alias TEXT NOT NULL,
+                created_at  TEXT
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE auth_permissions_users (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                permission  TEXT NOT NULL,
+                deny        INTEGER NOT NULL DEFAULT 0,
+                created_at  TEXT
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE auth_groups (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                alias       TEXT NOT NULL,
+                title       TEXT,
+                description TEXT,
+                created_at  TEXT,
+                updated_at  TEXT
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE auth_permissions (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                alias       TEXT NOT NULL,
+                description TEXT,
+                created_at  TEXT,
+                updated_at  TEXT
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE auth_group_permissions (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                group_id      INTEGER NOT NULL,
+                permission_id INTEGER NOT NULL
+            )'
+        );
     }
 }

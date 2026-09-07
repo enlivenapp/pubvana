@@ -17,6 +17,10 @@
 
 use Pubvana\Middleware\SecurityHeadersMiddleware;
 
+use Enlivenapp\FlightCsrf\Middlewares\CsrfMiddleware;
+use Enlivenapp\FlightShield\Middlewares\ForcePasswordResetMiddleware;
+use Enlivenapp\FlightShield\Middlewares\RateLimitMiddleware;
+
 $app = $app ?? Flight::app();
 
 /*
@@ -74,7 +78,33 @@ $app->route('GET /admin', function () use ($app) {
     // }
 
     (new \Pubvana\Controllers\Admin\AdminController($app))->index();
+})->addMiddleware(new ForcePasswordResetMiddleware($app));
+
+/*
+|--------------------------------------------------------------------------
+| Password Reset (public auth flow)
+|--------------------------------------------------------------------------
+| Forgot-password and reset endpoints, built on Shield's identity
+| primitives (see PasswordResetService). POSTs carry CSRF + Shield's
+| rate limiter; failed attempts record into auth_logins so the limiter
+| counts them with login failures. The send endpoint answers identically
+| whether the email exists or not.
+*/
+$app->route('GET /auth/forgot', function () use ($app) {
+    (new \Pubvana\Controllers\Public\PasswordResetController($app))->forgotForm();
 });
+
+$app->route('POST /auth/forgot/send', function () use ($app) {
+    (new \Pubvana\Controllers\Public\PasswordResetController($app))->sendResetLink();
+})->addMiddleware(new CsrfMiddleware($app))->addMiddleware(new RateLimitMiddleware($app));
+
+$app->route('GET /auth/reset-password', function () use ($app) {
+    (new \Pubvana\Controllers\Public\PasswordResetController($app))->resetForm();
+});
+
+$app->route('POST /auth/reset-password/process', function () use ($app) {
+    (new \Pubvana\Controllers\Public\PasswordResetController($app))->processReset();
+})->addMiddleware(new CsrfMiddleware($app))->addMiddleware(new RateLimitMiddleware($app));
 
 /*
 |--------------------------------------------------------------------------

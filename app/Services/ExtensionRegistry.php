@@ -82,7 +82,7 @@ class ExtensionRegistry
             // per-field keys: default, options (select), fallback
             // (app-store key), autoload (bool, default true),
             // description.
-            'slots'    => ['general', 'email'],
+            'slots'    => ['general', 'email', 'login_sec'],
             'required' => ['label', 'fields'],
             'optional' => ['description', 'priority'],
         ],

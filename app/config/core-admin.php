@@ -24,8 +24,11 @@ use Pubvana\Controllers\Admin\ThemesController;
 use Pubvana\Controllers\Admin\SettingsController;
 use Pubvana\Controllers\Admin\NavigationController;
 use Pubvana\Controllers\Admin\EmailAdminController;
+use Pubvana\Controllers\Admin\LoginSecController;
 
 use Pubvana\Controllers\Admin\PluginsController;
+
+use Enlivenapp\FlightShield\Middlewares\ForcePasswordResetMiddleware;
 
 /** @var \flight\Engine $app */
 $app = $app ?? Flight::app();
@@ -48,6 +51,13 @@ $adext->register('admin.menu', 'settings', [
         'icon'     => 'ti-settings',
         'url'      => '/settings',
         'priority' => 1,
+        'core'     => true,
+    ],
+    'pubvana.login_sec' => [
+        'label'    => 'Login',
+        'icon'     => 'ti-login',
+        'url'      => '/login-sec',
+        'priority' => 2,
         'core'     => true,
     ],
     'pubvana.users' => [
@@ -164,6 +174,19 @@ $adext->register('admin.menu', 'tools', 'pubvana.cms.mail', [
 */
 $authMiddleware = null;
 
+/*
+|--------------------------------------------------------------------------
+| Forced Password Reset Gate
+|--------------------------------------------------------------------------
+| Redirects LOGGED-IN users whose Shield email identity carries the
+| force_reset flag to /auth/reset-password until they save a new password.
+| Anonymous traffic passes straight through, so this adds no auth
+| protection on its own; it rides along on every admin route below.
+| After an admin sets Force Reset on a user, the user gets bounced here
+| on their next admin visit.
+*/
+$forceResetMiddleware = new ForcePasswordResetMiddleware($app);
+
 // Users
 $adext->addRoutes('admin', [
     ['GET',    '/users',              [UsersController::class, 'index'],   [$authMiddleware]],
@@ -174,6 +197,9 @@ $adext->addRoutes('admin', [
     ['POST',   '/users/@id/update',   [UsersController::class, 'update'],  [$authMiddleware]],
     ['POST',   '/users/@id/delete',   [UsersController::class, 'delete'],  [$authMiddleware]],
     ['POST',   '/users/@id/toggle',   [UsersController::class, 'toggle'],  [$authMiddleware]],
+    ['POST',   '/users/@id/ban',      [UsersController::class, 'ban'],     [$authMiddleware]],
+    ['POST',   '/users/@id/unban',    [UsersController::class, 'unban'],   [$authMiddleware]],
+    ['POST',   '/users/@id/force-reset', [UsersController::class, 'forceReset'], [$authMiddleware, $forceResetMiddleware]],
 ], 'pubvana.core', true);
 
 // Groups
@@ -210,20 +236,26 @@ $adext->addRoutes('admin', [
 
 // Settings (General page - tabbed)
 $adext->addRoutes('admin', [
-    ['GET',  '/settings',       [SettingsController::class, 'general'], [$authMiddleware]],
+    ['GET',  '/settings',       [SettingsController::class, 'general'], [$authMiddleware, $forceResetMiddleware]],
     ['POST', '/settings/save',  [SettingsController::class, 'save'],    [$authMiddleware]],
+], 'pubvana.core', true);
+
+// Login (Shield sign-in features - Settings > Login)
+$adext->addRoutes('admin', [
+    ['GET',  '/login-sec',       [LoginSecController::class, 'index'], [$authMiddleware, $forceResetMiddleware]],
+    ['POST', '/login-sec/save',  [LoginSecController::class, 'save'],  [$authMiddleware]],
 ], 'pubvana.core', true);
 
 // Email (SMTP settings - Tools > Email)
 $adext->addRoutes('admin', [
-    ['GET',  '/email',       [EmailAdminController::class, 'index'], [$authMiddleware]],
+    ['GET',  '/email',       [EmailAdminController::class, 'index'], [$authMiddleware, $forceResetMiddleware]],
     ['POST', '/email/save',  [EmailAdminController::class, 'save'],  [$authMiddleware]],
     ['POST', '/email/test',  [EmailAdminController::class, 'test'],  [$authMiddleware]],
 ], 'pubvana.core', true);
 
 // Plugins (enable/disable + priority)
 $adext->addRoutes('admin', [
-    ['GET',  '/plugins',      [PluginsController::class, 'index'], [$authMiddleware]],
+    ['GET',  '/plugins',      [PluginsController::class, 'index'], [$authMiddleware, $forceResetMiddleware]],
     ['POST', '/plugins/save', [PluginsController::class, 'save'], [ $authMiddleware]],
 ], 'pubvana.core', true);
 
@@ -232,7 +264,7 @@ $adext->addRoutes('admin', [
     ['GET',  '/navigation',              [NavigationController::class, 'index'],   [$authMiddleware]],
     ['POST', '/navigation/store',        [NavigationController::class, 'store'],   [$authMiddleware]],
     ['POST', '/navigation/@id/delete',   [NavigationController::class, 'delete'],  [$authMiddleware]],
-    ['POST', '/navigation/reorder',      [NavigationController::class, 'reorder'], [$authMiddleware]],
+    ['POST', '/navigation/reorder',      [NavigationController::class, 'reorder'], [$authMiddleware, $forceResetMiddleware]],
 ], 'pubvana.core', true);
 
 /*
@@ -411,6 +443,68 @@ $adext->register('admin.settings', 'email', 'pubvana.cms.mail', [
 
 /*
 |--------------------------------------------------------------------------
+| Login Settings Declarations
+|--------------------------------------------------------------------------
+| The standalone Settings > Login page (LoginSecController). These
+| Shield.* keys are the ONLY login settings savable through the admin UI.
+| The PluginLoader folds stored rows onto the flight-shield config at
+| boot (after migrations, before Shield registers), so changes apply on
+| the next request. The toggles map to Shield config:
+|
+|   Shield.email_2fa          -> actions.login
+|   Shield.email_activation   -> actions.register
+|   Shield.allow_registration -> allow_registration
+|   Shield.magic_link         -> allow_magic_link
+|   Shield.remember_me        -> session.allow_remembering
+|
+| Email 2FA, email activation, and magic link need a working SMTP setup
+| (Tools > Email); the Login page says so next to those toggles.
+*/
+$adext->register('admin.settings', 'login_sec', 'pubvana.cms.login_sec', [
+    'label'       => 'Login',
+    'description' => 'Sign-in and registration features for the login area.',
+    'priority'    => 30,
+    'fields'      => [
+        [
+            'key'         => 'Shield.allow_registration',
+            'label'       => 'Allow public registration',
+            'type'        => 'checkbox',
+            'default'     => true,
+            'description' => 'People can create their own accounts on the Register page. Turn off to only create accounts from the admin area.',
+        ],
+        [
+            'key'         => 'Shield.magic_link',
+            'label'       => 'Magic link login',
+            'type'        => 'checkbox',
+            'default'     => false,
+            'description' => 'People can sign in with a one-time link emailed to them instead of typing a password. Needs email delivery set up (Tools > Email).',
+        ],
+        [
+            'key'         => 'Shield.remember_me',
+            'label'       => 'Remember me',
+            'type'        => 'checkbox',
+            'default'     => true,
+            'description' => 'Adds a Remember me option to the login form so people stay signed in on their usual device for 30 days.',
+        ],
+        [
+            'key'         => 'Shield.email_2fa',
+            'label'       => 'Email two-factor (2FA)',
+            'type'        => 'checkbox',
+            'default'     => false,
+            'description' => 'Sign-in becomes two steps: after the password, users enter a one-time code emailed to them. A stolen password alone cannot get into the account. Needs email delivery set up (Tools > Email).',
+        ],
+        [
+            'key'         => 'Shield.email_activation',
+            'label'       => 'Email activation on register',
+            'type'        => 'checkbox',
+            'default'     => false,
+            'description' => 'New accounts start turned off. New users get an email with an activation link and can sign in only after clicking it. Needs email delivery set up (Tools > Email).',
+        ],
+    ],
+]);
+
+/*
+|--------------------------------------------------------------------------
 | Dashboard Contributions (Core)
 |--------------------------------------------------------------------------
 | Users (Shield) cards and the Quick Actions section. Core contributions
@@ -418,19 +512,33 @@ $adext->register('admin.settings', 'email', 'pubvana.cms.mail', [
 | 'media', 'system') are resolved and labeled in AdminController.
 */
 
-// Users cards — total + active
+// Users cards — total, active, new (with trend), banned, inactive
 $adext->register('admin.dashboard', 'cards', 'pubvana.users', [
     'label'    => 'Users',
     'priority' => 10,
     'callable' => function (array $context) use ($app): array {
+        $total = 0;
+        $active = 0;
+        $inactive = 0;
+        $banned = 0;
+        $newThisMonth = 0;
+        $newChange = 0.0;
+
         try {
             $stats = $app->auth()->stats();
             $total = $stats->totalUsers();
             $active = $stats->activeUsers();
+            $inactive = $stats->inactiveUsers();
+            $banned = $stats->bannedUsers();
+            $newThisMonth = $stats->newUsersThisMonth();
+            $newChange = $stats->newUsersPercentChange();
         } catch (\Throwable $e) {
             $total = $app->auth()->users()->count();
             $active = $total;
         }
+
+        $changeDirection = $newChange >= 0 ? 'up' : 'down';
+        $changeLabel = ($newChange >= 0 ? '+' : '') . $newChange . '%';
 
         return [
             [
@@ -453,7 +561,82 @@ $adext->register('admin.dashboard', 'cards', 'pubvana.users', [
                 'href'        => '/users',
                 'description' => 'Accounts currently allowed to log in.',
             ],
+            [
+                'id'          => 'inactive-users',
+                'label'       => 'Inactive Users',
+                'value'       => (int) $inactive,
+                'icon'        => 'ti-user-off',
+                'tone'        => 'secondary',
+                'group'       => 'people',
+                'href'        => '/users',
+                'description' => 'Deactivated accounts awaiting reactivation.',
+            ],
+            [
+                'id'          => 'banned-users',
+                'label'       => 'Banned Users',
+                'value'       => (int) $banned,
+                'icon'        => 'ti-user-x',
+                'tone'        => 'danger',
+                'group'       => 'people',
+                'href'        => '/users',
+                'description' => 'Accounts blocked from logging in.',
+            ],
+            [
+                'id'          => 'new-users',
+                'label'       => 'New Users',
+                'value'       => (int) $newThisMonth,
+                'icon'        => 'ti-user-plus',
+                'tone'        => 'info',
+                'group'       => 'people',
+                'href'        => '/users',
+                'description' => 'Registrations this month.',
+                'trend'       => [
+                    'direction' => $changeDirection,
+                    'value'     => $changeLabel,
+                    'label'     => 'vs last month',
+                ],
+            ],
         ];
+    },
+]);
+
+// Login activity section — Shield auth_logins summary
+$adext->register('admin.dashboard', 'sections', 'pubvana.logins', [
+    'label'    => 'Login Activity',
+    'priority' => 20,
+    'callable' => static function (array $context) use ($app): array {
+        $summary = ['total' => 0, 'success' => 0, 'failed' => 0];
+
+        try {
+            $summary = $app->auth()->stats()->loginAttempts(30);
+        } catch (\Throwable $e) {
+            // Stats table missing (fresh install) — zeros are fine.
+        }
+
+        return [[
+            'id'          => 'login-activity',
+            'title'       => 'Login Activity',
+            'type'        => 'list',
+            'icon'        => 'ti-login',
+            'col'         => 'col-12 col-xl-6',
+            'group'       => 'people',
+            'description' => 'Authentication attempts over the last 30 days, including password reset requests.',
+            'href'        => '/users',
+            'items'       => [
+                [
+                    'label' => 'Successful sign-ins',
+                    'meta'  => (string) ($summary['success'] ?? 0),
+                ],
+                [
+                    'label' => 'Failed attempts',
+                    'meta'  => (string) ($summary['failed'] ?? 0),
+                ],
+                [
+                    'label' => 'Total attempts',
+                    'meta'  => (string) ($summary['total'] ?? 0),
+                ],
+            ],
+        ]];
     },
 ]);
 

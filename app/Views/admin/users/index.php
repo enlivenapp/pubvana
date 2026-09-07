@@ -45,7 +45,9 @@
                                 </a>
                             </td>
                             <td>
-                                <?php if ((int) $u->active): ?>
+                                <?php if ($u->isBanned()): ?>
+                                    <span class="badge bg-danger-lt">Banned</span>
+                                <?php elseif ((int) $u->active): ?>
                                     <span class="badge bg-success-lt">Active</span>
                                 <?php else: ?>
                                     <span class="badge bg-secondary-lt">Inactive</span>
@@ -73,6 +75,18 @@
                                             <?= (int) $u->active ? 'Deactivate' : 'Activate' ?>
                                         </button>
                                     </form>
+                                    <?php if ($u->isBanned()): ?>
+                                        <form method="POST" action="/admin/users/<?= (int) $u->id ?>/unban" class="d-inline">
+                                            <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
+                                            <button class="btn btn-sm btn-outline-success">Unban</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <form method="POST" action="/admin/users/<?= (int) $u->id ?>/ban" class="d-inline"
+                                              onsubmit="return confirm('Ban this user? They will not be able to log in.')">
+                                            <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
+                                            <button class="btn btn-sm btn-outline-danger">Ban</button>
+                                        </form>
+                                    <?php endif; ?>
                                     <form method="POST" action="/admin/users/<?= (int) $u->id ?>/delete"
                                           class="d-inline" onsubmit="return confirm('Delete this user?')">
                                         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
