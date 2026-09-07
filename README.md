@@ -6,18 +6,11 @@
 
 Pubvana v3 is a full-featured CMS built on the [FlightPHP](https://github.com/flightphp) microframework with shared-host friendly setup for personal blogs, small to medium business websites, company intranets and more. We have completely rebuilt version 3 with a new, fresh administration panel, plugin extensions, faster internals, and more included free features than you\'d expect in a free CMS.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net)
-
-## v2
-[![Latest Release](https://img.shields.io/github/v/release/Pubvana-CMS/pubvana)](https://github.com/Pubvana-CMS/pubvana/releases)
-[![Codeigniter 4](https://img.shields.io/badge/Codeigniter4-4.7-orange.svg)](https://codeigniter.com)
-[![status](https://img.shields.io/badge/status-maintenance-blue)](https://github.com/Pubvana-CMS/pubvana)
-
 ## v3
 [![v3](https://img.shields.io/badge/v3-In%20Development-blue)](https://github.com/Pubvana-CMS/pubvana)
 [![Latest Unstable Version](http://poser.pugx.org/enlivenapp/pubvana/v/unstable)](https://packagist.org/packages/enlivenapp/pubvana) 
 [![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 [![FlightPHP](https://img.shields.io/badge/FlightPHP-3.0-orange.svg)](https://flightphp.com)
 ![PHPStan: Level 8](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat)
@@ -28,6 +21,14 @@ Pubvana v3 is a full-featured CMS built on the [FlightPHP](https://github.com/fl
 [![Daily Downloads](http://poser.pugx.org/enlivenapp/pubvana/d/daily)](https://packagist.org/packages/enlivenapp/pubvana)
 [![Monthly Downloads](http://poser.pugx.org/enlivenapp/pubvana/d/monthly)](https://packagist.org/packages/enlivenapp/pubvana)
 [![Total Downloads](http://poser.pugx.org/enlivenapp/pubvana/downloads)](https://packagist.org/packages/enlivenapp/pubvana) 
+
+## v2
+[![Latest Release](https://img.shields.io/github/v/release/Pubvana-CMS/pubvana)](https://github.com/Pubvana-CMS/pubvana/releases)
+[![Codeigniter 4](https://img.shields.io/badge/Codeigniter4-4.7-orange.svg)](https://codeigniter.com)
+[![status](https://img.shields.io/badge/status-maintenance-blue)](https://github.com/Pubvana-CMS/pubvana)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net)
+
 
 ---
 
@@ -43,20 +44,35 @@ See [Install](INSTALL.md)
 
 ## Features
 
-- Posts and pages with draft/published/scheduled workflow
-- WYSIWYG editor (Jodit) for all content types
-- Plugin system with enable/disable from the admin panel
-- Vision templates for public pages (no PHP execution)
+- Posts and pages with draft/published/scheduled workflow, revision history, categories, tags
+- WYSIWYG editor (Jodit) and RSS/Atom feeds for all content types
+- Media library with GD/Imagick processing, in-browser image editor, video posters, embeds
+- Nested moderated comments with captcha and sanitization
+- AI assistant with fact-checking workflow
 - Region and block system with drag-and-drop placement
-- Media library with image editing
-- Built-in SEO (meta, sitemaps, schema, LLMs.txt)
-- Comment system with moderation
-- URL redirect manager with 404 tracking
+- Vision templates for public pages (no PHP execution)
+- Theme system with per-theme options
+- Navigation manager with nested dropdowns
+- Plugin system with enable/disable from the admin panel
+- Admin dashboard with plugin cards
+- Role-based access control (Shield), user bans, forced password resets
+- Optional email 2FA and email activation
+- Activity log audit trail
+- Site health checks
+- SMTP email with encrypted credentials
+- Cron scheduler with isolated tasks
+- Full-site backup and restore
+- Core update flow with optional auto-updates
+- Marketplace to browse and install packages
+- Digital store with products, orders, and payment webhooks
+- Security headers, CSRF protection, rate-limited login
+- Search across content types with ranked scoring
+- SEO (meta, sitemap, schema, robots per-bot, llms.txt, Open Graph)
+- Redirect manager with 404 tracking and broken-link scanning
 - Form builder with submissions
 - Server-side analytics with daily rollups
-- Search across all content types
-- Role-based access control (Shield)
-- SMTP email with encrypted credentials
+- Public user profiles and site-wide social links
+- Extension registry for hooks, routes, menus, and blocks
 - Dark mode admin UI (Tabler/Bootstrap 5)
 
 
@@ -73,6 +89,8 @@ pubvana/
     Views/admin/        - Admin templates (.php)
   plugins/              - One folder per plugin
   themes/               - Theme folders with Vision templates
+  vendor/               - software from others' we rely on
+  writable/             - Automated writing to files from the site
 ```
 
 ## Developer Documentation
@@ -84,13 +102,13 @@ pubvana/
 
 | Layer | Technology |
 |---|---|
-| Framework | FlightPHP 3.0 |
-| Authentication | enlivenapp/flight-shield |
-| Database | enlivenapp/flight-active-record |
-| Admin UI | Tabler (Bootstrap 5 + Alpine.js) |
-| Public Templates | Vision (no PHP execution) |
-| Content Editor | Jodit |
-| Mail | PHPMailer |
+| [Framework](https://flightphp.com) | FlightPHP 3.0 |
+| [Authentication](https://packagist.org/packages/enlivenapp/flight-shield) | enlivenapp/flight-shield |
+| [Database](https://packagist.org/packages/enlivenapp/flight-active-record) | enlivenapp/flight-active-record |
+| [Admin UI](https://tabler.io) | Tabler (Bootstrap 5 + Alpine.js) |
+| [Public Templates](https://packagist.org/packages/enlivenapp/vision) | Vision (no PHP execution) |
+| [Content Editor](https://jodit.com) | Jodit |
+| [Mail](https://github.com/PHPMailer/PHPMailer) | PHPMailer |
 
 ## Security
 
