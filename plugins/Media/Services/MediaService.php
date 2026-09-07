@@ -400,6 +400,15 @@ class MediaService
 
     // ── Widgets ────────────────────────────────────────────────
 
+    private function adminBase(): string
+    {
+        $prefix = rtrim((string) ($this->config['route_prefix'] ?? ''), '/');
+        if ($prefix === '') {
+            $prefix = '/' . trim($this->config['routePrepend'] ?? 'media', '/');
+        }
+        return '/admin' . $prefix;
+    }
+
     /**
      * @return string Rendered widget HTML
     */
@@ -407,6 +416,7 @@ class MediaService
     {
         static $counter = 0;
         $pickerId = 'media-picker-' . (++$counter);
+        $adminBase = $this->adminBase();
 
         ob_start();
         include __DIR__ . '/../Views/admin/picker.php';
@@ -420,6 +430,7 @@ class MediaService
     {
         static $counter = 0;
         $pickerId = 'avatar-picker-' . (++$counter);
+        $adminBase = $this->adminBase();
 
         ob_start();
         include __DIR__ . '/../Views/admin/avatar-picker.php';
@@ -440,6 +451,7 @@ class MediaService
             'buttons' => 'bold,italic,underline,strikethrough,|,ul,ol,|,outdent,indent,|,font,fontsize,brush,paragraph,|,image,video,table,link,|,align,undo,redo,|,hr,symbol,fullsize,source',
         ];
         $config = array_merge($defaults, $options);
+        $adminBase = $this->adminBase();
 
         ob_start();
         include __DIR__ . '/../Views/admin/jodit.php';

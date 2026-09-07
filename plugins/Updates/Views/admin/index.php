@@ -14,6 +14,7 @@
  * @var array<string, mixed>|null $progress  Live progress payload (null when none)
  * @var bool                 $is_locked      Whether an operation is running
  * @var string               $changelog_url  Human changelog link
+ * @var string               $adminBase      Full admin URL base for this plugin
  *
  * @package  Pubvana\Plugins\Updates
  * @copyright 2026 enlivenapp
@@ -89,7 +90,7 @@ $renderConstraints = static function () use ($constraints, $latest): void {
 
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h2 class="h4 mb-0">Updates</h2>
-    <form method="POST" action="/admin/updates/check" class="d-inline">
+    <form method="POST" action="<?= $adminBase ?>/check" class="d-inline">
         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
         <button type="submit" class="btn btn-outline-secondary btn-sm" <?= $running ? 'disabled' : '' ?>>
             <i class="ti ti-refresh me-1"></i> Check for updates
@@ -258,7 +259,7 @@ $renderConstraints = static function () use ($constraints, $latest): void {
 <p class="text-danger small">Preflight checks failed.</p>
 <?php endif; ?>
 
-<form method="POST" action="/admin/updates/skip" class="d-inline ms-2">
+<form method="POST" action="<?= $adminBase ?>/skip" class="d-inline ms-2">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
     <input type="hidden" name="version" value="<?= htmlspecialchars($target) ?>">
     <button type="submit" class="btn btn-outline-secondary" <?= $is_locked ? 'disabled' : '' ?>>
@@ -287,7 +288,7 @@ $renderConstraints = static function () use ($constraints, $latest): void {
         <strong>Skipped versions</strong>
         <p class="text-muted small mb-2">Skipped releases are never offered. Remove one to offer it again.</p>
         <?php foreach ($skipped as $skippedVersion): ?>
-        <form method="POST" action="/admin/updates/unskip" class="d-inline me-2 mb-1">
+        <form method="POST" action="<?= $adminBase ?>/unskip" class="d-inline me-2 mb-1">
             <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
             <input type="hidden" name="version" value="<?= htmlspecialchars($skippedVersion) ?>">
             <button type="submit" class="btn btn-sm btn-outline-secondary">
@@ -403,7 +404,7 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
 
 <script>
 (function () {
-    var statusUrl = '/admin/updates/status';
+    var statusUrl = '<?= $adminBase ?>/status';
     var card      = document.getElementById('update-progress');
     var bar       = document.getElementById('update-progress-bar');
     var label     = document.getElementById('update-progress-label');
@@ -503,7 +504,7 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
         body.append('_csrf_token', '<?= csrf_token() ?>');
         body.append('confirm_breaking', '1');
 
-        fetch('/admin/updates/apply', {method: 'POST', body: body})
+        fetch('<?= $adminBase ?>/apply', {method: 'POST', body: body})
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 if (data.status === 'started' || data.status === 'completed') {
@@ -555,7 +556,7 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
             var checked = document.querySelector('input[name="auto_update"]:checked');
             body.append('auto_update', checked ? checked.value : '0');
 
-            fetch('/admin/updates/settings', {method: 'POST', body: body})
+            fetch('<?= $adminBase ?>/settings', {method: 'POST', body: body})
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     saveBtn.disabled = false;

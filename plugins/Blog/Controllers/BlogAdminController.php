@@ -13,6 +13,11 @@ use Pubvana\Controllers\Admin\AdminController;
  */
 class BlogAdminController extends AdminController
 {
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/blog'), '/');
+    }
+
     // ─── Posts ─────────────────────────────────────────────────────────────
 
     public function index(): void
@@ -29,6 +34,7 @@ class BlogAdminController extends AdminController
 
         $this->render('pubvana/blog/admin/index', [
             'pageTitle' => 'Posts',
+            'adminBase' => $this->adminBase(),
             'posts'     => $result['items'],
             'total'     => $result['total'],
             'page'      => $result['page'],
@@ -45,6 +51,7 @@ class BlogAdminController extends AdminController
 
         $this->render('pubvana/blog/admin/create', [
             'pageTitle'  => 'New Post',
+            'adminBase'  => $this->adminBase(),
             'categories' => $categories,
             'joditHtml'  => $joditHtml,
         ]);
@@ -89,7 +96,7 @@ class BlogAdminController extends AdminController
         $this->app->blog()->syncPostTags((int) $newPost->id, $post['tags_raw'] ?? '');
 
         $this->app->session()->flash('success', 'Post created.');
-        $this->app->redirect('/admin/blog/' . $newPost->id . '/edit');
+        $this->app->redirect($this->adminBase() . '/' . $newPost->id . '/edit');
     }
 
     public function edit(string $id): void
@@ -97,7 +104,7 @@ class BlogAdminController extends AdminController
         $post = $this->app->blog()->findPost((int) $id);
 
         if ($post === null) {
-            $this->app->redirect('/admin/blog');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
@@ -109,6 +116,8 @@ class BlogAdminController extends AdminController
 
         $this->render('pubvana/blog/admin/edit', [
             'pageTitle'    => 'Edit Post',
+            'adminBase'    => $this->adminBase(),
+            'previewBase'  => $this->app->pluginLoader()->routePrefix('pubvana/blog'),
             'post'         => $post,
             'categories'   => $categories,
             'selectedCats' => $selectedCats,
@@ -152,14 +161,14 @@ class BlogAdminController extends AdminController
         $this->app->blog()->syncPostTags((int) $id, $post['tags_raw'] ?? '');
 
         $this->app->session()->flash('success', 'Post updated.');
-        $this->app->redirect('/admin/blog/' . $id . '/edit');
+        $this->app->redirect($this->adminBase() . '/' . $id . '/edit');
     }
 
     public function delete(string $id): void
     {
         $this->app->blog()->deletePost((int) $id);
         $this->app->session()->flash('success', 'Post deleted.');
-        $this->app->redirect('/admin/blog');
+        $this->app->redirect($this->adminBase());
     }
 
     public function revisions(string $id): void
@@ -167,7 +176,7 @@ class BlogAdminController extends AdminController
         $post = $this->app->blog()->findPost((int) $id);
 
         if ($post === null) {
-            $this->app->redirect('/admin/blog');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
@@ -175,6 +184,7 @@ class BlogAdminController extends AdminController
 
         $this->render('pubvana/blog/admin/revisions', [
             'pageTitle' => 'Revisions: ' . $post->title,
+            'adminBase' => $this->adminBase(),
             'post'      => $post,
             'revisions' => $revisions,
         ]);
@@ -185,7 +195,7 @@ class BlogAdminController extends AdminController
         $user = $this->app->auth()->user();
         $this->app->blog()->restoreRevision((int) $id, (int) $revisionId, (int) ($user?->id));
         $this->app->session()->flash('success', 'Revision restored.');
-        $this->app->redirect('/admin/blog/' . $id . '/edit');
+        $this->app->redirect($this->adminBase() . '/' . $id . '/edit');
     }
 
     // ─── Categories ───────────────────────────────────────────────────────
@@ -196,6 +206,7 @@ class BlogAdminController extends AdminController
 
         $this->render('pubvana/blog/admin/categories', [
             'pageTitle'  => 'Categories',
+            'adminBase'  => $this->adminBase(),
             'categories' => $categories,
         ]);
     }
@@ -206,6 +217,7 @@ class BlogAdminController extends AdminController
 
         $this->render('pubvana/blog/admin/category-form', [
             'pageTitle'  => 'New Category',
+            'adminBase'  => $this->adminBase(),
             'category'   => null,
             'categories' => $categories,
         ]);
@@ -220,7 +232,7 @@ class BlogAdminController extends AdminController
 
         if ($this->app->blog()->categorySlugExists($slug)) {
             $this->app->session()->flash('error', 'A category with that slug already exists.');
-            $this->app->redirect('/admin/blog/categories/create');
+            $this->app->redirect($this->adminBase() . '/categories/create');
             return;
         }
 
@@ -232,7 +244,7 @@ class BlogAdminController extends AdminController
         ]);
 
         $this->app->session()->flash('success', 'Category created.');
-        $this->app->redirect('/admin/blog/categories');
+        $this->app->redirect($this->adminBase() . '/categories');
     }
 
     public function editCategory(string $id): void
@@ -240,7 +252,7 @@ class BlogAdminController extends AdminController
         $category = $this->app->blog()->findCategory((int) $id);
 
         if ($category === null) {
-            $this->app->redirect('/admin/blog/categories');
+            $this->app->redirect($this->adminBase() . '/categories');
             return;
         }
 
@@ -248,6 +260,7 @@ class BlogAdminController extends AdminController
 
         $this->render('pubvana/blog/admin/category-form', [
             'pageTitle'  => 'Edit Category',
+            'adminBase'  => $this->adminBase(),
             'category'   => $category,
             'categories' => $categories,
         ]);
@@ -262,7 +275,7 @@ class BlogAdminController extends AdminController
 
         if ($this->app->blog()->categorySlugExists($slug, (int) $id)) {
             $this->app->session()->flash('error', 'A category with that slug already exists.');
-            $this->app->redirect('/admin/blog/categories/' . $id . '/edit');
+            $this->app->redirect($this->adminBase() . '/categories/' . $id . '/edit');
             return;
         }
 
@@ -274,14 +287,14 @@ class BlogAdminController extends AdminController
         ]);
 
         $this->app->session()->flash('success', 'Category updated.');
-        $this->app->redirect('/admin/blog/categories');
+        $this->app->redirect($this->adminBase() . '/categories');
     }
 
     public function deleteCategory(string $id): void
     {
         $this->app->blog()->deleteCategory((int) $id);
         $this->app->session()->flash('success', 'Category deleted.');
-        $this->app->redirect('/admin/blog/categories');
+        $this->app->redirect($this->adminBase() . '/categories');
     }
 
     // ─── Tags ─────────────────────────────────────────────────────────────
@@ -292,6 +305,7 @@ class BlogAdminController extends AdminController
 
         $this->render('pubvana/blog/admin/tags', [
             'pageTitle' => 'Tags',
+            'adminBase' => $this->adminBase(),
             'tags'      => $tags,
         ]);
     }
@@ -300,6 +314,6 @@ class BlogAdminController extends AdminController
     {
         $this->app->blog()->deleteTag((int) $id);
         $this->app->session()->flash('success', 'Tag deleted.');
-        $this->app->redirect('/admin/blog/tags');
+        $this->app->redirect($this->adminBase() . '/tags');
     }
 }

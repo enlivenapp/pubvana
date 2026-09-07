@@ -5,11 +5,12 @@
  * @var string $pageTitle
  * @var \Pubvana\Plugins\Redirects\Models\Redirect $redirect
  * @var array $targetSuggestions
+ * @var string $adminBase
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-between mb-4">
-    <a href="/admin/redirects" class="btn btn-outline-secondary">Back</a>
+    <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">Back</a>
     <div class="text-secondary small">
         Hits: <?= (int) $redirect->hit_count ?>
         <?php if (!empty($redirect->last_hit_at)): ?>
@@ -18,7 +19,7 @@
     </div>
 </div>
 
-<form method="POST" action="/admin/redirects/<?= (int) $redirect->id ?>/update">
+<form method="POST" action="<?= $adminBase ?>/<?= (int) $redirect->id ?>/update">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
 
     <div class="row">

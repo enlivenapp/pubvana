@@ -1,10 +1,10 @@
-<?php /** @var string $pageTitle */ ?>
+<?php /** @var string $pageTitle @var string $adminBase */ ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/forms" class="btn btn-outline-secondary">Back</a>
+    <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">Back</a>
 </div>
 
-<form method="POST" action="/admin/forms/store">
+<form method="POST" action="<?= $adminBase ?>/store">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
 
     <div class="row">

@@ -21,7 +21,7 @@
                         },
                         "404s": {
                             "label": "404 Manager",
-                            "url": "/404-manager",
+                            "url": "/redirects/404-manager",
                             "icon": "ti-link-off",
                             "priority": 20
                         }

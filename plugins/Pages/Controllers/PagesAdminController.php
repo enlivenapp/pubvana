@@ -25,11 +25,13 @@ class PagesAdminController extends AdminController
 
         $result = $this->app->pages()->listPages($page, $perPage);
         $this->render('pubvana/pages/admin/index', [
-            'pageTitle' => 'Pages',
-            'pages'     => $result['items'],
-            'total'     => $result['total'],
-            'page'      => $page,
-            'perPage'   => $perPage,
+            'pageTitle'  => 'Pages',
+            'pages'      => $result['items'],
+            'total'      => $result['total'],
+            'page'       => $page,
+            'perPage'    => $perPage,
+            'adminBase'  => $this->adminBase(),
+            'publicBase' => $this->publicBase(),
         ]);
     }
 
@@ -39,6 +41,7 @@ class PagesAdminController extends AdminController
         $this->render('pubvana/pages/admin/create', [
             'pageTitle' => 'New Page',
             'joditHtml' => $joditHtml,
+            'adminBase' => $this->adminBase(),
         ]);
     }
 
@@ -49,7 +52,7 @@ class PagesAdminController extends AdminController
 
         if (trim($post['title'] ?? '') === '') {
             $this->app->session()->flash('error', 'Title is required.');
-            $this->app->redirect('/admin/pages/create');
+            $this->app->redirect($this->adminBase() . '/create');
             return;
         }
 
@@ -57,7 +60,7 @@ class PagesAdminController extends AdminController
         $this->app->pages()->createPage($post, $userId);
 
         $this->app->session()->flash('success', 'Page created.');
-        $this->app->redirect('/admin/pages');
+        $this->app->redirect($this->adminBase());
     }
 
     public function edit(string $id): void
@@ -65,15 +68,17 @@ class PagesAdminController extends AdminController
         $page = $this->app->pages()->findPage((int) $id);
 
         if ($page === null) {
-            $this->app->redirect('/admin/pages');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
         $joditHtml = $this->app->media()->joditInit('#content');
         $this->render('pubvana/pages/admin/edit', [
-            'pageTitle' => 'Edit Page',
-            'editPage'  => $page,
-            'joditHtml' => $joditHtml,
+            'pageTitle'  => 'Edit Page',
+            'editPage'   => $page,
+            'joditHtml'  => $joditHtml,
+            'adminBase'  => $this->adminBase(),
+            'publicBase' => $this->publicBase(),
         ]);
     }
 
@@ -85,12 +90,12 @@ class PagesAdminController extends AdminController
         $userId = $this->app->auth()->user()->id ?? 0;
 
         if ($this->app->pages()->updatePage((int) $id, $post, $userId) === null) {
-            $this->app->redirect('/admin/pages');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
         $this->app->session()->flash('success', 'Page updated.');
-        $this->app->redirect('/admin/pages/' . $id . '/edit');
+        $this->app->redirect($this->adminBase() . '/' . $id . '/edit');
     }
 
     public function delete(string $id): void
@@ -98,7 +103,7 @@ class PagesAdminController extends AdminController
         $this->app->pages()->deletePage((int) $id);
 
         $this->app->session()->flash('success', 'Page deleted.');
-        $this->app->redirect('/admin/pages');
+        $this->app->redirect($this->adminBase());
     }
 
     public function revisions(string $id): void
@@ -106,7 +111,7 @@ class PagesAdminController extends AdminController
         $page = $this->app->pages()->findPage((int) $id);
 
         if ($page === null) {
-            $this->app->redirect('/admin/pages');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
@@ -116,6 +121,7 @@ class PagesAdminController extends AdminController
             'pageTitle' => 'Revisions: ' . $page->title,
             'page'      => $page,
             'revisions' => $revisions,
+            'adminBase' => $this->adminBase(),
         ]);
     }
 
@@ -124,6 +130,16 @@ class PagesAdminController extends AdminController
         $userId = $this->app->auth()->user()->id ?? 0;
         $this->app->pages()->restoreRevision((int) $id, (int) $revisionId, $userId);
         $this->app->session()->flash('success', 'Revision restored.');
-        $this->app->redirect('/admin/pages/' . $id . '/edit');
+        $this->app->redirect($this->adminBase() . '/' . $id . '/edit');
+    }
+
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/pages'), '/');
+    }
+
+    private function publicBase(): string
+    {
+        return rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/pages'), '/');
     }
 }

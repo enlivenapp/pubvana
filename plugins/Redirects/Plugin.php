@@ -29,6 +29,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/redirects');
+        $config['route_prefix'] = $prefix;
+
         $app->map('redirects', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {
@@ -51,16 +54,16 @@ class Plugin implements PluginInterface
         // ─── Admin Routes ──────────────────────────────────────────────
 
         $adext->addRoutes('admin', [
-            ['GET',  '/redirects',                    [RedirectsAdminController::class, 'index'],    [$authMiddleware]],
-            ['GET',  '/redirects/create',             [RedirectsAdminController::class, 'create'],   [$authMiddleware]],
-            ['POST', '/redirects/store',              [RedirectsAdminController::class, 'store'],    [$authMiddleware]],
-            ['GET',  '/redirects/@id/edit',           [RedirectsAdminController::class, 'edit'],     [$authMiddleware]],
-            ['POST', '/redirects/@id/update',         [RedirectsAdminController::class, 'update'],   [$authMiddleware]],
-            ['POST', '/redirects/@id/delete',         [RedirectsAdminController::class, 'delete'],   [$authMiddleware]],
-            ['GET',  '/404-manager',                  [RedirectLinksAdminController::class, 'index'],    [$authMiddleware]],
-            ['POST', '/404-manager/@id/ignore',       [RedirectLinksAdminController::class, 'ignore'],   [$authMiddleware]],
-            ['POST', '/404-manager/@id/unignore',     [RedirectLinksAdminController::class, 'unignore'], [$authMiddleware]],
-            ['POST', '/404-manager/@id/delete',       [RedirectLinksAdminController::class, 'delete'],   [$authMiddleware]],
+            ['GET',  $prefix,                             [RedirectsAdminController::class, 'index'],        [$authMiddleware]],
+            ['GET',  $prefix . '/create',                 [RedirectsAdminController::class, 'create'],       [$authMiddleware]],
+            ['POST', $prefix . '/store',                  [RedirectsAdminController::class, 'store'],        [$authMiddleware]],
+            ['GET',  $prefix . '/@id/edit',               [RedirectsAdminController::class, 'edit'],         [$authMiddleware]],
+            ['POST', $prefix . '/@id/update',             [RedirectsAdminController::class, 'update'],       [$authMiddleware]],
+            ['POST', $prefix . '/@id/delete',             [RedirectsAdminController::class, 'delete'],       [$authMiddleware]],
+            ['GET',  $prefix . '/404-manager',            [RedirectLinksAdminController::class, 'index'],    [$authMiddleware]],
+            ['POST', $prefix . '/404-manager/@id/ignore',   [RedirectLinksAdminController::class, 'ignore'],   [$authMiddleware]],
+            ['POST', $prefix . '/404-manager/@id/unignore', [RedirectLinksAdminController::class, 'unignore'], [$authMiddleware]],
+            ['POST', $prefix . '/404-manager/@id/delete',   [RedirectLinksAdminController::class, 'delete'],   [$authMiddleware]],
         ], 'pubvana.redirects');
 
         // ─── Dashboard ──────────────────────────────────────────────────
@@ -68,7 +71,7 @@ class Plugin implements PluginInterface
         $adext->register('admin.dashboard', 'cards', 'pubvana.redirects', [
             'label'    => 'Redirects',
             'priority' => 35,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $active404s = $app->redirectLinks()->count('active');
                 $enabledRedirects = $app->redirects()->countEnabled();
 
@@ -80,7 +83,7 @@ class Plugin implements PluginInterface
                         'icon'        => 'ti-link-off',
                         'tone'        => $active404s > 0 ? 'danger' : 'success',
                         'group'       => 'tools',
-                        'href'        => '/404-manager',
+                        'href'        => $prefix . '/404-manager',
                         'description' => $active404s > 0
                             ? 'Unresolved redirect links needing attention.'
                             : 'No unresolved redirect links right now.',
@@ -92,7 +95,7 @@ class Plugin implements PluginInterface
                         'icon'        => 'ti-route-2',
                         'tone'        => 'info',
                         'group'       => 'tools',
-                        'href'        => '/redirects',
+                        'href'        => $prefix,
                         'description' => 'Redirect rules currently active.',
                     ],
                 ];
@@ -102,7 +105,7 @@ class Plugin implements PluginInterface
         $adext->register('admin.dashboard', 'sections', 'pubvana.redirects', [
             'label'    => 'Redirects',
             'priority' => 15,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $items = [];
                 foreach ($app->redirectLinks()->recent('active', 5) as $entry) {
                     $lastSeen = strtotime((string) $entry->last_seen_at);
@@ -110,7 +113,7 @@ class Plugin implements PluginInterface
                     $items[] = [
                         'label'    => $entry->source_path,
                         'meta'     => ((int) $entry->hit_count) . ' hits · Last seen ' . date('M j, Y g:ia', $lastSeen),
-                        'href'     => '/404-manager',
+                        'href'     => $prefix . '/404-manager',
                         'emphasis' => 'danger',
                     ];
                 }
@@ -122,7 +125,7 @@ class Plugin implements PluginInterface
                     'icon'        => 'ti-unlink',
                     'tone'        => 'danger',
                     'group'       => 'tools',
-                    'href'        => '/404-manager',
+                    'href'        => $prefix . '/404-manager',
                     'empty_state' => 'No redirect links have been recorded.',
                     'items'       => $items,
                 ]];

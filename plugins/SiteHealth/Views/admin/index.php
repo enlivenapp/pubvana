@@ -8,6 +8,7 @@
  * @var array  $summary
  * @var string $cachedAt
  * @var array  $categories
+ * @var string $adminBase
  */
 
 $statusBadge = function (string $status): string {
@@ -58,7 +59,7 @@ $overallLabel = match ($summary['overall'] ?? 'good') {
             <?php endif; ?>
         </div>
     </div>
-    <form method="post" action="/admin/site-health/rerun">
+    <form method="post" action="<?= $adminBase ?>/rerun">
         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
         <button type="submit" class="btn btn-outline-primary">
             <i class="ti ti-refresh me-1"></i> Re-run Checks

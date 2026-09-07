@@ -7,11 +7,13 @@
  * @var int $total
  * @var int $page
  * @var int $perPage
+ * @var string $adminBase
+ * @var string $publicBase
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/pages/create" class="btn btn-primary">
+    <a href="<?= $adminBase ?>/create" class="btn btn-primary">
         <i class="ti ti-plus me-1"></i> New Page
     </a>
 </div>
@@ -37,7 +39,7 @@
                     <?php foreach ($pages as $p): ?>
                         <tr>
                             <td>
-                                <a href="/admin/pages/<?= (int) $p->id ?>/edit">
+                                <a href="<?= $adminBase ?>/<?= (int) $p->id ?>/edit">
                                     <?= htmlspecialchars($p->title ?? 'Untitled') ?>
                                 </a>
                             </td>
@@ -56,12 +58,12 @@
                             </td>
                             <td>
                                 <div class="btn-list flex-nowrap">
-                                    <a href="/admin/pages/<?= (int) $p->id ?>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <a href="/admin/pages/<?= (int) $p->id ?>/revisions" class="btn btn-sm btn-outline-secondary">Revisions</a>
+                                    <a href="<?= $adminBase ?>/<?= (int) $p->id ?>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="<?= $adminBase ?>/<?= (int) $p->id ?>/revisions" class="btn btn-sm btn-outline-secondary">Revisions</a>
                                     <?php if ($p->status === 'published'): ?>
-                                    <a href="/page/<?= htmlspecialchars($p->slug) ?>" class="btn btn-sm btn-outline-success" target="_blank">View</a>
+                                    <a href="<?= $publicBase ?>/<?= htmlspecialchars($p->slug) ?>" class="btn btn-sm btn-outline-success" target="_blank">View</a>
                                     <?php endif; ?>
-                                    <form method="POST" action="/admin/pages/<?= (int) $p->id ?>/delete"
+                                    <form method="POST" action="<?= $adminBase ?>/<?= (int) $p->id ?>/delete"
                                           class="d-inline" onsubmit="return confirm('Delete this page?')">
                                         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                         <button class="btn btn-sm btn-outline-danger">Delete</button>
@@ -82,7 +84,7 @@
         <ul class="pagination justify-content-center">
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                 <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-                    <a class="page-link" href="/admin/pages?page=<?= $i ?>"><?= $i ?></a>
+                    <a class="page-link" href="<?= $adminBase ?>?page=<?= $i ?>"><?= $i ?></a>
                 </li>
             <?php endfor; ?>
         </ul>

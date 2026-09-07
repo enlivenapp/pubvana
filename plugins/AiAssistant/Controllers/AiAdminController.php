@@ -13,7 +13,7 @@ use Pubvana\Controllers\Admin\AdminController;
  *
  * Every action gates on the seeded 'ai.manage' permission (applied as a
  * route middleware in Plugin::register). Each mutation flashes a message
- * and redirects back to /admin/ai/manage.
+ * and redirects back to the plugin's admin base (see adminBase()).
  *
  * @package Pubvana\Plugins\AiAssistant\Controllers
  */
@@ -22,6 +22,14 @@ class AiAdminController extends AdminController
     public function __construct(\flight\Engine $app)
     {
         parent::__construct($app, 'pubvana.ai');
+    }
+
+    /**
+     * Admin URL base for this plugin (adext prepends /admin to routes).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/ai'), '/');
     }
 
     /**
@@ -38,6 +46,7 @@ class AiAdminController extends AdminController
 
         $this->render('pubvana/ai/admin/manage', [
             'pageTitle'       => 'AI Assistant',
+            'adminBase'       => $this->adminBase(),
             'keys'            => $this->app->ai()->listKeys(),
             'helpGroups'      => $this->app->ai()->helpGroups(),
             'logLimit'        => $logLimit,
@@ -59,7 +68,7 @@ class AiAdminController extends AdminController
 
         $this->app->session()->flash('success', 'API key created. Copy it now; it is shown only once:');
         $this->app->session()->flash('plain_token', $result['plain']);
-        $this->app->redirect('/admin/ai/manage');
+        $this->app->redirect($this->adminBase() . '/manage');
     }
 
     /**
@@ -82,7 +91,7 @@ class AiAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'API key not found.');
         }
-        $this->app->redirect('/admin/ai/manage');
+        $this->app->redirect($this->adminBase() . '/manage');
     }
 
     /**
@@ -95,7 +104,7 @@ class AiAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'API key not found.');
         }
-        $this->app->redirect('/admin/ai/manage');
+        $this->app->redirect($this->adminBase() . '/manage');
     }
 
     /**
@@ -108,7 +117,7 @@ class AiAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'API key not found.');
         }
-        $this->app->redirect('/admin/ai/manage');
+        $this->app->redirect($this->adminBase() . '/manage');
     }
 
     /**
@@ -132,7 +141,7 @@ class AiAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'Please choose a valid active user.');
         }
-        $this->app->redirect('/admin/ai/manage');
+        $this->app->redirect($this->adminBase() . '/manage');
     }
 
     /**
@@ -142,6 +151,7 @@ class AiAdminController extends AdminController
     {
         $this->render('pubvana/ai/admin/help', [
             'pageTitle'  => 'AI Assistant · Help',
+            'adminBase'  => $this->adminBase(),
             'helpGroups' => $this->app->ai()->helpGroups(),
         ]);
     }

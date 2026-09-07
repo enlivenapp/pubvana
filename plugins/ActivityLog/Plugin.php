@@ -23,6 +23,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/activity-log');
+        $config['route_prefix'] = $prefix;
+
         // Register service facade
         $app->map('activityLog', function () use ($app, $config) {
             static $instance = null;
@@ -38,14 +41,14 @@ class Plugin implements PluginInterface
 
         // ─── Admin Routes (adext prepends /admin) ──────────────────────
         $adext->addRoutes('admin', [
-            ['GET', '/activity-log', [ActivityLogAdminController::class, 'index'], [$authMiddleware]],
+            ['GET', $prefix, [ActivityLogAdminController::class, 'index'], [$authMiddleware]],
         ], 'pubvana.activity-log');
 
         // ─── Dashboard Card ─────────────────────────────────────────────
         $adext->register('admin.dashboard', 'cards', 'pubvana.activity-log', [
             'label'    => 'Recent Admin Activity',
             'priority' => 25,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $count = $app->activityLog()->countRecent24h();
                 return [
                     [
@@ -55,7 +58,7 @@ class Plugin implements PluginInterface
                         'icon'        => 'ti-activity',
                         'tone'        => $count > 0 ? 'info' : 'secondary',
                         'group'       => 'tools',
-                        'href'        => '/activity-log',
+                        'href'        => $prefix,
                         'description' => $count > 0
                             ? "{$count} admin actions in the last 24 hours."
                             : 'No admin activity in the last 24 hours.',
@@ -66,7 +69,7 @@ class Plugin implements PluginInterface
 
         // ─── Auto-tracking via flight.route.executed ────────────────────
         // Only fires when a route actually dispatches successfully
-        $app->onEvent('flight.route.executed', function ($route, $executionTime) use ($app) {
+        $app->onEvent('flight.route.executed', function ($route, $executionTime) use ($app, $prefix) {
             // Check config flag
             if ($app->get('activity_log.track_admin_actions') === false) {
                 return;
@@ -90,7 +93,7 @@ class Plugin implements PluginInterface
                 '/admin/auth/',
                 '/admin/assets/',
                 '/admin/api/',
-                '/admin/activity-log',
+                '/admin' . $prefix,
             ];
 
             foreach ($skipPatterns as $skip) {

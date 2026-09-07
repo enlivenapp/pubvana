@@ -24,6 +24,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/marketplace');
+        $config['route_prefix'] = $prefix;
+
         $app->map('marketplace', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {

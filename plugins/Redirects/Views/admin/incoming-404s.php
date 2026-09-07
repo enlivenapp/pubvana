@@ -5,13 +5,14 @@
  * @var string $pageTitle
  * @var string $status
  * @var \Pubvana\Plugins\Redirects\Models\RedirectLink[] $entries
+ * @var string $adminBase
  */
 ?>
 
 <ul class="nav nav-tabs mb-3">
     <?php foreach (['active' => 'Active', 'resolved' => 'Resolved', 'ignored' => 'Ignored', 'all' => 'All'] as $key => $label): ?>
         <li class="nav-item">
-            <a class="nav-link <?= $status === $key ? 'active' : '' ?>" href="/admin/404-manager?status=<?= urlencode($key) ?>">
+            <a class="nav-link <?= $status === $key ? 'active' : '' ?>" href="<?= $adminBase ?>/404-manager?status=<?= urlencode($key) ?>">
                 <?= htmlspecialchars($label) ?>
             </a>
         </li>
@@ -71,20 +72,20 @@
                             </td>
                             <td>
                                 <div class="btn-list flex-nowrap">
-                                    <a href="/admin/redirects/create?source_path=<?= urlencode($entry->source_path) ?>&incoming_404_id=<?= (int) $entry->id ?>"
+                                    <a href="<?= $adminBase ?>/create?source_path=<?= urlencode($entry->source_path) ?>&incoming_404_id=<?= (int) $entry->id ?>"
                                        class="btn btn-sm btn-outline-primary">Create Redirect</a>
                                     <?php if ((int) $entry->ignored === 1): ?>
-                                        <form method="POST" action="/admin/404-manager/<?= (int) $entry->id ?>/unignore" class="d-inline">
+                                        <form method="POST" action="<?= $adminBase ?>/404-manager/<?= (int) $entry->id ?>/unignore" class="d-inline">
                                             <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                             <button class="btn btn-sm btn-outline-secondary">Unignore</button>
                                         </form>
                                     <?php else: ?>
-                                        <form method="POST" action="/admin/404-manager/<?= (int) $entry->id ?>/ignore" class="d-inline">
+                                        <form method="POST" action="<?= $adminBase ?>/404-manager/<?= (int) $entry->id ?>/ignore" class="d-inline">
                                             <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                             <button class="btn btn-sm btn-outline-secondary">Ignore</button>
                                         </form>
                                     <?php endif; ?>
-                                    <form method="POST" action="/admin/404-manager/<?= (int) $entry->id ?>/delete"
+                                    <form method="POST" action="<?= $adminBase ?>/404-manager/<?= (int) $entry->id ?>/delete"
                                           class="d-inline" onsubmit="return confirm('Delete this 404 entry?')">
                                         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                         <button class="btn btn-sm btn-outline-danger">Delete</button>

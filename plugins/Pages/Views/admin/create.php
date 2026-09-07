@@ -3,14 +3,15 @@
  * Create page - admin form.
  *
  * @var string $pageTitle
+ * @var string $adminBase
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/pages" class="btn btn-outline-secondary">Back</a>
+    <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">Back</a>
 </div>
 
-<form method="POST" action="/admin/pages/store">
+<form method="POST" action="<?= $adminBase ?>/store">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
 
     <div class="row">

@@ -5,6 +5,7 @@
  * @var string $selector CSS selector for the textarea
  * @var string $joditId  Unique ID for this instance
  * @var array  $config   Merged Jodit config (height, buttons)
+ * @var string $adminBase Admin URL base for this plugin's admin routes
  */
 ?>
 
@@ -33,6 +34,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 (function() {
     var csrfToken    = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    var adminBase    = '<?= $adminBase ?>';
     var offcanvasEl  = document.getElementById('<?= $joditId ?>-offcanvas');
     var grid         = document.getElementById('<?= $joditId ?>-grid');
     var loadMoreWrap = document.getElementById('<?= $joditId ?>-load-more');
@@ -89,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function uploadFile(file) {
         var isVideo  = file.type.startsWith('video/');
-        var endpoint = isVideo ? '/admin/media/upload/video' : '/admin/media/upload/image';
+        var endpoint = isVideo ? adminBase + '/upload/video' : adminBase + '/upload/image';
 
         var fd = new FormData();
         fd.append('file', file);
@@ -107,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadMedia(pg) {
-        fetch('/admin/media/json?page=' + pg)
+        fetch(adminBase + '/json?page=' + pg)
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 if (pg === 1) grid.innerHTML = '';
@@ -194,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
         uploader: {
-            url: '/admin/media/upload/image',
+            url: adminBase + '/upload/image',
             filesVariableName: 'file',
             headers: { 'X-CSRF-Token': csrfToken },
             data: { '_csrf_token': csrfToken },

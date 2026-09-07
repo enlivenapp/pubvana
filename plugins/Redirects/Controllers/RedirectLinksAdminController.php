@@ -25,6 +25,7 @@ class RedirectLinksAdminController extends AdminController
             'pageTitle' => '404 Manager',
             'entries'   => $this->app->redirectLinks()->all($status),
             'status'    => $status,
+            'adminBase' => $this->adminBase(),
         ]);
     }
 
@@ -38,7 +39,7 @@ class RedirectLinksAdminController extends AdminController
         } else {
             $this->app->session()->flash('success', 'Entry ignored.');
         }
-        $this->app->redirect('/admin/404-manager');
+        $this->app->redirect($this->adminBase() . '/404-manager');
     }
 
     /**
@@ -51,7 +52,7 @@ class RedirectLinksAdminController extends AdminController
         } else {
             $this->app->session()->flash('success', 'Entry unignored.');
         }
-        $this->app->redirect('/admin/404-manager?status=ignored');
+        $this->app->redirect($this->adminBase() . '/404-manager?status=ignored');
     }
 
     /**
@@ -64,6 +65,15 @@ class RedirectLinksAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'Entry not found.');
         }
-        $this->app->redirect('/admin/404-manager');
+        $this->app->redirect($this->adminBase() . '/404-manager');
+    }
+
+    /**
+     * Full admin URL base for this plugin (adext prepends '/admin' to the
+     * registered route path).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/redirects'), '/');
     }
 }

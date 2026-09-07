@@ -10,6 +10,7 @@
  * @var int    $perPage
  * @var int    $total
  * @var int    $totalPages
+ * @var string $adminBase
  */
 ?>
 
@@ -76,7 +77,7 @@
                 <button type="submit" class="btn btn-primary w-100 me-2">
                     <i class="ti ti-filter me-1"></i> Filter
                 </button>
-                <a href="/admin/activity-log" class="btn btn-outline-secondary w-100">
+                <a href="<?= $adminBase ?>" class="btn btn-outline-secondary w-100">
                     <i class="ti ti-x me-1"></i> Clear
                 </a>
             </div>
@@ -151,7 +152,7 @@
                 <ul class="pagination pagination-sm mb-0 justify-content-center">
                     <?php if ($page > 1): ?>
                         <li class="page-item">
-                            <a class="page-link" href="<?= buildPageUrl($page - 1, $filters) ?>">&laquo; Previous</a>
+                            <a class="page-link" href="<?= buildPageUrl($page - 1, $filters, $adminBase) ?>">&laquo; Previous</a>
                         </li>
                     <?php else: ?>
                         <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
@@ -163,13 +164,13 @@
                     for ($i = $start; $i <= $end; $i++):
                     ?>
                         <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-                            <a class="page-link" href="<?= buildPageUrl($i, $filters) ?>"><?= $i ?></a>
+                            <a class="page-link" href="<?= buildPageUrl($i, $filters, $adminBase) ?>"><?= $i ?></a>
                         </li>
                     <?php endfor; ?>
 
                     <?php if ($page < $totalPages): ?>
                         <li class="page-item">
-                            <a class="page-link" href="<?= buildPageUrl($page + 1, $filters) ?>">Next &raquo;</a>
+                            <a class="page-link" href="<?= buildPageUrl($page + 1, $filters, $adminBase) ?>">Next &raquo;</a>
                         </li>
                     <?php else: ?>
                         <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
@@ -195,7 +196,7 @@ document.getElementById('filterForm').addEventListener('submit', function(e) {
     }
     // Reset page to 1 on filter change
     params.delete('page');
-    window.location.href = '/admin/activity-log?' + params.toString();
+    window.location.href = '<?= $adminBase ?>?' + params.toString();
     e.preventDefault();
 });
 </script>
@@ -216,7 +217,7 @@ function actionColor(string $action): string
     };
 }
 
-function buildPageUrl(int $page, array $filters): string
+function buildPageUrl(int $page, array $filters, string $adminBase): string
 {
     $params = [];
     foreach ($filters as $key => $value) {
@@ -225,6 +226,6 @@ function buildPageUrl(int $page, array $filters): string
         }
     }
     $params['page'] = $page;
-    return '/admin/activity-log?' . http_build_query($params);
+    return $adminBase . '?' . http_build_query($params);
 }
 ?>

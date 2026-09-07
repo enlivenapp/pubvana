@@ -3,6 +3,7 @@
  * AI Assistant Fact Checking: terms acceptance, on/off, report history.
  *
  * @var string $pageTitle
+ * @var string $adminBase  admin URL base for this plugin
  * @var array  $prompt          FactCheckService::currentPrompt() row
  * @var bool   $enabled
  * @var string|null $acceptedAt
@@ -16,10 +17,10 @@
 ?>
 
 <div class="d-flex justify-content-end mb-3">
-    <a href="/admin/ai/manage" class="btn btn-outline-secondary me-2">
+    <a href="<?= $adminBase ?>/manage" class="btn btn-outline-secondary me-2">
         <i class="ti ti-key me-1"></i> Manage keys
     </a>
-    <a href="/admin/ai/help" class="btn btn-primary">
+    <a href="<?= $adminBase ?>/help" class="btn btn-primary">
         <i class="ti ti-book-2 me-1"></i> Quick Start &amp; Help
     </a>
 </div>
@@ -69,7 +70,7 @@
                 <?php endif; ?>
 
                 <?php if (!$termsCurrent): ?>
-                    <form method="POST" action="/admin/ai/fact-checks/terms" class="mt-3">
+                    <form method="POST" action="<?= $adminBase ?>/fact-checks/terms" class="mt-3">
                         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                         <label class="form-check">
                             <input type="checkbox" class="form-check-input" name="agree" value="1" required>
@@ -110,7 +111,7 @@
                             <?= htmlspecialchars(implode(' ', $blockers)) ?>
                         </div>
                     <?php endif; ?>
-                    <form method="POST" action="/admin/ai/fact-checks/toggle">
+                    <form method="POST" action="<?= $adminBase ?>/fact-checks/toggle">
                         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                         <input type="hidden" name="enable" value="0">
                         <button class="btn btn-outline-danger">Turn fact checking off</button>
@@ -127,7 +128,7 @@
                             <?php endforeach; ?>
                         </ul>
                     <?php endif; ?>
-                    <form method="POST" action="/admin/ai/fact-checks/toggle">
+                    <form method="POST" action="<?= $adminBase ?>/fact-checks/toggle">
                         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                         <input type="hidden" name="enable" value="1">
                         <button class="btn btn-primary" <?= $blockers !== [] ? 'disabled' : '' ?>>Turn fact checking on</button>
@@ -193,8 +194,8 @@
                             <td class="text-secondary"><?= $report['key_name'] !== null ? htmlspecialchars((string) $report['key_name']) : '<em class="text-secondary">unknown</em>' ?></td>
                             <td>
                                 <div class="btn-list flex-nowrap">
-                                    <a class="btn btn-sm btn-outline-primary" href="/admin/ai/fact-checks/<?= (int) $report['id'] ?>">View</a>
-                                    <form method="POST" action="/admin/ai/fact-checks/<?= (int) $report['id'] ?>/delete" class="d-inline"
+                                    <a class="btn btn-sm btn-outline-primary" href="<?= $adminBase ?>/fact-checks/<?= (int) $report['id'] ?>">View</a>
+                                    <form method="POST" action="<?= $adminBase ?>/fact-checks/<?= (int) $report['id'] ?>/delete" class="d-inline"
                                           onsubmit="return confirm('Delete this fact-check report?')">
                                         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                         <button class="btn btn-sm btn-outline-danger">Delete</button>

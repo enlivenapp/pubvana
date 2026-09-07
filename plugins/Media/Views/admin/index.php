@@ -3,6 +3,7 @@
  * Media library — admin page.
  *
  * @var string                         $pageTitle
+ * @var string                         $adminBase
  * @var \Pubvana\Plugins\Media\Models\Media[] $media
  * @var int                            $total
  * @var int                            $page
@@ -31,15 +32,15 @@
         <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
                 <a class="nav-link <?= $typeFilter === null ? 'active' : '' ?>"
-                   href="/admin/media">All</a>
+                   href="<?= $adminBase ?>">All</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= $typeFilter === 'image' ? 'active' : '' ?>"
-                   href="/admin/media?type=image">Images</a>
+                   href="<?= $adminBase ?>?type=image">Images</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= $typeFilter === 'video' ? 'active' : '' ?>"
-                   href="/admin/media?type=video">Videos</a>
+                   href="<?= $adminBase ?>?type=video">Videos</a>
             </li>
         </ul>
     </div>
@@ -103,7 +104,7 @@
                         <?php for ($p = 1; $p <= $totalPages; $p++): ?>
                             <li class="page-item <?= $p === $page ? 'active' : '' ?>">
                                 <a class="page-link"
-                                   href="/admin/media?page=<?= $p ?><?= $typeFilter ? '&type=' . $typeFilter : '' ?>">
+                                   href="<?= $adminBase ?>?page=<?= $p ?><?= $typeFilter ? '&type=' . $typeFilter : '' ?>">
                                     <?= $p ?>
                                 </a>
                             </li>
@@ -130,6 +131,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    var adminBase = '<?= $adminBase ?>';
     var grid = document.getElementById('media-grid');
     var uploadZone = document.getElementById('media-upload-zone');
     var fileInput = document.getElementById('media-file-input');
@@ -166,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fileArray.forEach(function (file) {
             var isVideo = file.type.startsWith('video/');
-            var endpoint = isVideo ? '/admin/media/upload/video' : '/admin/media/upload/image';
+            var endpoint = isVideo ? adminBase + '/upload/video' : adminBase + '/upload/image';
 
             var fd = new FormData();
             fd.append('file', file);
@@ -180,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (completed === fileArray.length) {
                         if (fileArray.length === 1 && data.type === 'image') {
-                            window.location.href = '/admin/media/' + data.id + '/editor';
+                            window.location.href = adminBase + '/' + data.id + '/editor';
                         } else {
                             location.reload();
                         }
@@ -223,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
             + '<input type="text" class="form-control" id="detail-title" value="' + (media.title || '') + '"></div>'
             + '<div class="mb-3"><small class="text-secondary">' + media.filename + '</small></div>'
             + (media.type === 'image'
-                ? '<div class="mb-3"><a href="/admin/media/' + media.id + '/editor" class="btn btn-outline-primary w-100"><i class="ti ti-photo-edit"></i> Edit Image</a></div>'
+                ? '<div class="mb-3"><a href="' + adminBase + '/' + media.id + '/editor" class="btn btn-outline-primary w-100"><i class="ti ti-photo-edit"></i> Edit Image</a></div>'
                 : '')
             + (media.type === 'video'
                 ? '<div class="mb-3"><label class="form-label">Upload Poster</label>'
@@ -240,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fd.append('title', document.getElementById('detail-title').value);
             fd.append('_csrf_token', csrfToken);
 
-            fetch('/admin/media/' + id + '/update', { method: 'POST', body: fd })
+            fetch(adminBase + '/' + id + '/update', { method: 'POST', body: fd })
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     if (data.error) { alert(data.error); }
@@ -253,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var fd = new FormData();
             fd.append('_csrf_token', csrfToken);
 
-            fetch('/admin/media/' + id + '/delete', { method: 'POST', body: fd })
+            fetch(adminBase + '/' + id + '/delete', { method: 'POST', body: fd })
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     if (data.error) { alert(data.error); return; }
@@ -274,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 fd.append('file', this.files[0]);
                 fd.append('_csrf_token', csrfToken);
 
-                fetch('/admin/media/' + media.id + '/poster', { method: 'POST', body: fd })
+                fetch(adminBase + '/' + media.id + '/poster', { method: 'POST', body: fd })
                     .then(function (r) { return r.json(); })
                     .then(function (data) {
                         if (data.error) { alert(data.error); return; }

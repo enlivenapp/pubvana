@@ -9,6 +9,11 @@ use Pubvana\Plugins\Media\Services\MediaService;
 
 class MediaAdminController extends AdminController
 {
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/media'), '/');
+    }
+
     protected function service(): MediaService
     {
         return $this->app->media();
@@ -28,6 +33,7 @@ class MediaAdminController extends AdminController
 
         $this->render('pubvana/media/admin/index', [
             'pageTitle'  => 'Media Library',
+            'adminBase'  => $this->adminBase(),
             'media'      => $result['items'],
             'total'      => $result['total'],
             'page'       => $result['page'],
@@ -165,7 +171,7 @@ class MediaAdminController extends AdminController
         $media = $this->service()->find((int) $id);
 
         if ($media === null || $media->type !== 'image') {
-            $this->app->redirect('/admin/media');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
@@ -175,6 +181,7 @@ class MediaAdminController extends AdminController
 
         $this->render('pubvana/media/admin/editor', [
             'pageTitle'    => 'Edit — ' . ($media->title ?: $media->filename),
+            'adminBase'    => $this->adminBase(),
             'media'        => $media,
             'info'         => $info,
             'capabilities' => $capabilities,

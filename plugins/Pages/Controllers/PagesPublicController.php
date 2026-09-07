@@ -58,6 +58,16 @@ class PagesPublicController extends PublicController
             'commentable'    => ['type' => 'page', 'id' => (int) $page->id],
             'allow_comments' => (bool) $page->allow_comments,
             'is_homepage'    => $isHomepage,
+            'seo_context'    => [
+                'content_type' => 'page',
+                'content_id'   => (int) $page->id,
+                'title'        => $page->title,
+                'description'  => '',
+                'image'        => '',
+                'ai_generated' => !empty($page->ai_generated),
+                'updated_at'   => $page->updated_at,
+                'og_type'      => 'website',
+            ],
         ]);
     }
 

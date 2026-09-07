@@ -3,6 +3,7 @@
  * AI Assistant management: API keys, grants, default author, audit log.
  *
  * @var string $pageTitle
+ * @var string $adminBase          admin URL base for this plugin
  * @var array  $keys            listKeys() rows
  * @var array  $helpGroups      AiService::helpGroups() display groups
  * @var int    $logLimit
@@ -13,10 +14,11 @@
 
 $session = \Flight::app()->session();
 $plainToken = $session->pullFlash('plain_token');
+$apiBase = rtrim((string) \Flight::app()->pluginLoader()->routePrefix('pubvana/ai'), '/');
 ?>
 
 <div class="d-flex justify-content-end mb-3">
-    <a href="/admin/ai/help" class="btn btn-primary">
+    <a href="<?= $adminBase ?>/help" class="btn btn-primary">
         <i class="ti ti-book-2 me-1"></i> Quick Start &amp; Help
     </a>
 </div>
@@ -42,7 +44,7 @@ $plainToken = $session->pullFlash('plain_token');
                 </button>
             </div>
             <textarea id="startup-text" class="form-control font-monospace user-select-all" rows="4"
-                      readonly onclick="this.select()">GET <?= htmlspecialchars($siteUrl) ?>/ai/help
+                      readonly onclick="this.select()">GET <?= htmlspecialchars($siteUrl . $apiBase) ?>/help
 Authorization: Bearer <?= htmlspecialchars($plainToken) ?></textarea>
         </div>
     </div>
@@ -87,7 +89,7 @@ Authorization: Bearer <?= htmlspecialchars($plainToken) ?></textarea>
                 <h3 class="card-title">Create API Key</h3>
             </div>
             <div class="card-body">
-                <form method="POST" action="/admin/ai/manage/keys" class="row g-2 align-items-end">
+                <form method="POST" action="<?= $adminBase ?>/manage/keys" class="row g-2 align-items-end">
                     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                     <div class="col">
                         <label class="form-label" for="key-name">Key name</label>
@@ -111,7 +113,7 @@ Authorization: Bearer <?= htmlspecialchars($plainToken) ?></textarea>
                 <p class="text-secondary small">
                     AI-created posts and pages are attributed to this user.
                 </p>
-                <form method="POST" action="/admin/ai/manage/author" class="row g-2 align-items-end">
+                <form method="POST" action="<?= $adminBase ?>/manage/author" class="row g-2 align-items-end">
                     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                     <div class="col">
                         <select name="author_id" class="form-select">
@@ -186,13 +188,13 @@ Authorization: Bearer <?= htmlspecialchars($plainToken) ?></textarea>
                                                     aria-expanded="false" aria-controls="grants-<?= (int) $key['id'] ?>">
                                                 Grants
                                             </button>
-                                            <form method="POST" action="/admin/ai/manage/keys/<?= (int) $key['id'] ?>/toggle" class="d-inline">
+                                            <form method="POST" action="<?= $adminBase ?>/manage/keys/<?= (int) $key['id'] ?>/toggle" class="d-inline">
                                                 <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                                 <button class="btn btn-sm btn-outline-secondary">
                                                     <?= $key['enabled'] ? 'Disable' : 'Enable' ?>
                                                 </button>
                                             </form>
-                                            <form method="POST" action="/admin/ai/manage/keys/<?= (int) $key['id'] ?>/delete" class="d-inline"
+                                            <form method="POST" action="<?= $adminBase ?>/manage/keys/<?= (int) $key['id'] ?>/delete" class="d-inline"
                                                   onsubmit="return confirm('Delete this API key? Any client using it will be barred.')">
                                                 <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                                 <button class="btn btn-sm btn-outline-danger">Delete</button>
@@ -202,7 +204,7 @@ Authorization: Bearer <?= htmlspecialchars($plainToken) ?></textarea>
                                 </tr>
                                 <tr class="collapse" id="grants-<?= (int) $key['id'] ?>">
                                     <td colspan="5">
-                                        <form method="POST" action="/admin/ai/manage/keys/<?= (int) $key['id'] ?>/grants">
+                                        <form method="POST" action="<?= $adminBase ?>/manage/keys/<?= (int) $key['id'] ?>/grants">
                                             <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                             <div class="row">
                                                 <?php foreach ($helpGroups as $group => $permissions): ?>

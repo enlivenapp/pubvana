@@ -296,6 +296,152 @@ class BlogService
     }
 
     /**
+     * Formatted category items for many posts in two queries: the pivot
+     * rows for every post id, then the referenced categories. Listing and
+     * archive pages render taxonomies for 10+ posts; per-post lookups
+     * would mean two queries per post.
+     *
+     * @param array<int, int> $postIds
+     * @return array<int, list<array<string, mixed>>> post id => formatted category items
+     */
+    public function categoryItemsForPostIds(array $postIds, string $urlPrefix): array
+    {
+        if ($postIds === []) {
+            return [];
+        }
+
+        $links = (new PostCategory($this->pdo))->in('post_id', $postIds)->findAll();
+
+        $idsByPost = [];
+        $allCategoryIds = [];
+        foreach ($links as $link) {
+            $categoryId = (int) $link->category_id;
+            $idsByPost[(int) $link->post_id][] = $categoryId;
+            $allCategoryIds[$categoryId] = true;
+        }
+
+        $categoriesById = [];
+        if ($allCategoryIds !== []) {
+            foreach ((new Category($this->pdo))->in('id', array_keys($allCategoryIds))->findAll() as $category) {
+                $categoriesById[(int) $category->id] = $category;
+            }
+        }
+
+        $map = [];
+        foreach ($postIds as $postId) {
+            $map[(int) $postId] = [];
+        }
+        foreach ($idsByPost as $postId => $categoryIds) {
+            foreach ($categoryIds as $categoryId) {
+                $category = $categoriesById[$categoryId] ?? null;
+                if ($category !== null) {
+                    $map[$postId][] = [
+                        'id'   => $categoryId,
+                        'name' => $category->name,
+                        'slug' => $category->slug,
+                        'url'  => $urlPrefix . '/category/' . $category->slug,
+                    ];
+                }
+            }
+        }
+
+        return $map;
+    }
+
+    /**
+     * Formatted tag items for many posts in two queries.
+     *
+     * @param array<int, int> $postIds
+     * @return array<int, list<array<string, mixed>>> post id => formatted tag items
+     */
+    public function tagItemsForPostIds(array $postIds, string $urlPrefix): array
+    {
+        if ($postIds === []) {
+            return [];
+        }
+
+        $links = (new PostTag($this->pdo))->in('post_id', $postIds)->findAll();
+
+        $idsByPost = [];
+        $allTagIds = [];
+        foreach ($links as $link) {
+            $tagId = (int) $link->tag_id;
+            $idsByPost[(int) $link->post_id][] = $tagId;
+            $allTagIds[$tagId] = true;
+        }
+
+        $tagsById = [];
+        if ($allTagIds !== []) {
+            foreach ((new Tag($this->pdo))->in('id', array_keys($allTagIds))->findAll() as $tag) {
+                $tagsById[(int) $tag->id] = $tag;
+            }
+        }
+
+        $map = [];
+        foreach ($postIds as $postId) {
+            $map[(int) $postId] = [];
+        }
+        foreach ($idsByPost as $postId => $tagIds) {
+            foreach ($tagIds as $tagId) {
+                $tag = $tagsById[$tagId] ?? null;
+                if ($tag !== null) {
+                    $map[$postId][] = [
+                        'name' => $tag->name,
+                        'slug' => $tag->slug,
+                        'url'  => $urlPrefix . '/tag/' . $tag->slug,
+                    ];
+                }
+            }
+        }
+
+        return $map;
+    }
+
+    /**
+     * Author cards for many posts in two queries: users, then profiles.
+     *
+     * @param array<int, int> $authorIds
+     * @return array<int, array{id: int, username: string, name: string, url: string|null}|null> author id => author card or null
+     */
+    public function authorItemsForIds(array $authorIds): array
+    {
+        $authorIds = array_values(array_unique(array_filter(array_map('intval', $authorIds), fn($id) => $id > 0)));
+        if ($authorIds === []) {
+            return [];
+        }
+
+        $usersById = [];
+        foreach ((new \Enlivenapp\FlightShield\Models\User($this->pdo))->in('id', $authorIds)->isNull('deleted_at')->findAll() as $user) {
+            $usersById[(int) $user->id] = $user;
+        }
+
+        $namesByUserId = [];
+        foreach ((new \Pubvana\Plugins\Profiles\Models\Profile($this->pdo))->in('user_id', $authorIds)->findAll() as $profile) {
+            $namesByUserId[(int) $profile->user_id] = (string) ($profile->display_name ?? '');
+        }
+
+        $map = [];
+        foreach ($authorIds as $authorId) {
+            $user = $usersById[$authorId] ?? null;
+            if ($user === null) {
+                $map[$authorId] = null;
+                continue;
+            }
+
+            $username = (string) $user->username;
+            $displayName = $namesByUserId[$authorId] ?? '';
+            $map[$authorId] = [
+                'id'       => $authorId,
+                'username' => $username,
+                'name'     => $displayName !== '' ? $displayName : $username,
+                'url'      => $username !== '' ? '/profile/' . $username : null,
+            ];
+        }
+
+        return $map;
+    }
+
+    /**
      * @param array<int, int> $categoryIds
      */
     public function syncPostCategories(int $postId, array $categoryIds): void
@@ -330,9 +476,8 @@ class BlogService
     public function recentPostsBlock(array $options, string $prefix): array
     {
         $count = (int) ($options['count'] ?? 5);
-        $result = $this->listPosts(1, $count, 'published');
         $posts = [];
-        foreach ($result['items'] as $post) {
+        foreach ($this->postModel->publishedRecent($count) as $post) {
             $posts[] = [
                 'title'        => $post->title,
                 'url'          => $prefix . '/' . $post->slug,
@@ -582,6 +727,11 @@ class BlogService
 
     // ─── Dashboard ────────────────────────────────────────────────────────
 
+    private function routePrefix(): string
+    {
+        return rtrim((string) ($this->config['route_prefix'] ?? ''), '/');
+    }
+
     /**
      * @return array<int, array<string, mixed>>
     */
@@ -590,6 +740,7 @@ class BlogService
         $published = $this->listPosts(1, 1, 'published');
         $drafts = $this->listPosts(1, 1, 'draft');
         $scheduled = $this->listPosts(1, 1, 'scheduled');
+        $prefix = $this->routePrefix();
 
         return [
             [
@@ -599,7 +750,7 @@ class BlogService
                 'icon'        => 'ti-article',
                 'tone'        => 'success',
                 'group'       => 'content',
-                'href'        => '/admin/blog?status=published',
+                'href'        => $prefix . '?status=published',
                 'description' => 'Posts currently live on the site.',
             ],
             [
@@ -609,7 +760,7 @@ class BlogService
                 'icon'        => 'ti-calendar-time',
                 'tone'        => 'info',
                 'group'       => 'content',
-                'href'        => '/admin/blog?status=scheduled',
+                'href'        => $prefix . '?status=scheduled',
                 'description' => 'Posts queued to publish later.',
             ],
             [
@@ -619,7 +770,7 @@ class BlogService
                 'icon'        => 'ti-pencil',
                 'tone'        => 'warning',
                 'group'       => 'content',
-                'href'        => '/admin/blog?status=draft',
+                'href'        => $prefix . '?status=draft',
                 'description' => 'Posts still being worked on.',
             ],
         ];
@@ -631,6 +782,7 @@ class BlogService
     public function dashboardSections(): array
     {
         $recent = $this->listPosts(1, 5);
+        $prefix = $this->routePrefix();
         $items = [];
 
         foreach ($recent['items'] as $post) {
@@ -639,7 +791,7 @@ class BlogService
             $items[] = [
                 'label'    => $post->title,
                 'meta'     => ucfirst((string) $post->status) . ' · ' . $publishedAt,
-                'href'     => '/admin/blog/' . (int) $post->id . '/edit',
+                'href'     => $prefix . '/' . (int) $post->id . '/edit',
                 'emphasis' => match ($post->status) {
                     'published' => 'success',
                     'scheduled' => 'info',
@@ -654,7 +806,7 @@ class BlogService
             'type'        => 'list',
             'icon'        => 'ti-writing',
             'group'       => 'content',
-            'href'        => '/admin/blog',
+            'href'        => $prefix,
             'empty_state' => 'No blog posts have been created yet.',
             'items'       => $items,
         ]];

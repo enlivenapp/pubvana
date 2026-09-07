@@ -190,7 +190,7 @@ class PagesService
     */
     public function searchProvider(string $term): array
     {
-        return $this->pageModel->searchContent($term);
+        return $this->pageModel->searchContent($term, $this->routePrefix());
     }
 
     /**
@@ -209,7 +209,7 @@ class PagesService
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $items[] = [
                 'label' => $row['title'],
-                'url'   => '/page/' . $row['slug'],
+                'url'   => $this->routePrefix() . '/' . $row['slug'],
             ];
         }
         return $items;
@@ -235,7 +235,7 @@ class PagesService
                 'type'           => 'page',
                 'id'             => (int) $row['id'],
                 'title'          => $row['title'],
-                'url'            => '/page/' . $row['slug'],
+                'url'            => $this->routePrefix() . '/' . $row['slug'],
                 'allow_comments' => (bool) $row['allow_comments'],
             ];
         }
@@ -256,7 +256,7 @@ class PagesService
             'icon'        => 'ti-file',
             'tone'        => 'primary',
             'group'       => 'content',
-            'href'        => '/pages',
+            'href'        => $this->routePrefix(),
             'description' => 'Static pages on the site.',
         ]];
     }
@@ -267,13 +267,14 @@ class PagesService
     public function dashboardSections(): array
     {
         $recent = $this->pageModel->findAllPaginated(1, 5);
+        $prefix = $this->routePrefix();
         $items = [];
 
         foreach ($recent as $page) {
             $items[] = [
                 'label'    => $page->title,
                 'meta'     => ucfirst((string) $page->status) . ' · ' . (($ts = strtotime((string) $page->created_at)) === false ? '' : date('M j, Y g:ia', $ts)),
-                'href'     => '/pages/' . (int) $page->id . '/edit',
+                'href'     => $prefix . '/' . (int) $page->id . '/edit',
                 'emphasis' => $page->status === 'published' ? 'success' : 'secondary',
             ];
         }
@@ -284,9 +285,17 @@ class PagesService
             'type'        => 'list',
             'icon'        => 'ti-file-text',
             'group'       => 'content',
-            'href'        => '/pages',
+            'href'        => $prefix,
             'empty_state' => 'No pages have been created yet.',
             'items'       => $items,
         ]];
+    }
+
+    /**
+     * The public route prefix for this plugin (leading slash, no trailing slash).
+     */
+    private function routePrefix(): string
+    {
+        return rtrim((string) ($this->config['route_prefix'] ?? ''), '/');
     }
 }

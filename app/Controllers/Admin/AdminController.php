@@ -292,6 +292,7 @@ class AdminController
                 'appearance' => $adext->get('admin.menu', 'appearance'),
                 'tools'      => $adext->get('admin.menu', 'tools'),
                 'settings'   => $adext->get('admin.menu', 'settings'),
+                'plugins'    => $adext->get('admin.menu', 'plugins'),
             ],
         ]);
     }

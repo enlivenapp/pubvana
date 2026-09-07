@@ -7,8 +7,11 @@
  * grant allows. The developer reference stays tucked away at the bottom.
  *
  * @var string $pageTitle
+ * @var string $adminBase      admin URL base for this plugin
  * @var array  $helpGroups AiService::helpGroups() display groups
  */
+
+$apiBase = rtrim((string) \Flight::app()->pluginLoader()->routePrefix('pubvana/ai'), '/');
 ?>
 
 <div class="alert alert-info" role="alert">
@@ -35,7 +38,7 @@
                     <span class="badge bg-primary-lt rounded-circle align-self-start mt-1">1</span>
                     <div>
                         <div class="fw-semibold">Create a key</div>
-                        <div class="text-secondary small">On the <a href="/admin/ai/manage">Manage</a> page, give the key a name you'll recognise later, like "Blog assistant".</div>
+                        <div class="text-secondary small">On the <a href="<?= $adminBase ?>/manage">Manage</a> page, give the key a name you'll recognise later, like "Blog assistant".</div>
                     </div>
                 </div>
             </div>
@@ -103,7 +106,7 @@
 <div class="card mb-4">
     <div class="card-header d-flex align-items-center justify-content-between">
         <h3 class="card-title">Fact checking</h3>
-        <a href="/admin/ai/fact-checks" class="btn btn-sm btn-outline-primary">Open Fact Checking</a>
+        <a href="<?= $adminBase ?>/fact-checks" class="btn btn-sm btn-outline-primary">Open Fact Checking</a>
     </div>
     <div class="card-body">
         <p class="text-secondary">
@@ -248,7 +251,7 @@
         <div class="card-body border-top">
             <p class="text-secondary">
                 The machine-readable endpoint reference lives in two places:
-                <code>GET /ai/help</code> serves the live guide an AI can read,
+                <code>GET <?= htmlspecialchars($apiBase) ?>/help</code> serves the live guide an AI can read,
                 and <code>plugins/AiAssistant/AI-README.md</code> documents
                 every endpoint, the permissions each needs, and examples.
                 Broken-links and analytics endpoints are stubs and return
@@ -286,7 +289,7 @@
 </div>
 
 <div class="d-flex justify-content-end mt-3">
-    <a href="/admin/ai/manage" class="btn btn-primary">
+    <a href="<?= $adminBase ?>/manage" class="btn btn-primary">
         <i class="ti ti-arrow-left me-1"></i> Back to Manage
     </a>
 </div>

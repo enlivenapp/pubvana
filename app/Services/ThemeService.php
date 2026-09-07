@@ -24,6 +24,9 @@ class ThemeService
     protected Engine $app;
     protected ?Theme $activeTheme = null;
 
+    /** @var array<int, array<string, string>> Per-request memo of option rows by theme id */
+    protected array $themeOptionsCache = [];
+
     /** @var array<string, bool> folder => isValid (populated after sync) */
     protected array $validationResults = [];
 
@@ -312,11 +315,17 @@ class ThemeService
      */
     public function getThemeOptions(int $themeId): array
     {
+        if (isset($this->themeOptionsCache[$themeId])) {
+            return $this->themeOptionsCache[$themeId];
+        }
+
         $rows = $this->optionModel()->getForTheme($themeId);
         $options = [];
         foreach ($rows as $row) {
             $options[$row->option_key] = $row->option_value;
         }
+
+        $this->themeOptionsCache[$themeId] = $options;
         return $options;
     }
 

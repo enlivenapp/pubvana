@@ -20,6 +20,7 @@ class HealthAdminController extends AdminController
             'grouped'    => $grouped,
             'summary'    => $data['summary'],
             'cachedAt'   => $data['cached_at'],
+            'adminBase'  => $this->adminBase(),
             'categories' => [
                 CheckResult::CAT_ENVIRONMENT   => ['label' => 'Environment', 'icon' => 'ti-server'],
                 CheckResult::CAT_SECURITY      => ['label' => 'Security', 'icon' => 'ti-shield-lock'],
@@ -35,6 +36,15 @@ class HealthAdminController extends AdminController
         $this->app->health()->runAll(true);
 
         $this->app->session()->flash('success', 'Site health checks re-run.');
-        $this->app->redirect('/admin/site-health');
+        $this->app->redirect($this->adminBase());
+    }
+
+    /**
+     * Full admin URL base for this plugin (adext prepends '/admin' to the
+     * registered route path).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/sitehealth'), '/');
     }
 }

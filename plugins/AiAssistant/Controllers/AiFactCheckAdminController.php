@@ -12,7 +12,7 @@ use Pubvana\Controllers\Admin\AdminController;
  *
  * Every action gates on the seeded 'ai.manage' permission (applied as a
  * route middleware in Plugin::register). Each mutation flashes a message
- * and redirects back to /admin/ai/fact-checks.
+ * and redirects back to the plugin's admin base (see adminBase()).
  *
  * @package Pubvana\Plugins\AiAssistant\Controllers
  */
@@ -21,6 +21,14 @@ class AiFactCheckAdminController extends AdminController
     public function __construct(\flight\Engine $app)
     {
         parent::__construct($app, 'pubvana.ai');
+    }
+
+    /**
+     * Admin URL base for this plugin (adext prepends /admin to routes).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/ai'), '/');
     }
 
     /**
@@ -38,6 +46,7 @@ class AiFactCheckAdminController extends AdminController
 
         $this->render('pubvana/ai/admin/fact-checks', [
             'pageTitle'      => 'AI Assistant · Fact Checking',
+            'adminBase'      => $this->adminBase(),
             'prompt'         => $prompt,
             'enabled'        => $factCheck->isEnabled(),
             'acceptedAt'     => $factCheck->acceptedAt(),
@@ -64,13 +73,13 @@ class AiFactCheckAdminController extends AdminController
 
         if (empty($data->agree)) {
             $this->app->session()->flash('error', 'You must tick the agreement box to accept the terms.');
-            $this->app->redirect('/admin/ai/fact-checks');
+            $this->app->redirect($this->adminBase() . '/fact-checks');
             return;
         }
 
         $this->app->aiFactCheck()->acceptTerms();
         $this->app->session()->flash('success', 'Terms accepted. Fact checking can now be switched on.');
-        $this->app->redirect('/admin/ai/fact-checks');
+        $this->app->redirect($this->adminBase() . '/fact-checks');
     }
 
     /**
@@ -93,7 +102,7 @@ class AiFactCheckAdminController extends AdminController
             $this->app->session()->flash('success', 'Fact checking is off. Fact-check endpoints now refuse every request.');
         }
 
-        $this->app->redirect('/admin/ai/fact-checks');
+        $this->app->redirect($this->adminBase() . '/fact-checks');
     }
 
     /**
@@ -104,12 +113,13 @@ class AiFactCheckAdminController extends AdminController
         $report = $this->app->aiFactCheck()->findReport((int) $id);
         if ($report === null) {
             $this->app->session()->flash('error', 'Fact-check report not found.');
-            $this->app->redirect('/admin/ai/fact-checks');
+            $this->app->redirect($this->adminBase() . '/fact-checks');
             return;
         }
 
         $this->render('pubvana/ai/admin/fact-check-detail', [
             'pageTitle' => 'AI Assistant · Fact Check Report',
+            'adminBase' => $this->adminBase(),
             'report'    => $this->app->aiFactCheck()->serializeReport($report),
         ]);
     }
@@ -124,6 +134,6 @@ class AiFactCheckAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'Fact-check report not found.');
         }
-        $this->app->redirect('/admin/ai/fact-checks');
+        $this->app->redirect($this->adminBase() . '/fact-checks');
     }
 }

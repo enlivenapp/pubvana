@@ -50,6 +50,7 @@ class CommentsAdminController extends AdminController
             'status'     => $status,
             'page'       => $page,
             'totalPages' => $totalPages,
+            'adminBase'  => $this->adminBase(),
         ]);
     }
 
@@ -62,7 +63,7 @@ class CommentsAdminController extends AdminController
 
         if ($comment === null) {
             $this->app->session()->flash('error', 'Comment not found.');
-            $this->app->redirect('/admin/comments');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
@@ -70,6 +71,7 @@ class CommentsAdminController extends AdminController
             'pageTitle' => 'Comment #' . $id,
             'comment'   => $comment,
             'hostItem'  => $this->app->comments()->hostItem((string) $comment->commentable_type, (int) $comment->commentable_id),
+            'adminBase' => $this->adminBase(),
         ]);
     }
 
@@ -84,7 +86,7 @@ class CommentsAdminController extends AdminController
         } else {
             $this->app->session()->flash('success', 'Comment approved.');
         }
-        $this->app->redirect('/admin/comments');
+        $this->app->redirect($this->adminBase());
     }
 
     /**
@@ -98,7 +100,7 @@ class CommentsAdminController extends AdminController
         } else {
             $this->app->session()->flash('success', 'Comment rejected.');
         }
-        $this->app->redirect('/admin/comments');
+        $this->app->redirect($this->adminBase());
     }
 
     /**
@@ -111,7 +113,7 @@ class CommentsAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'Comment not found.');
         }
-        $this->app->redirect('/admin/comments');
+        $this->app->redirect($this->adminBase());
     }
 
     /**
@@ -132,6 +134,7 @@ class CommentsAdminController extends AdminController
             'captchaSecretKey'  => (string) $service->setting('captcha_secret_key', ''),
             'hosts'             => $service->enabledHosts(true),
             'hostCounts'        => $service->countsByHost(),
+            'adminBase'         => $this->adminBase(),
         ]);
     }
 
@@ -170,6 +173,11 @@ class CommentsAdminController extends AdminController
         }
 
         $this->app->session()->flash('success', 'Comment settings saved.');
-        $this->app->redirect('/admin/comments/settings');
+        $this->app->redirect($this->adminBase() . '/settings');
+    }
+
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/comments'), '/');
     }
 }

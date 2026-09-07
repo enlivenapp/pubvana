@@ -18,8 +18,8 @@ use flight\Engine;
 class AssetService
 {
 
-    /** @var Engine<object> The FlightPHP app instance */
-    protected Engine $app;
+    /** @var Engine<object>|null The FlightPHP app instance (absent on the early asset path) */
+    protected ?Engine $app;
 
     /** @var string[] Allowed asset types */
     protected array $allowedTypes = ['plugin', 'theme', 'vendor'];
@@ -51,11 +51,30 @@ class AssetService
     ];
 
     /**
-     * @param Engine<object> $app
+     * The Flight engine is optional: this service resolves and streams files
+     * from disk and never touches the framework, so the early asset path
+     * (asset-server.php) constructs it without booting the app. When an app
+     * is present, 404s go through halt(); without one, a bare 404 is sent.
+     *
+     * @param Engine<object>|null $app
      */
-    public function __construct(Engine $app)
+    public function __construct(?Engine $app = null)
     {
         $this->app = $app;
+    }
+
+    /**
+     * Send a 404 through the app when one exists, else a bare 404.
+     */
+    private function fail404(): void
+    {
+        if ($this->app !== null) {
+            $this->app->halt(404, 'Asset not found');
+            return;
+        }
+
+        http_response_code(404);
+        exit;
     }
 
     /**
@@ -151,7 +170,7 @@ class AssetService
     public function serve(string $filePath): void
     {
         if (!is_file($filePath) || !is_readable($filePath)) {
-            $this->app->halt(404, 'Asset not found');
+            $this->fail404();
             return;
         }
 
@@ -164,7 +183,7 @@ class AssetService
         $mimeType = $this->getMimeType($filePath);
         $lastModified = filemtime($filePath);
         if ($lastModified === false) {
-            $this->app->halt(404, 'Asset not found');
+            $this->fail404();
             return;
         }
         $etag = md5($filePath . $lastModified);

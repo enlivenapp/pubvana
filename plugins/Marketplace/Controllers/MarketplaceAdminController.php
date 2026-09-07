@@ -23,6 +23,15 @@ class MarketplaceAdminController extends AdminController
         parent::__construct($app, 'pubvana.marketplace');
     }
 
+    /**
+     * Full admin URL base for this plugin (adext prepends '/admin' to the
+     * registered route path).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/marketplace'), '/');
+    }
+
     public function index(): void
     {
         $svc = $this->app->marketplace();
@@ -32,6 +41,7 @@ class MarketplaceAdminController extends AdminController
             'accountEmail' => $svc->accountEmail(),
             'categories'  => $svc->connected() ? $svc->categories() : [],
             'items'       => $svc->connected() ? $svc->items() : [],
+            'adminBase'   => $this->adminBase(),
         ]);
     }
 
@@ -44,14 +54,14 @@ class MarketplaceAdminController extends AdminController
         } else {
             $this->app->session()->flash('danger', $result['reason'] ?? 'Could not connect.');
         }
-        $this->app->redirect('/admin/marketplace');
+        $this->app->redirect($this->adminBase());
     }
 
     public function disconnect(): void
     {
         $this->app->marketplace()->disconnectAccount();
         $this->app->session()->flash('info', 'Disconnected from the Pubvana account.');
-        $this->app->redirect('/admin/marketplace');
+        $this->app->redirect($this->adminBase());
     }
 
     public function purchases(): void
@@ -62,6 +72,7 @@ class MarketplaceAdminController extends AdminController
             'pageTitle'   => 'Purchases',
             'connected'   => $svc->connected(),
             'records'     => $records,
+            'adminBase'   => $this->adminBase(),
         ]);
     }
 
@@ -69,7 +80,7 @@ class MarketplaceAdminController extends AdminController
     {
         $result = $this->app->marketplace()->purchases();
         $this->app->session()->flash('success', 'Purchases verified against pubvanacms.com.');
-        $this->app->redirect('/admin/marketplace/purchases');
+        $this->app->redirect($this->adminBase() . '/purchases');
     }
 
     public function addToCart(): void
@@ -88,12 +99,12 @@ class MarketplaceAdminController extends AdminController
         if ($record !== null && $this->app->marketplace()->needsDomainMove($productId)) {
             $this->app->session()->flash('warning', 'Your license is bound to another domain. Confirm the transfer in your email, then install again.');
             $this->app->marketplace()->requestDomainMove($productId);
-            $this->app->redirect('/admin/marketplace/purchases');
+            $this->app->redirect($this->adminBase() . '/purchases');
             return;
         }
         $result = $this->app->marketplace()->install($productId, $itemType);
         $this->app->session()->flash(!empty($result['ok']) ? 'success' : 'danger', $result['reason']);
-        $this->app->redirect('/admin/marketplace/purchases');
+        $this->app->redirect($this->adminBase() . '/purchases');
     }
 
     public function reinstallAll(): void
@@ -101,7 +112,7 @@ class MarketplaceAdminController extends AdminController
         $svc = $this->app->marketplace();
         if (!$svc->connected()) {
             $this->app->session()->flash('danger', 'Connect a Pubvana account first.');
-            $this->app->redirect('/admin/marketplace');
+            $this->app->redirect($this->adminBase());
             return;
         }
         $result = $svc->reinstallAll();
@@ -111,7 +122,7 @@ class MarketplaceAdminController extends AdminController
         } else {
             $this->app->session()->flash('success', 'Reinstalled ' . (int) $result['ok'] . ' items, skipped ' . (int) $result['skipped'] . '.');
         }
-        $this->app->redirect('/admin/marketplace/purchases');
+        $this->app->redirect($this->adminBase() . '/purchases');
     }
 
     public function cartOpen(): void

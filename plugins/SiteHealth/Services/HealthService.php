@@ -35,6 +35,15 @@ class HealthService
     }
 
     /**
+     * Public route prefix for this plugin (no '/admin'; the dashboard
+     * renderer adds it). Falls back to the plugin id's default.
+     */
+    private function routePrefix(): string
+    {
+        return rtrim((string) ($this->config['route_prefix'] ?? ''), '/');
+    }
+
+    /**
      * Run all checks (or return cached results if still valid).
      *
      * @param bool $force Bypass cache
@@ -102,7 +111,7 @@ class HealthService
                 'icon'        => 'ti-alert-circle',
                 'tone'        => 'danger',
                 'group'       => 'tools',
-                'href'        => '/site-health',
+                'href'        => $this->routePrefix(),
                 'description' => $summary['critical'] . ' critical issue(s) need immediate attention.',
             ];
         } elseif ($summary['warning'] > 0) {
@@ -113,7 +122,7 @@ class HealthService
                 'icon'        => 'ti-alert-triangle',
                 'tone'        => 'warning',
                 'group'       => 'tools',
-                'href'        => '/site-health',
+                'href'        => $this->routePrefix(),
                 'description' => $summary['warning'] . ' item(s) could be improved.',
             ];
         }

@@ -7,6 +7,7 @@
  * @var string|null                                  $status
  * @var int                                          $page
  * @var int                                          $totalPages
+ * @var string                                       $adminBase
  */
 
 $currentFilter = $status ?? 'all';
@@ -14,10 +15,10 @@ $currentFilter = $status ?? 'all';
 
 <div class="d-flex align-items-center mb-4">
     <div class="btn-list">
-        <a href="/admin/comments" class="btn btn-sm <?= $currentFilter === 'all' ? 'btn-primary' : 'btn-outline-secondary' ?>">All (<?= $counts['all'] ?>)</a>
-        <a href="/admin/comments?status=pending" class="btn btn-sm <?= $currentFilter === 'pending' ? 'btn-primary' : 'btn-outline-secondary' ?>">Pending (<?= $counts['pending'] ?>)</a>
-        <a href="/admin/comments?status=approved" class="btn btn-sm <?= $currentFilter === 'approved' ? 'btn-primary' : 'btn-outline-secondary' ?>">Approved (<?= $counts['approved'] ?>)</a>
-        <a href="/admin/comments?status=rejected" class="btn btn-sm <?= $currentFilter === 'rejected' ? 'btn-primary' : 'btn-outline-secondary' ?>">Rejected (<?= $counts['rejected'] ?>)</a>
+        <a href="<?= $adminBase ?>" class="btn btn-sm <?= $currentFilter === 'all' ? 'btn-primary' : 'btn-outline-secondary' ?>">All (<?= $counts['all'] ?>)</a>
+        <a href="<?= $adminBase ?>?status=pending" class="btn btn-sm <?= $currentFilter === 'pending' ? 'btn-primary' : 'btn-outline-secondary' ?>">Pending (<?= $counts['pending'] ?>)</a>
+        <a href="<?= $adminBase ?>?status=approved" class="btn btn-sm <?= $currentFilter === 'approved' ? 'btn-primary' : 'btn-outline-secondary' ?>">Approved (<?= $counts['approved'] ?>)</a>
+        <a href="<?= $adminBase ?>?status=rejected" class="btn btn-sm <?= $currentFilter === 'rejected' ? 'btn-primary' : 'btn-outline-secondary' ?>">Rejected (<?= $counts['rejected'] ?>)</a>
     </div>
 </div>
 
@@ -55,7 +56,7 @@ $currentFilter = $status ?? 'all';
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="/admin/comments/<?= (int) $comment->id ?>">
+                                <a href="<?= $adminBase ?>/<?= (int) $comment->id ?>">
                                     <?= htmlspecialchars(mb_strimwidth(trim(strip_tags((string) $comment->body)), 0, 80, '...')) ?>
                                 </a>
                             </td>
@@ -81,7 +82,7 @@ $currentFilter = $status ?? 'all';
                             <td>
                                 <div class="btn-group">
                                     <?php if ($comment->status !== 'approved'): ?>
-                                        <form method="post" action="/admin/comments/<?= (int) $comment->id ?>/approve" class="d-inline">
+                                        <form method="post" action="<?= $adminBase ?>/<?= (int) $comment->id ?>/approve" class="d-inline">
                                             <?= csrf_field() ?>
                                             <button type="submit" class="btn btn-sm btn-outline-success" title="Approve">
                                                 <i class="ti ti-check"></i>
@@ -89,14 +90,14 @@ $currentFilter = $status ?? 'all';
                                         </form>
                                     <?php endif; ?>
                                     <?php if ($comment->status !== 'rejected'): ?>
-                                        <form method="post" action="/admin/comments/<?= (int) $comment->id ?>/reject" class="d-inline">
+                                        <form method="post" action="<?= $adminBase ?>/<?= (int) $comment->id ?>/reject" class="d-inline">
                                             <?= csrf_field() ?>
                                             <button type="submit" class="btn btn-sm btn-outline-warning" title="Reject">
                                                 <i class="ti ti-x"></i>
                                             </button>
                                         </form>
                                     <?php endif; ?>
-                                    <form method="post" action="/admin/comments/<?= (int) $comment->id ?>/delete" class="d-inline" onsubmit="return confirm('Delete this comment permanently?')">
+                                    <form method="post" action="<?= $adminBase ?>/<?= (int) $comment->id ?>/delete" class="d-inline" onsubmit="return confirm('Delete this comment permanently?')">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
                                             <i class="ti ti-trash"></i>
@@ -117,21 +118,21 @@ $currentFilter = $status ?? 'all';
         <ul class="pagination">
             <?php if ($page > 1): ?>
                 <li class="page-item">
-                    <a class="page-link" href="/admin/comments?page=<?= $page - 1 ?><?= $status ? '&status=' . $status : '' ?>">
+                    <a class="page-link" href="<?= $adminBase ?>?page=<?= $page - 1 ?><?= $status ? '&status=' . $status : '' ?>">
                         <i class="ti ti-chevron-left"></i>
                     </a>
                 </li>
             <?php endif; ?>
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                 <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-                    <a class="page-link" href="/admin/comments?page=<?= $i ?><?= $status ? '&status=' . $status : '' ?>">
+                    <a class="page-link" href="<?= $adminBase ?>?page=<?= $i ?><?= $status ? '&status=' . $status : '' ?>">
                         <?= $i ?>
                     </a>
                 </li>
             <?php endfor; ?>
             <?php if ($page < $totalPages): ?>
                 <li class="page-item">
-                    <a class="page-link" href="/admin/comments?page=<?= $page + 1 ?><?= $status ? '&status=' . $status : '' ?>">
+                    <a class="page-link" href="<?= $adminBase ?>?page=<?= $page + 1 ?><?= $status ? '&status=' . $status : '' ?>">
                         <i class="ti ti-chevron-right"></i>
                     </a>
                 </li>

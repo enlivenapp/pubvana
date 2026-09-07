@@ -21,6 +21,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/backups');
+        $config['route_prefix'] = $prefix;
+
         // Store the config under 'pubvana.backups' so the controller and CLI can read it
         $app->set('pubvana.backups', $config);
 
@@ -40,12 +43,12 @@ class Plugin implements PluginInterface
         $authMiddleware = null;
 
         $app->adext()->addRoutes('admin', [
-            ['GET',  '/backups',                    [BackupsAdminController::class, 'index'],    [$authMiddleware]],
-            ['POST', '/backups/create',             [BackupsAdminController::class, 'create'],   [$authMiddleware]],
-            ['GET',  '/backups/status',             [BackupsAdminController::class, 'status'],   [$authMiddleware]],
-            ['GET',  '/backups/download/@filename', [BackupsAdminController::class, 'download'], [$authMiddleware]],
-            ['POST', '/backups/@filename/delete',   [BackupsAdminController::class, 'delete'],   [$authMiddleware]],
-            ['POST', '/backups/restore/@filename',  [BackupsAdminController::class, 'restore'],  [$authMiddleware]],
+            ['GET',  $prefix,                      [BackupsAdminController::class, 'index'],    [$authMiddleware]],
+            ['POST', $prefix . '/create',          [BackupsAdminController::class, 'create'],   [$authMiddleware]],
+            ['GET',  $prefix . '/status',          [BackupsAdminController::class, 'status'],   [$authMiddleware]],
+            ['GET',  $prefix . '/download/@filename', [BackupsAdminController::class, 'download'], [$authMiddleware]],
+            ['POST', $prefix . '/@filename/delete',   [BackupsAdminController::class, 'delete'],   [$authMiddleware]],
+            ['POST', $prefix . '/restore/@filename',  [BackupsAdminController::class, 'restore'],  [$authMiddleware]],
         ], 'pubvana.backups');
     }
 }

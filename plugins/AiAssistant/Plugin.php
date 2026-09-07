@@ -36,6 +36,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/ai');
+        $config['route_prefix'] = $prefix;
+
         $app->map('ai', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {
@@ -61,7 +64,6 @@ class Plugin implements PluginInterface
         });
 
         $adext = $app->adext();
-        $prefix = $app->pluginLoader()->routePrefix('pubvana/ai');
 
         // Exempt the sessionless /ai/* API from CSRF validation.
         $adext->register('csrf.exempt', 'default', 'pubvana.ai', [
@@ -75,18 +77,18 @@ class Plugin implements PluginInterface
         // ─── Admin Routes (adext prepends /admin) ──────────────────────
 
         $adext->addRoutes('admin', [
-            ['GET',  '/ai/manage',                    [AiAdminController::class, 'manage'],       [$manageMiddleware]],
-            ['POST', '/ai/manage/keys',               [AiAdminController::class, 'createKey'],    [$manageMiddleware]],
-            ['POST', '/ai/manage/keys/@id/grants',    [AiAdminController::class, 'updateGrants'], [$manageMiddleware]],
-            ['POST', '/ai/manage/keys/@id/toggle',    [AiAdminController::class, 'toggleKey'],    [$manageMiddleware]],
-            ['POST', '/ai/manage/keys/@id/delete',    [AiAdminController::class, 'deleteKey'],    [$manageMiddleware]],
-            ['POST', '/ai/manage/author',             [AiAdminController::class, 'saveAuthor'],   [$manageMiddleware]],
-            ['GET',  '/ai/help',                      [AiAdminController::class, 'help'],         [$manageMiddleware]],
-            ['GET',  '/ai/fact-checks',               [AiFactCheckAdminController::class, 'index'],       [$manageMiddleware]],
-            ['GET',  '/ai/fact-checks/@id',           [AiFactCheckAdminController::class, 'show'],        [$manageMiddleware]],
-            ['POST', '/ai/fact-checks/terms',         [AiFactCheckAdminController::class, 'acceptTerms'], [$manageMiddleware]],
-            ['POST', '/ai/fact-checks/toggle',        [AiFactCheckAdminController::class, 'toggle'],      [$manageMiddleware]],
-            ['POST', '/ai/fact-checks/@id/delete',    [AiFactCheckAdminController::class, 'delete'],      [$manageMiddleware]],
+            ['GET',  $prefix . '/manage',                    [AiAdminController::class, 'manage'],       [$manageMiddleware]],
+            ['POST', $prefix . '/manage/keys',               [AiAdminController::class, 'createKey'],    [$manageMiddleware]],
+            ['POST', $prefix . '/manage/keys/@id/grants',    [AiAdminController::class, 'updateGrants'], [$manageMiddleware]],
+            ['POST', $prefix . '/manage/keys/@id/toggle',    [AiAdminController::class, 'toggleKey'],    [$manageMiddleware]],
+            ['POST', $prefix . '/manage/keys/@id/delete',    [AiAdminController::class, 'deleteKey'],    [$manageMiddleware]],
+            ['POST', $prefix . '/manage/author',             [AiAdminController::class, 'saveAuthor'],   [$manageMiddleware]],
+            ['GET',  $prefix . '/help',                      [AiAdminController::class, 'help'],         [$manageMiddleware]],
+            ['GET',  $prefix . '/fact-checks',               [AiFactCheckAdminController::class, 'index'],       [$manageMiddleware]],
+            ['GET',  $prefix . '/fact-checks/@id',           [AiFactCheckAdminController::class, 'show'],        [$manageMiddleware]],
+            ['POST', $prefix . '/fact-checks/terms',         [AiFactCheckAdminController::class, 'acceptTerms'], [$manageMiddleware]],
+            ['POST', $prefix . '/fact-checks/toggle',        [AiFactCheckAdminController::class, 'toggle'],      [$manageMiddleware]],
+            ['POST', $prefix . '/fact-checks/@id/delete',    [AiFactCheckAdminController::class, 'delete'],      [$manageMiddleware]],
         ], 'pubvana.ai');
 
         // ─── Public REST API (sessionless, bearer-key auth) ─────────────
@@ -134,13 +136,14 @@ class Plugin implements PluginInterface
         $adext->register('content.edit.panel', 'default', 'pubvana.ai.factcheck', [
             'label'    => 'Fact Check',
             'priority' => 60,
-            'callable' => function (array $context) use ($app): string {
+            'callable' => function (array $context) use ($app, $prefix): string {
                 $contentType = ($context['content_type'] ?? '') === 'page' ? 'page' : 'post';
                 $contentId = (int) ($context['content_id'] ?? 0);
 
                 return $app->view()->fetch('pubvana/ai/admin/fact-check-panel', [
                     'panel'       => $app->aiFactCheck()->panelData($contentType, $contentId),
                     'content_id'  => $contentId,
+                    'adminBase'   => '/admin' . rtrim($prefix, '/'),
                 ]);
             },
         ]);

@@ -5,6 +5,7 @@
  *
  * @var array   $backups   List of backup entries from BackupService::listBackups()
  * @var bool    $is_locked Whether an operation is currently running
+ * @var string  $adminBase Full admin URL base for this plugin
  *
  * @package  Pubvana\Plugins\Backups
  * @copyright 2026 enlivenapp
@@ -60,7 +61,7 @@
                     <td><?= htmlspecialchars($backup['size']) ?></td>
                     <td><?= htmlspecialchars($backup['created']) ?></td>
                     <td class="text-end text-nowrap">
-                        <a href="/admin/backups/download/<?= htmlspecialchars($backup['filename']) ?>"
+                        <a href="<?= $adminBase ?>/download/<?= htmlspecialchars($backup['filename']) ?>"
                            class="btn btn-sm btn-outline-primary" title="Download">
                             <i class="ti ti-download"></i>
                         </a>
@@ -70,7 +71,7 @@
                             <i class="ti ti-rotate-2"></i>
                         </button>
                         <form method="POST"
-                              action="/admin/backups/<?= htmlspecialchars($backup['filename']) ?>/delete"
+                              action="<?= $adminBase ?>/<?= htmlspecialchars($backup['filename']) ?>/delete"
                               class="d-inline"
                               onsubmit="return confirm('Delete this backup?')">
                             <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
@@ -91,8 +92,8 @@
 (function() {
     var btn       = document.getElementById('createBackupBtn');
     var prog      = document.getElementById('backup-progress');
-    var createUrl = '/admin/backups/create';
-    var statusUrl = '/admin/backups/status';
+    var createUrl = '<?= $adminBase ?>/create';
+    var statusUrl = '<?= $adminBase ?>/status';
 
     // Create backup
     btn.addEventListener('click', function() {
@@ -141,7 +142,7 @@
                 body.append('_csrf_token', csrfMeta.content);
             }
 
-            fetch('/admin/backups/restore/' + encodeURIComponent(filename), { method: 'POST', body: body })
+            fetch('<?= $adminBase ?>/restore/' + encodeURIComponent(filename), { method: 'POST', body: body })
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     if (data.status === 'error') {

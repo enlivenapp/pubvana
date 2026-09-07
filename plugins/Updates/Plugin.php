@@ -26,6 +26,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/updates');
+        $config['route_prefix'] = $prefix;
+
         $app->set('pubvana.updates', $config);
 
         $app->map('updates', function () use ($app, $config) {
@@ -40,19 +43,19 @@ class Plugin implements PluginInterface
         $authMiddleware = null;
 
         $adext->addRoutes('admin', [
-            ['GET',  '/updates',            [UpdatesAdminController::class, 'index'],    [$authMiddleware]],
-            ['POST', '/updates/check',      [UpdatesAdminController::class, 'check'],    [$authMiddleware]],
-            ['POST', '/updates/apply',      [UpdatesAdminController::class, 'apply'],    [$authMiddleware]],
-            ['GET',  '/updates/status',     [UpdatesAdminController::class, 'status'],   [$authMiddleware]],
-            ['POST', '/updates/settings',   [UpdatesAdminController::class, 'settings'], [$authMiddleware]],
-            ['POST', '/updates/skip',       [UpdatesAdminController::class, 'skip'],     [$authMiddleware]],
-            ['POST', '/updates/unskip',     [UpdatesAdminController::class, 'unskip'],   [$authMiddleware]],
+            ['GET',  $prefix,                  [UpdatesAdminController::class, 'index'],    [$authMiddleware]],
+            ['POST', $prefix . '/check',       [UpdatesAdminController::class, 'check'],    [$authMiddleware]],
+            ['POST', $prefix . '/apply',       [UpdatesAdminController::class, 'apply'],    [$authMiddleware]],
+            ['GET',  $prefix . '/status',      [UpdatesAdminController::class, 'status'],   [$authMiddleware]],
+            ['POST', $prefix . '/settings',    [UpdatesAdminController::class, 'settings'], [$authMiddleware]],
+            ['POST', $prefix . '/skip',        [UpdatesAdminController::class, 'skip'],     [$authMiddleware]],
+            ['POST', $prefix . '/unskip',      [UpdatesAdminController::class, 'unskip'],   [$authMiddleware]],
         ], 'pubvana.updates');
 
         $adext->register('admin.dashboard', 'cards', 'pubvana.updates', [
             'label'    => 'Updates',
             'priority' => 5,
-            'callable' => fn(array $context): array => $this->dashboardCards($app),
+            'callable' => fn(array $context): array => $this->dashboardCards($app, $prefix),
         ]);
 
         // Site Health check. Only registered when SiteHealth is present;
@@ -85,9 +88,11 @@ class Plugin implements PluginInterface
      * the cached check state (no network on dashboard renders).
      *
      * @param Engine<object> $app
+     * @param string         $prefix Route prefix for this plugin; the
+     *                               dashboard renderer adds '/admin' to hrefs itself
      * @return list<array<string, mixed>>
      */
-    private function dashboardCards(Engine $app): array
+    private function dashboardCards(Engine $app, string $prefix): array
     {
         $service = $app->updates();
         $state   = $service->lastCheck();
@@ -100,7 +105,7 @@ class Plugin implements PluginInterface
             'icon'        => 'ti-refresh',
             'tone'        => 'success',
             'group'       => 'system',
-            'href'        => '/updates',
+            'href'        => $prefix,
             'description' => 'Running the latest version.',
         ];
 

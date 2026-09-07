@@ -157,6 +157,15 @@ class FormsService
         return $this->submissions->findById($id);
     }
 
+    private function routePrefix(): string
+    {
+        $prefix = rtrim((string) ($this->config['route_prefix'] ?? ''), '/');
+        if ($prefix === '') {
+            $prefix = '/' . trim($this->config['routePrepend'] ?? 'forms', '/');
+        }
+        return $prefix;
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -182,7 +191,7 @@ class FormsService
                 'icon'        => 'ti-forms',
                 'tone'        => 'primary',
                 'group'       => 'forms',
-                'href'        => '/admin/forms',
+                'href'        => $this->routePrefix(),
                 'description' => 'Forms created on the site.',
             ],
             [
@@ -192,7 +201,7 @@ class FormsService
                 'icon'        => 'ti-circle-check',
                 'tone'        => 'success',
                 'group'       => 'forms',
-                'href'        => '/admin/forms',
+                'href'        => $this->routePrefix(),
                 'description' => 'Forms live on the site.',
             ],
             [
@@ -202,7 +211,7 @@ class FormsService
                 'icon'        => 'ti-inbox',
                 'tone'        => 'info',
                 'group'       => 'forms',
-                'href'        => '/admin/forms/submissions',
+                'href'        => $this->routePrefix() . '/submissions',
                 'description' => 'Entries received across all forms.',
             ],
         ];
@@ -265,8 +274,7 @@ class FormsService
         }
 
         $fields = $this->fields->forForm((int) $form->id);
-        $action = rtrim((string) $this->app->get('flight.base_url'), '/') . '/' .
-            trim($this->config['routePrepend'] ?? 'forms', '/') . '/submit/' . (int) $form->id;
+        $action = rtrim((string) $this->app->get('flight.base_url'), '/') . $this->routePrefix() . '/submit/' . (int) $form->id;
         $returnUrl = $this->currentRequestPath();
 
         $html = '';

@@ -219,7 +219,7 @@ class ActivityLogService
             '/admin/auth/',        // login/logout
             '/admin/assets/',      // asset serving
             '/admin/api/',         // API endpoints
-            '/admin/activity-log', // self-reference
+            '/admin' . rtrim((string) ($this->config['route_prefix'] ?? ''), '/'), // self-reference
         ];
 
         foreach ($skipPatterns as $skip) {
@@ -254,9 +254,10 @@ class ActivityLogService
             // Media
             '/media'                   => ['entity_type' => 'media', 'actions' => ['create' => 'POST', 'update' => ['PUT', 'PATCH'], 'delete' => 'DELETE']],
 
-            // Redirects
+            // Redirects (the 404 manager key must come first: matching is
+            // str_starts_with, so the longer path wins)
+            '/redirects/404-manager'   => ['entity_type' => 'redirect_link', 'actions' => ['update' => ['PUT', 'PATCH'], 'delete' => 'DELETE']],
             '/redirects'               => ['entity_type' => 'redirect', 'actions' => ['create' => 'POST', 'update' => ['PUT', 'PATCH'], 'delete' => 'DELETE']],
-            '/404-manager'             => ['entity_type' => 'redirect_link', 'actions' => ['update' => ['PUT', 'PATCH'], 'delete' => 'DELETE']],
 
             // Forms
             '/forms'                   => ['entity_type' => 'form', 'actions' => ['create' => 'POST', 'update' => ['PUT', 'PATCH'], 'delete' => 'DELETE']],

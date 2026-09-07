@@ -14,8 +14,8 @@ use flight\net\Router;
  * Pages Plugin - Registers routes and services for the pages module.
  *
  * Called by PluginLoader after pubvana.json hooks are loaded.
- * Registers admin routes via adext. Public routes use /page/@slug
- * to avoid catching unrelated URLs.
+ * Registers admin routes via adext. Public routes use {prefix}/@slug
+ * (prefix from routePrepend) to avoid catching unrelated URLs.
  *
  * @package Pubvana\Plugins\Pages
  */
@@ -31,6 +31,9 @@ class Plugin implements PluginInterface
      */
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/pages');
+        $config['route_prefix'] = $prefix;
+
         $app->map('pages', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {
@@ -44,20 +47,20 @@ class Plugin implements PluginInterface
 
         // Admin routes
         $adext->addRoutes('admin', [
-            ['GET',    '/pages',                      [PagesAdminController::class, 'index'],    [$authMiddleware]],
-            ['GET',    '/pages/create',               [PagesAdminController::class, 'create'],   [$authMiddleware]],
-            ['POST',   '/pages/store',                [PagesAdminController::class, 'store'],    [$authMiddleware]],
-            ['GET',    '/pages/@id/edit',             [PagesAdminController::class, 'edit'],     [$authMiddleware]],
-            ['POST',   '/pages/@id/update',           [PagesAdminController::class, 'update'],   [$authMiddleware]],
-            ['POST',   '/pages/@id/delete',           [PagesAdminController::class, 'delete'],   [$authMiddleware]],
-            ['GET',    '/pages/@id/revisions',        [PagesAdminController::class, 'revisions'],[$authMiddleware]],
-            ['POST',   '/pages/@id/restore/@revisionId', [PagesAdminController::class, 'restore'], [$authMiddleware]],
+            ['GET',    $prefix,                      [PagesAdminController::class, 'index'],    [$authMiddleware]],
+            ['GET',    $prefix . '/create',          [PagesAdminController::class, 'create'],   [$authMiddleware]],
+            ['POST',   $prefix . '/store',           [PagesAdminController::class, 'store'],    [$authMiddleware]],
+            ['GET',    $prefix . '/@id/edit',        [PagesAdminController::class, 'edit'],     [$authMiddleware]],
+            ['POST',   $prefix . '/@id/update',      [PagesAdminController::class, 'update'],   [$authMiddleware]],
+            ['POST',   $prefix . '/@id/delete',      [PagesAdminController::class, 'delete'],   [$authMiddleware]],
+            ['GET',    $prefix . '/@id/revisions',   [PagesAdminController::class, 'revisions'],[$authMiddleware]],
+            ['POST',   $prefix . '/@id/restore/@revisionId', [PagesAdminController::class, 'restore'], [$authMiddleware]],
         ], 'pubvana.pages');
 
         // Public routes
         $adext->addRoutes('public', [
-            ['GET',    '/page',             [PagesPublicController::class, 'index']],
-            ['GET',    '/page/@slug',       [PagesPublicController::class, 'view']],
+            ['GET',    $prefix,             [PagesPublicController::class, 'index']],
+            ['GET',    $prefix . '/@slug',  [PagesPublicController::class, 'view']],
         ], 'pubvana.pages');
 
         // ─── Dashboard ──────────────────────────────────────────────────

@@ -23,6 +23,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/brokenlinks');
+        $config['route_prefix'] = $prefix;
+
         $app->map('brokenLinks', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {
@@ -37,10 +40,10 @@ class Plugin implements PluginInterface
         // ─── Admin Routes ──────────────────────────────────────────────
 
         $adext->addRoutes('admin', [
-            ['GET',  '/broken-links',               [BrokenLinksAdminController::class, 'index'],   [$authMiddleware]],
-            ['POST', '/broken-links/scan',           [BrokenLinksAdminController::class, 'scan'],    [$authMiddleware]],
-            ['POST', '/broken-links/@id/recheck',   [BrokenLinksAdminController::class, 'recheck'], [$authMiddleware]],
-            ['POST', '/broken-links/@id/dismiss',   [BrokenLinksAdminController::class, 'dismiss'], [$authMiddleware]],
+            ['GET',  $prefix,                        [BrokenLinksAdminController::class, 'index'],   [$authMiddleware]],
+            ['POST', $prefix . '/scan',              [BrokenLinksAdminController::class, 'scan'],    [$authMiddleware]],
+            ['POST', $prefix . '/@id/recheck',       [BrokenLinksAdminController::class, 'recheck'], [$authMiddleware]],
+            ['POST', $prefix . '/@id/dismiss',       [BrokenLinksAdminController::class, 'dismiss'], [$authMiddleware]],
         ], 'pubvana.brokenlinks');
 
         // Core cron system (docs/Cron.md): daily scan of all registered
@@ -60,7 +63,7 @@ class Plugin implements PluginInterface
         $adext->register('admin.dashboard', 'cards', 'pubvana.brokenlinks', [
             'label'    => 'Broken Links',
             'priority' => 45,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $count = $app->brokenLinks()->countBroken();
 
                 return [
@@ -71,7 +74,7 @@ class Plugin implements PluginInterface
                         'icon'        => 'ti-link-off',
                         'tone'        => $count > 0 ? 'danger' : 'success',
                         'group'       => 'tools',
-                        'href'        => '/broken-links',
+                        'href'        => $prefix,
                         'description' => $count > 0
                             ? 'Outbound broken links needing attention.'
                             : 'No broken links detected.',
@@ -83,7 +86,7 @@ class Plugin implements PluginInterface
         $adext->register('admin.dashboard', 'sections', 'pubvana.brokenlinks', [
             'label'    => 'Broken Links',
             'priority' => 20,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $items = [];
                 foreach ($app->brokenLinks()->recent(5) as $entry) {
                     $lastChecked = strtotime((string) $entry->last_checked_at);
@@ -93,7 +96,7 @@ class Plugin implements PluginInterface
                         'meta'     => ($entry->source_type === 'post' ? 'Post' : 'Page')
                             . ': ' . $entry->source_title
                             . ' - Last checked ' . date('M j, Y g:ia', $lastChecked),
-                        'href'     => '/broken-links',
+                        'href'     => $prefix,
                         'emphasis' => 'danger',
                     ];
                 }
@@ -105,7 +108,7 @@ class Plugin implements PluginInterface
                     'icon'        => 'ti-link-off',
                     'tone'        => 'danger',
                     'group'       => 'tools',
-                    'href'        => '/broken-links',
+                    'href'        => $prefix,
                     'empty_state' => 'No broken links detected.',
                     'items'       => $items,
                 ]];

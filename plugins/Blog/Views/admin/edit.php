@@ -3,6 +3,8 @@
  * Edit post - admin form.
  *
  * @var string                                     $pageTitle
+ * @var string                                     $adminBase
+ * @var string                                     $previewBase
  * @var \Pubvana\Plugins\Blog\Models\Post          $post
  * @var \Pubvana\Plugins\Blog\Models\Category[]    $categories
  * @var int[]                                       $selectedCats
@@ -13,14 +15,14 @@
 <div class="d-flex align-items-center justify-content-end mb-4">
     <div class="btn-list">
         <?php if ($post->preview_token): ?>
-            <a href="/blog/preview/<?= htmlspecialchars($post->preview_token) ?>" target="_blank" class="btn btn-outline-info">Preview</a>
+            <a href="<?= $previewBase ?>/preview/<?= htmlspecialchars($post->preview_token) ?>" target="_blank" class="btn btn-outline-info">Preview</a>
         <?php endif; ?>
-        <a href="/admin/blog/<?= (int) $post->id ?>/revisions" class="btn btn-outline-secondary">Revisions</a>
-        <a href="/admin/blog" class="btn btn-outline-secondary">Back</a>
+        <a href="<?= $adminBase ?>/<?= (int) $post->id ?>/revisions" class="btn btn-outline-secondary">Revisions</a>
+        <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">Back</a>
     </div>
 </div>
 
-<form method="POST" action="/admin/blog/<?= (int) $post->id ?>/update">
+<form method="POST" action="<?= $adminBase ?>/<?= (int) $post->id ?>/update">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
 
     <div class="row">
@@ -129,7 +131,7 @@
                 </div>
                 <div class="card-body">
                     <?php if (empty($categories)): ?>
-                        <p class="text-secondary mb-0">No categories. <a href="/admin/blog/categories/create">Create one</a>.</p>
+                        <p class="text-secondary mb-0">No categories. <a href="<?= $adminBase ?>/categories/create">Create one</a>.</p>
                     <?php else: ?>
                         <?php foreach ($categories as $cat): ?>
                             <label class="form-check">

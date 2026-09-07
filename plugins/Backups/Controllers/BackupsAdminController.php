@@ -59,7 +59,17 @@ class BackupsAdminController extends AdminController
             'pageTitle' => 'Backups',
             'backups'   => $this->service()->listBackups(),
             'is_locked' => ProgressReporter::isLocked($this->storageDir()),
+            'adminBase' => $this->adminBase(),
         ]);
+    }
+
+    /**
+     * Full admin URL base for this plugin (adext prepends '/admin' to the
+     * registered route path).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/backups'), '/');
     }
 
     /**
@@ -122,7 +132,7 @@ class BackupsAdminController extends AdminController
     {
         $path = $this->service()->getBackupPath($filename);
         if (!$path) {
-            $this->app->redirect('/admin/backups');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
@@ -147,7 +157,7 @@ class BackupsAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'Backup not found.');
         }
-        $this->app->redirect('/admin/backups');
+        $this->app->redirect($this->adminBase());
     }
 
     /**

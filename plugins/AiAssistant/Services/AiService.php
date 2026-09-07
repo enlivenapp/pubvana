@@ -329,33 +329,43 @@ class AiService
      */
     public function helpCatalog(): array
     {
+        $base = $this->apiBase();
+
         return [
-            'posts.read'             => ['method' => 'GET',  'path' => '/ai/posts/{slug}',          'group' => 'posts',      'label' => 'View posts',           'summary' => 'List and view posts. Lists show every status and support page, status, and search params.', 'endpoints' => ['/ai/posts', '/ai/posts/{slug}']],
-            'posts.create'           => ['method' => 'POST', 'path' => '/ai/posts',                 'group' => 'posts',      'label' => 'Create drafts',        'summary' => 'Write a new blog post as a draft.'],
-            'posts.update'           => ['method' => 'POST', 'path' => '/ai/posts/{id}/update',     'group' => 'posts',      'label' => 'Edit posts',           'summary' => 'Change an existing post.'],
-            'posts.delete'           => ['method' => 'POST', 'path' => '/ai/posts/{id}/delete',     'group' => 'posts',      'label' => 'Delete posts',         'summary' => 'Remove a post.'],
-            'posts.publish'          => ['method' => 'POST', 'path' => '/ai/posts',                 'group' => 'posts',      'label' => 'Publish posts',        'summary' => 'Put a post live on the site.'],
-            'posts.schedule'         => ['method' => 'POST', 'path' => '/ai/posts',                 'group' => 'posts',      'label' => 'Schedule posts',       'summary' => 'Set a future publish date for a post.'],
-            'posts.tags.read'        => ['method' => 'GET',  'path' => '/ai/posts/tags',            'group' => 'posts',      'label' => 'View tags',            'summary' => 'Read the list of blog tags.'],
-            'posts.categories.read'  => ['method' => 'GET',  'path' => '/ai/posts/categories',      'group' => 'posts',      'label' => 'View categories',      'summary' => 'Read the list of blog categories.'],
-            'pages.read'             => ['method' => 'GET',  'path' => '/ai/pages/{slug}',          'group' => 'pages',      'label' => 'View pages',           'summary' => 'List and view pages. Lists show every status and support page, status, and search params.', 'endpoints' => ['/ai/pages', '/ai/pages/{slug}']],
-            'pages.create'           => ['method' => 'POST', 'path' => '/ai/pages',                 'group' => 'pages',      'label' => 'Create page drafts',   'summary' => 'Write a new page as a draft.'],
-            'pages.update'           => ['method' => 'POST', 'path' => '/ai/pages/{id}/update',     'group' => 'pages',      'label' => 'Edit pages',           'summary' => 'Change an existing page.'],
-            'pages.delete'           => ['method' => 'POST', 'path' => '/ai/pages/{id}/delete',     'group' => 'pages',      'label' => 'Delete pages',         'summary' => 'Remove a page.'],
-            'pages.publish'          => ['method' => 'POST', 'path' => '/ai/pages',                 'group' => 'pages',      'label' => 'Publish pages',        'summary' => 'Put a page live on the site.'],
-            'comments.read'          => ['method' => 'GET',  'path' => '/ai/comments',              'group' => 'comments',   'label' => 'View comments',        'summary' => 'See visitor comments.'],
-            'comments.approve'       => ['method' => 'POST', 'path' => '/ai/comments/{id}/approve', 'group' => 'comments',   'label' => 'Approve comments',     'summary' => 'Allow a pending comment to show.'],
-            'comments.reject'        => ['method' => 'POST', 'path' => '/ai/comments/{id}/reject',  'group' => 'comments',   'label' => 'Reject comments',      'summary' => 'Disallow a pending comment.'],
-            'comments.delete'        => ['method' => 'POST', 'path' => '/ai/comments/{id}/delete',  'group' => 'comments',   'label' => 'Delete comments',      'summary' => 'Remove a comment permanently.'],
-            'redirects.read'         => ['method' => 'GET',  'path' => '/ai/redirects',             'group' => 'redirects',  'label' => 'View redirects',       'summary' => 'See the site\'s URL redirect rules.'],
-            'redirects.create'       => ['method' => 'POST', 'path' => '/ai/redirects',             'group' => 'redirects',  'label' => 'Create redirects',     'summary' => 'Add a URL redirect rule.'],
-            'redirects.update'       => ['method' => 'POST', 'path' => '/ai/redirects/{id}/update', 'group' => 'redirects',  'label' => 'Edit redirects',       'summary' => 'Change a redirect rule.'],
-            'redirects.delete'       => ['method' => 'POST', 'path' => '/ai/redirects/{id}/delete', 'group' => 'redirects',  'label' => 'Delete redirects',     'summary' => 'Remove a redirect rule.'],
-            'navigation.read'        => ['method' => 'GET',  'path' => '/ai/navigation',            'group' => 'navigation', 'label' => 'View navigation',      'summary' => 'See the site\'s menu items.'],
-            'navigation.create'      => ['method' => 'POST', 'path' => '/ai/navigation',            'group' => 'navigation', 'label' => 'Add menu items',        'summary' => 'Create a navigation menu item.'],
-            'navigation.update'      => ['method' => 'POST', 'path' => '/ai/navigation/{id}/update','group' => 'navigation', 'label' => 'Edit menu items',      'summary' => 'Change a navigation menu item.'],
-            'navigation.delete'      => ['method' => 'POST', 'path' => '/ai/navigation/{id}/delete','group' => 'navigation', 'label' => 'Delete menu items',      'summary' => 'Remove a navigation menu item.'],
+            'posts.read'             => ['method' => 'GET',  'path' => $base . '/posts/{slug}',          'group' => 'posts',      'label' => 'View posts',           'summary' => 'List and view posts. Lists show every status and support page, status, and search params.', 'endpoints' => [$base . '/posts', $base . '/posts/{slug}']],
+            'posts.create'           => ['method' => 'POST', 'path' => $base . '/posts',                 'group' => 'posts',      'label' => 'Create drafts',        'summary' => 'Write a new blog post as a draft.'],
+            'posts.update'           => ['method' => 'POST', 'path' => $base . '/posts/{id}/update',     'group' => 'posts',      'label' => 'Edit posts',           'summary' => 'Change an existing post.'],
+            'posts.delete'           => ['method' => 'POST', 'path' => $base . '/posts/{id}/delete',     'group' => 'posts',      'label' => 'Delete posts',         'summary' => 'Remove a post.'],
+            'posts.publish'          => ['method' => 'POST', 'path' => $base . '/posts',                 'group' => 'posts',      'label' => 'Publish posts',        'summary' => 'Put a post live on the site.'],
+            'posts.schedule'         => ['method' => 'POST', 'path' => $base . '/posts',                 'group' => 'posts',      'label' => 'Schedule posts',       'summary' => 'Set a future publish date for a post.'],
+            'posts.tags.read'        => ['method' => 'GET',  'path' => $base . '/posts/tags',            'group' => 'posts',      'label' => 'View tags',            'summary' => 'Read the list of blog tags.'],
+            'posts.categories.read'  => ['method' => 'GET',  'path' => $base . '/posts/categories',      'group' => 'posts',      'label' => 'View categories',      'summary' => 'Read the list of blog categories.'],
+            'pages.read'             => ['method' => 'GET',  'path' => $base . '/pages/{slug}',          'group' => 'pages',      'label' => 'View pages',           'summary' => 'List and view pages. Lists show every status and support page, status, and search params.', 'endpoints' => [$base . '/pages', $base . '/pages/{slug}']],
+            'pages.create'           => ['method' => 'POST', 'path' => $base . '/pages',                 'group' => 'pages',      'label' => 'Create page drafts',   'summary' => 'Write a new page as a draft.'],
+            'pages.update'           => ['method' => 'POST', 'path' => $base . '/pages/{id}/update',     'group' => 'pages',      'label' => 'Edit pages',           'summary' => 'Change an existing page.'],
+            'pages.delete'           => ['method' => 'POST', 'path' => $base . '/pages/{id}/delete',     'group' => 'pages',      'label' => 'Delete pages',         'summary' => 'Remove a page.'],
+            'pages.publish'          => ['method' => 'POST', 'path' => $base . '/pages',                 'group' => 'pages',      'label' => 'Publish pages',        'summary' => 'Put a page live on the site.'],
+            'comments.read'          => ['method' => 'GET',  'path' => $base . '/comments',              'group' => 'comments',   'label' => 'View comments',        'summary' => 'See visitor comments.'],
+            'comments.approve'       => ['method' => 'POST', 'path' => $base . '/comments/{id}/approve', 'group' => 'comments',   'label' => 'Approve comments',     'summary' => 'Allow a pending comment to show.'],
+            'comments.reject'        => ['method' => 'POST', 'path' => $base . '/comments/{id}/reject',  'group' => 'comments',   'label' => 'Reject comments',      'summary' => 'Disallow a pending comment.'],
+            'comments.delete'        => ['method' => 'POST', 'path' => $base . '/comments/{id}/delete',  'group' => 'comments',   'label' => 'Delete comments',      'summary' => 'Remove a comment permanently.'],
+            'redirects.read'         => ['method' => 'GET',  'path' => $base . '/redirects',             'group' => 'redirects',  'label' => 'View redirects',       'summary' => 'See the site\'s URL redirect rules.'],
+            'redirects.create'       => ['method' => 'POST', 'path' => $base . '/redirects',             'group' => 'redirects',  'label' => 'Create redirects',     'summary' => 'Add a URL redirect rule.'],
+            'redirects.update'       => ['method' => 'POST', 'path' => $base . '/redirects/{id}/update', 'group' => 'redirects',  'label' => 'Edit redirects',       'summary' => 'Change a redirect rule.'],
+            'redirects.delete'       => ['method' => 'POST', 'path' => $base . '/redirects/{id}/delete', 'group' => 'redirects',  'label' => 'Delete redirects',     'summary' => 'Remove a redirect rule.'],
+            'navigation.read'        => ['method' => 'GET',  'path' => $base . '/navigation',            'group' => 'navigation', 'label' => 'View navigation',      'summary' => 'See the site\'s menu items.'],
+            'navigation.create'      => ['method' => 'POST', 'path' => $base . '/navigation',            'group' => 'navigation', 'label' => 'Add menu items',        'summary' => 'Create a navigation menu item.'],
+            'navigation.update'      => ['method' => 'POST', 'path' => $base . '/navigation/{id}/update','group' => 'navigation', 'label' => 'Edit menu items',      'summary' => 'Change a navigation menu item.'],
+            'navigation.delete'      => ['method' => 'POST', 'path' => $base . '/navigation/{id}/delete','group' => 'navigation', 'label' => 'Delete menu items',      'summary' => 'Remove a navigation menu item.'],
         ];
+    }
+
+    /**
+     * URL prefix for the public API, from the plugin config.
+     */
+    private function apiBase(): string
+    {
+        return rtrim((string) ($this->config['route_prefix'] ?? ''), '/');
     }
 
     /**

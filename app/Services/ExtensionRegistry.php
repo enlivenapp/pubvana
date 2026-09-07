@@ -59,7 +59,7 @@ class ExtensionRegistry
         | These are for the admin area. URLs and route paths auto-get /admin prefix.
         */
         'admin.menu' => [
-            'slots'    => ['content', 'appearance', 'tools', 'settings'],
+            'slots'    => ['content', 'appearance', 'tools', 'settings', 'plugins'],
             'required' => ['label', 'url'],
             'optional' => ['icon', 'priority', 'submenu', 'route', 'middleware', 'core'],
         ],

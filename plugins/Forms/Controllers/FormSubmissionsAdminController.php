@@ -8,6 +8,11 @@ use Pubvana\Controllers\Admin\AdminController;
 
 class FormSubmissionsAdminController extends AdminController
 {
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/forms'), '/');
+    }
+
     public function index(?string $formId = null): void
     {
         $request = $this->app->request();
@@ -19,6 +24,7 @@ class FormSubmissionsAdminController extends AdminController
 
         $this->render('pubvana/forms/admin/submissions', [
             'pageTitle'    => $formIdInt ? 'Form Submissions' : 'Submissions',
+            'adminBase'    => $this->adminBase(),
             'submissions'  => $result['items'],
             'total'        => $result['total'],
             'page'         => $result['page'],
@@ -33,7 +39,7 @@ class FormSubmissionsAdminController extends AdminController
         $submission = $this->app->forms()->findSubmission((int) $id);
         if ($submission === null) {
             $this->app->session()->flash('error', 'Submission not found.');
-            $this->app->redirect('/admin/forms/submissions');
+            $this->app->redirect($this->adminBase() . '/submissions');
             return;
         }
 
@@ -41,6 +47,7 @@ class FormSubmissionsAdminController extends AdminController
 
         $this->render('pubvana/forms/admin/submission', [
             'pageTitle'  => 'Submission Detail',
+            'adminBase'  => $this->adminBase(),
             'submission' => $submission,
             'form'       => $form,
             'payload'    => $this->app->forms()->decodeSubmissionPayload($submission->payload_json ?? null),

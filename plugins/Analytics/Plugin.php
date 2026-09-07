@@ -23,6 +23,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/analytics');
+        $config['route_prefix'] = $prefix;
+
         $app->map('analytics', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {
@@ -37,9 +40,9 @@ class Plugin implements PluginInterface
         // ─── Admin Routes ──────────────────────────────────────────────
 
         $adext->addRoutes('admin', [
-            ['GET',  '/analytics',          [AnalyticsAdminController::class, 'index'],          [$authMiddleware]],
-            ['GET',  '/analytics/data',     [AnalyticsAdminController::class, 'data'],           [$authMiddleware]],
-            ['POST', '/analytics/tracking', [AnalyticsAdminController::class, 'toggleTracking'], [$authMiddleware]],
+            ['GET',  $prefix,                [AnalyticsAdminController::class, 'index'],          [$authMiddleware]],
+            ['GET',  $prefix . '/data',      [AnalyticsAdminController::class, 'data'],           [$authMiddleware]],
+            ['POST', $prefix . '/tracking',  [AnalyticsAdminController::class, 'toggleTracking'], [$authMiddleware]],
         ], 'pubvana.analytics');
 
         // ─── Page View Tracking ────────────────────────────────────────
@@ -57,7 +60,7 @@ class Plugin implements PluginInterface
         $adext->register('admin.dashboard', 'cards', 'pubvana.analytics', [
             'label'    => 'Analytics',
             'priority' => 30,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $views = $app->analytics()->totalViews('7');
 
                 return [[
@@ -67,7 +70,7 @@ class Plugin implements PluginInterface
                     'icon'        => 'ti-eye',
                     'tone'        => $views > 0 ? 'success' : 'secondary',
                     'group'       => 'analytics',
-                    'href'        => '/analytics',
+                    'href'        => $prefix,
                     'description' => 'Page views recorded in the last 7 days.',
                 ]];
             },

@@ -3,15 +3,16 @@
  * Create post - admin form.
  *
  * @var string                                     $pageTitle
+ * @var string                                     $adminBase
  * @var \Pubvana\Plugins\Blog\Models\Category[]    $categories
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/blog" class="btn btn-outline-secondary">Back</a>
+    <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">Back</a>
 </div>
 
-<form method="POST" action="/admin/blog/store">
+<form method="POST" action="<?= $adminBase ?>/store">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
 
     <div class="row">
@@ -113,7 +114,7 @@
                 </div>
                 <div class="card-body">
                     <?php if (empty($categories)): ?>
-                        <p class="text-secondary mb-0">No categories. <a href="/admin/blog/categories/create">Create one</a>.</p>
+                        <p class="text-secondary mb-0">No categories. <a href="<?= $adminBase ?>/categories/create">Create one</a>.</p>
                     <?php else: ?>
                         <?php foreach ($categories as $cat): ?>
                             <label class="form-check">

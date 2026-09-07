@@ -21,6 +21,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/forms');
+        $config['route_prefix'] = $prefix;
+
         $app->map('forms', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {
@@ -31,20 +34,19 @@ class Plugin implements PluginInterface
 
         $adext = $app->adext();
         $authMiddleware = null;
-        $prefix = $app->pluginLoader()->routePrefix('pubvana/forms');
 
         // ─── Admin Routes ──────────────────────────────────────────────
 
         $adext->addRoutes('admin', [
-            ['GET',  '/forms',                       [FormsAdminController::class, 'index'],            [$authMiddleware]],
-            ['GET',  '/forms/create',                [FormsAdminController::class, 'create'],           [$authMiddleware]],
-            ['POST', '/forms/store',                 [FormsAdminController::class, 'store'],            [$authMiddleware]],
-            ['GET',  '/forms/@id/edit',              [FormsAdminController::class, 'edit'],             [$authMiddleware]],
-            ['POST', '/forms/@id/update',            [FormsAdminController::class, 'update'],           [$authMiddleware]],
-            ['POST', '/forms/@id/delete',            [FormsAdminController::class, 'delete'],           [$authMiddleware]],
-            ['GET',  '/forms/submissions',           [FormSubmissionsAdminController::class, 'index'],  [$authMiddleware]],
-            ['GET',  '/forms/@formId/submissions',   [FormSubmissionsAdminController::class, 'index'],  [$authMiddleware]],
-            ['GET',  '/forms/submissions/@id',       [FormSubmissionsAdminController::class, 'show'],   [$authMiddleware]],
+            ['GET',  $prefix,                          [FormsAdminController::class, 'index'],            [$authMiddleware]],
+            ['GET',  $prefix . '/create',              [FormsAdminController::class, 'create'],           [$authMiddleware]],
+            ['POST', $prefix . '/store',               [FormsAdminController::class, 'store'],            [$authMiddleware]],
+            ['GET',  $prefix . '/@id/edit',            [FormsAdminController::class, 'edit'],             [$authMiddleware]],
+            ['POST', $prefix . '/@id/update',          [FormsAdminController::class, 'update'],           [$authMiddleware]],
+            ['POST', $prefix . '/@id/delete',          [FormsAdminController::class, 'delete'],           [$authMiddleware]],
+            ['GET',  $prefix . '/submissions',         [FormSubmissionsAdminController::class, 'index'],  [$authMiddleware]],
+            ['GET',  $prefix . '/@formId/submissions', [FormSubmissionsAdminController::class, 'index'],  [$authMiddleware]],
+            ['GET',  $prefix . '/submissions/@id',     [FormSubmissionsAdminController::class, 'show'],   [$authMiddleware]],
         ], 'pubvana.forms');
 
         // ─── Public Routes ──────────────────────────────────────────────

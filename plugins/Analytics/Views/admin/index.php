@@ -6,6 +6,7 @@
  * @var string $range
  * @var array  $report  See AnalyticsService::dashboard()
  * @var bool   $trackingEnabled
+ * @var string $adminBase
  */
 ?>
 <?php
@@ -28,7 +29,7 @@ $referrers  = $report['referrers'] ?? [];
             <button type="button" class="btn btn-outline-primary <?= $range === '365' ? 'active' : '' ?>" data-range="365">1y</button>
             <button type="button" class="btn btn-outline-primary <?= $range === 'all' ? 'active' : '' ?>" data-range="all">All</button>
         </div>
-        <form method="post" action="/admin/analytics/tracking" class="mb-0">
+        <form method="post" action="<?= $adminBase ?>/tracking" class="mb-0">
             <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
             <input type="hidden" name="tracking_enabled" id="trackingToggleField" value="0">
             <label class="form-check form-switch mb-0">
@@ -155,7 +156,7 @@ $referrers  = $report['referrers'] ?? [];
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
-window._analyticsEndpoint = '/admin/analytics/data';
+window._analyticsEndpoint = '<?= $adminBase ?>/data';
 window._analyticsRange = <?= json_encode($range) ?>;
 window._analyticsReport = <?= json_encode($report) ?>;
 

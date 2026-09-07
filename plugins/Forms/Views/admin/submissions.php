@@ -2,6 +2,7 @@
 /**
  * @var \Pubvana\Plugins\Forms\Models\FormSubmission[] $submissions
  * @var \Pubvana\Plugins\Forms\Models\Form[] $forms
+ * @var string $adminBase
  * @var int $total
  * @var int $page
  * @var int $perPage
@@ -10,7 +11,7 @@
 ?>
 
 <div class="d-flex align-items-center justify-content-between mb-4">
-    <form method="GET" action="/admin/forms/submissions" class="d-flex gap-2">
+    <form method="GET" action="<?= $adminBase ?>/submissions" class="d-flex gap-2">
         <select name="form_id" class="form-select" onchange="this.form.submit()">
             <option value="">All forms</option>
             <?php foreach ($forms as $form): ?>
@@ -20,7 +21,7 @@
             <?php endforeach; ?>
         </select>
     </form>
-    <a href="/admin/forms" class="btn btn-outline-secondary">Back to Forms</a>
+    <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">Back to Forms</a>
 </div>
 
 <div class="card">
@@ -59,7 +60,7 @@
                             <td><span class="badge bg-info-lt"><?= htmlspecialchars($submission->status) ?></span></td>
                             <td><?= htmlspecialchars((string) $submission->submitted_at) ?></td>
                             <td>
-                                <a href="/admin/forms/submissions/<?= (int) $submission->id ?>" class="btn btn-sm btn-outline-primary">View</a>
+                                <a href="<?= $adminBase ?>/submissions/<?= (int) $submission->id ?>" class="btn btn-sm btn-outline-primary">View</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

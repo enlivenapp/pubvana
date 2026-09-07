@@ -139,16 +139,25 @@ class PluginLoader
         // pubvana/* pubvana-foundation). Their migrations create the tables core
         // seeds depend on (e.g. Shield's auth_permissions), which is why they run
         // before core.
+        // Migration checks run only where they can do work: fresh installs
+        // (no marker file), CLI runway, and admin requests. Public page
+        // requests and cron runs skip all three migration tiers entirely.
         $foundation = array_filter(
             $all,
             fn($info, $pluginId) => $this->isFoundationPackage((string) $pluginId, $info),
             ARRAY_FILTER_USE_BOTH
         );
-        $this->runFoundationMigrations($foundation);
+        $runMigrations = $this->shouldRunMigrationsOnThisRequest();
+
+        if ($runMigrations) {
+            $this->runFoundationMigrations($foundation);
+        }
 
         // Tier 2: CORE migrations + seeds. Creates plugin_state, settings, and
         // every other core table before discovery/sync reads the database.
-        $this->runCoreMigrations();
+        if ($runMigrations) {
+            $this->runCoreMigrations();
+        }
 
         // Tier 3: Persist first-discovery defaults to plugin_state and cache the
         // resolved enabled/priority/required state for this request.
@@ -157,7 +166,9 @@ class PluginLoader
         // Tier 4: Migrations + seeds for ENABLED non-foundation plugins only.
         // Disabled plugin directories are never scanned here, so their migration
         // and seed files are never loaded — that is the enable/disable pause.
-        $this->runPluginMigrations($all);
+        if ($runMigrations) {
+            $this->runPluginMigrations($all);
+        }
 
         // Sort by priority (lower = earlier), from plugin_state
         uasort($all, fn($a, $b) => ($a['priority'] ?? 50) <=> ($b['priority'] ?? 50));
@@ -889,6 +900,31 @@ class PluginLoader
      *
      * @param array<string, array<string, mixed>> $foundation Discovered foundation packages keyed by plugin ID
      */
+    /**
+     * Whether migration and seed checks run on this request.
+     *
+     * They only run where they can do work:
+     *   - fresh install (no .migrations_installed marker): always, because
+     *     the session/shield tables must exist before any page loads
+     *   - CLI: only for runway (RUNWAY_PROJECT_ROOT defined); cron skips
+     *   - web: admin requests only; public pages skip entirely
+     */
+    protected function shouldRunMigrationsOnThisRequest(): bool
+    {
+        if (!is_file(PROJECT_ROOT . DIRECTORY_SEPARATOR . '.migrations_installed')) {
+            return true;
+        }
+
+        if (PHP_SAPI === 'cli') {
+            return defined('RUNWAY_PROJECT_ROOT');
+        }
+
+        $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+        $path = rtrim($path, '/') . '/';
+
+        return str_starts_with($path, '/admin/');
+    }
+
     protected function runFoundationMigrations(array $foundation): void
     {
         if ($foundation === []) {

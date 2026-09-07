@@ -102,6 +102,7 @@ namespace flight {
      * Plugin service facades, registered by each plugin's Plugin.php.
      *
      * @phpstan-method \Pubvana\Plugins\Pages\Services\PagesService pages()
+     * @phpstan-method \Pubvana\Plugins\Docs\Services\DocsService docs()
      * @phpstan-method \Pubvana\Plugins\Media\Services\MediaService media()
      * @phpstan-method \Pubvana\Plugins\Seo\Services\SeoService seo()
      * @phpstan-method \Pubvana\Plugins\Seo\Services\SchemaService seoSchema()
@@ -265,6 +266,12 @@ namespace Ahc\Cli\IO {
 
 namespace Pubvana\Plugins\Pages\Services {
     class PagesService
+    {
+    }
+}
+
+namespace Pubvana\Plugins\Docs\Services {
+    class DocsService
     {
     }
 }

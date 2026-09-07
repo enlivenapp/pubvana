@@ -25,6 +25,7 @@ class AnalyticsAdminController extends AdminController
             'range'           => $range,
             'report'          => $this->app->analytics()->dashboard($range),
             'trackingEnabled' => $this->app->analytics()->isTrackingEnabled(),
+            'adminBase'       => $this->adminBase(),
         ]);
     }
 
@@ -49,7 +50,16 @@ class AnalyticsAdminController extends AdminController
             'success',
             $enabled ? 'Analytics tracking enabled.' : 'Analytics tracking disabled.'
         );
-        $this->app->redirect('/admin/analytics');
+        $this->app->redirect($this->adminBase());
+    }
+
+    /**
+     * Full admin URL base for this plugin (adext prepends '/admin' to the
+     * registered route path).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/analytics'), '/');
     }
 
     private function validRange(mixed $raw): string

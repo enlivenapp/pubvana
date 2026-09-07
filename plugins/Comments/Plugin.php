@@ -24,6 +24,8 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/comments');
+
         // Map the comments service as a singleton.
         $app->map('comments', function () use ($app) {
             static $instance = null;
@@ -45,18 +47,16 @@ class Plugin implements PluginInterface
         // ─── Admin Routes ──────────────────────────────────────────────
 
         $adext->addRoutes('admin', [
-            ['GET',  '/comments',             [CommentsAdminController::class, 'index'],            [$authMiddleware]],
-            ['GET',  '/comments/settings',    [CommentsAdminController::class, 'settingsIndex'],    [$authMiddleware]],
-            ['POST', '/comments/settings',    [CommentsAdminController::class, 'settingsSave'],     [$authMiddleware]],
-            ['GET',  '/comments/@id',         [CommentsAdminController::class, 'show'],             [$authMiddleware]],
-            ['POST', '/comments/@id/approve', [CommentsAdminController::class, 'approve'],          [$authMiddleware]],
-            ['POST', '/comments/@id/reject',  [CommentsAdminController::class, 'reject'],           [$authMiddleware]],
-            ['POST', '/comments/@id/delete',  [CommentsAdminController::class, 'delete'],           [$authMiddleware]],
+            ['GET',  $prefix,                  [CommentsAdminController::class, 'index'],            [$authMiddleware]],
+            ['GET',  $prefix . '/settings',    [CommentsAdminController::class, 'settingsIndex'],    [$authMiddleware]],
+            ['POST', $prefix . '/settings',    [CommentsAdminController::class, 'settingsSave'],     [$authMiddleware]],
+            ['GET',  $prefix . '/@id',         [CommentsAdminController::class, 'show'],             [$authMiddleware]],
+            ['POST', $prefix . '/@id/approve', [CommentsAdminController::class, 'approve'],          [$authMiddleware]],
+            ['POST', $prefix . '/@id/reject',  [CommentsAdminController::class, 'reject'],           [$authMiddleware]],
+            ['POST', $prefix . '/@id/delete',  [CommentsAdminController::class, 'delete'],           [$authMiddleware]],
         ], 'pubvana.comments');
 
         // ─── Public Routes ─────────────────────────────────────────────
-
-        $prefix = $app->pluginLoader()->routePrefix('pubvana/comments');
 
         $adext->addRoutes('public', [
             ['GET',  $prefix . '/@type/@id', [CommentsPublicController::class, 'index'], []],
@@ -68,7 +68,7 @@ class Plugin implements PluginInterface
         $adext->register('admin.dashboard', 'cards', 'pubvana.comments', [
             'label'    => 'Comments',
             'priority' => 30,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $pending = $app->comments()->countByStatus('pending');
                 return [[
                     'id'          => 'pending-comments',
@@ -77,7 +77,7 @@ class Plugin implements PluginInterface
                     'icon'        => 'ti-message-circle',
                     'tone'        => $pending > 0 ? 'warning' : 'secondary',
                     'group'       => 'content',
-                    'href'        => '/comments?status=pending',
+                    'href'        => $prefix . '?status=pending',
                     'description' => $pending > 0
                         ? 'Comments waiting for moderation.'
                         : 'No comments are waiting for review.',
@@ -88,7 +88,7 @@ class Plugin implements PluginInterface
         $adext->register('admin.dashboard', 'sections', 'pubvana.comments', [
             'label'    => 'Comments',
             'priority' => 10,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $pending = $app->comments()->list(1, 5, 'pending');
                 $items = [];
 
@@ -101,7 +101,7 @@ class Plugin implements PluginInterface
                     $items[] = [
                         'label'    => $author . ' on ' . $label,
                         'meta'     => $comment->created_at && $ts !== false ? date('M j, Y g:ia', $ts) : '',
-                        'href'     => '/comments/' . (int) $comment->id,
+                        'href'     => $prefix . '/' . (int) $comment->id,
                         'emphasis' => 'warning',
                     ];
                 }
@@ -113,7 +113,7 @@ class Plugin implements PluginInterface
                     'icon'        => 'ti-message-2-exclamation',
                     'tone'        => 'warning',
                     'group'       => 'content',
-                    'href'        => '/comments?status=pending',
+                    'href'        => $prefix . '?status=pending',
                     'empty_state' => 'No comments are waiting for review.',
                     'items'       => $items,
                 ]];

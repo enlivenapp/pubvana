@@ -72,7 +72,7 @@ class ProfilesPublicController extends PublicController
         }
         if ((int) ($this->app->auth()->user()?->id) !== (int) $user->id) {
             $this->app->session()->flash('danger', 'You can only edit your own profile.');
-            $this->app->redirect('/profile/' . $username);
+            $this->app->redirect('/' . $this->getRoutePrepend() . '/' . $username);
             return;
         }
 
@@ -81,7 +81,7 @@ class ProfilesPublicController extends PublicController
 
         $this->app->profiles()->updateProfile((int) $user->id, $post);
 
-        $this->app->redirect('/profile/' . $username);
+        $this->app->redirect('/' . $this->getRoutePrepend() . '/' . $username);
     }
 
     protected function findUserByUsername(string $username): ?User

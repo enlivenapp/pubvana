@@ -1,21 +1,24 @@
 # Local project instructions / working docs (not published)
 /AGENTS.md
 /PLAN.md
-/docs/*
+/build_docs/*
 
 # Plans yet to be implemented
 PLAN-multi-language.md
 
-
 # Composer
 /vendor/
 
+# Local working files
+/temp/*
 
-# Pubvana's store
+# Pubvana-only plugins
 /plugins/Pvstore/*
+/plugins/Docs/*
 
 #Pubvana's official theme
 /themes/official/*
+
 # testing
 .phpunit.cache/
 

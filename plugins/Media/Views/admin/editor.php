@@ -3,6 +3,7 @@
  * Image editor — admin page.
  *
  * @var string                       $pageTitle
+ * @var string                       $adminBase
  * @var \Pubvana\Plugins\Media\Models\Media $media
  * @var array{width: int, height: int, mime: string} $info
  * @var string[]                     $capabilities
@@ -21,7 +22,7 @@ $btn = fn(string $cap): string => $has($cap) ? '' : ' disabled';
 ?>
 
 <div class="mb-3">
-    <a href="/admin/media" class="btn btn-outline-secondary btn-sm">
+    <a href="<?= $adminBase ?>" class="btn btn-outline-secondary btn-sm">
         <i class="ti ti-arrow-left"></i> Back to Library
     </a>
 </div>
@@ -220,6 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!container) return;
 
     var csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    var adminBase = '<?= $adminBase ?>';
     var mediaId   = parseInt(container.dataset.mediaId, 10);
     var imageEl   = document.getElementById('editor-image');
     var mediaPath = container.dataset.mediaPath;
@@ -281,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fd.append('params', JSON.stringify(params));
         fd.append('_csrf_token', csrfToken);
 
-        return fetch('/admin/media/' + mediaId + '/edit', { method: 'POST', body: fd })
+        return fetch(adminBase + '/' + mediaId + '/edit', { method: 'POST', body: fd })
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 setBusy(false);
@@ -342,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var fd = new FormData();
         fd.append('_csrf_token', csrfToken);
 
-        fetch('/admin/media/' + mediaId + '/revert', { method: 'POST', body: fd })
+        fetch(adminBase + '/' + mediaId + '/revert', { method: 'POST', body: fd })
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 setBusy(false);

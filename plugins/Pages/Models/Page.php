@@ -193,10 +193,11 @@ class Page extends \Pubvana\Models\AbstractModel
      * Supplies normalized content matches for the Search plugin. Ranking is
      * owned by SearchService — this method only finds matching content.
      *
-     * @param string $term Raw search term
+     * @param string $term       Raw search term
+     * @param string $urlPrefix  Public route prefix for result URLs
      * @return list<array<string, mixed>>
      */
-    public function searchContent(string $term): array
+    public function searchContent(string $term, string $urlPrefix): array
     {
         $pages = (new self($this->getDatabaseConnection()))
             ->startWrap()
@@ -223,7 +224,7 @@ class Page extends \Pubvana\Models\AbstractModel
             $results[] = [
                 'id'           => (int) $page->id,
                 'title'        => (string) $page->title,
-                'url'          => '/page/' . $page->slug,
+                'url'          => $urlPrefix . '/' . $page->slug,
                 'excerpt'      => $excerpt,
                 'content_type' => 'Page',
                 'published_at' => $page->created_at,

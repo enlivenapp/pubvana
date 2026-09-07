@@ -5,6 +5,7 @@
  * @var string $inputName    Form input name
  * @var string $currentValue Current image path
  * @var string $pickerId     Unique ID for this picker instance
+ * @var string $adminBase    Admin URL base for this plugin's admin routes
  */
 $hasImage = !empty($currentValue);
 $previewSrc = $hasImage ? '/' . ltrim($currentValue, '/') : '';
@@ -50,6 +51,7 @@ $previewSrc = $hasImage ? '/' . ltrim($currentValue, '/') : '';
     var zone     = document.getElementById('<?= $pickerId ?>-zone');
     var fileInput = zone.querySelector('input[type="file"]');
     var csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    var adminBase = '<?= $adminBase ?>';
 
     zone.addEventListener('click', function(e) {
         if (e.target.closest('input')) return;
@@ -76,7 +78,7 @@ $previewSrc = $hasImage ? '/' . ltrim($currentValue, '/') : '';
         var fd = new FormData();
         fd.append('file', file);
         fd.append('_csrf_token', csrfToken);
-        fetch('/admin/media/upload/image', { method: 'POST', body: fd })
+        fetch(adminBase + '/upload/image', { method: 'POST', body: fd })
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 if (data.error) { alert(data.error); return; }

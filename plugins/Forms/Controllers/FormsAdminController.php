@@ -8,6 +8,11 @@ use Pubvana\Controllers\Admin\AdminController;
 
 class FormsAdminController extends AdminController
 {
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/forms'), '/');
+    }
+
     public function index(): void
     {
         $request = $this->app->request();
@@ -16,6 +21,7 @@ class FormsAdminController extends AdminController
 
         $this->render('pubvana/forms/admin/index', [
             'pageTitle' => 'Forms',
+            'adminBase' => $this->adminBase(),
             'forms'     => $result['items'],
             'total'     => $result['total'],
             'page'      => $result['page'],
@@ -27,6 +33,7 @@ class FormsAdminController extends AdminController
     {
         $this->render('pubvana/forms/admin/create', [
             'pageTitle'  => 'New Form',
+            'adminBase'  => $this->adminBase(),
             'fieldsJson' => json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
         ]);
     }
@@ -40,13 +47,13 @@ class FormsAdminController extends AdminController
 
         if ($slug === '') {
             $this->app->session()->flash('error', 'A slug is required.');
-            $this->app->redirect('/admin/forms/create');
+            $this->app->redirect($this->adminBase() . '/create');
             return;
         }
 
         if ($this->app->forms()->slugExists($slug)) {
             $this->app->session()->flash('error', 'A form with that slug already exists.');
-            $this->app->redirect('/admin/forms/create');
+            $this->app->redirect($this->adminBase() . '/create');
             return;
         }
 
@@ -62,7 +69,7 @@ class FormsAdminController extends AdminController
         ]);
 
         $this->app->session()->flash('success', 'Form created.');
-        $this->app->redirect('/admin/forms');
+        $this->app->redirect($this->adminBase());
     }
 
     public function edit(string $id): void
@@ -71,12 +78,13 @@ class FormsAdminController extends AdminController
 
         if ($form === null) {
             $this->app->session()->flash('error', 'Form not found.');
-            $this->app->redirect('/admin/forms');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
         $this->render('pubvana/forms/admin/edit', [
             'pageTitle'  => 'Edit Form',
+            'adminBase'  => $this->adminBase(),
             'form'       => $form,
             'fieldsJson' => json_encode($this->app->forms()->getFieldDefinitions((int) $form->id), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
         ]);
@@ -90,7 +98,7 @@ class FormsAdminController extends AdminController
         $form = $this->app->forms()->findForm((int) $id);
         if ($form === null) {
             $this->app->session()->flash('error', 'Form not found.');
-            $this->app->redirect('/admin/forms');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
@@ -105,7 +113,7 @@ class FormsAdminController extends AdminController
         ]);
 
         $this->app->session()->flash('success', 'Form updated.');
-        $this->app->redirect('/admin/forms/' . $id . '/edit');
+        $this->app->redirect($this->adminBase() . '/' . $id . '/edit');
     }
 
     public function delete(string $id): void
@@ -115,6 +123,6 @@ class FormsAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'Form not found.');
         }
-        $this->app->redirect('/admin/forms');
+        $this->app->redirect($this->adminBase());
     }
 }

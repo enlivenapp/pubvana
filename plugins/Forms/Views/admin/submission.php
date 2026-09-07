@@ -2,6 +2,7 @@
 /**
  * @var \Pubvana\Plugins\Forms\Models\FormSubmission $submission
  * @var \Pubvana\Plugins\Forms\Models\Form|null $form
+ * @var string $adminBase
  * @var array $payload
  */
 ?>
@@ -9,9 +10,9 @@
 <div class="d-flex align-items-center justify-content-end mb-4">
     <div class="btn-list">
         <?php if ($form !== null): ?>
-            <a href="/admin/forms/<?= (int) $form->id ?>/submissions" class="btn btn-outline-secondary">Back to Form Submissions</a>
+            <a href="<?= $adminBase ?>/<?= (int) $form->id ?>/submissions" class="btn btn-outline-secondary">Back to Form Submissions</a>
         <?php endif; ?>
-        <a href="/admin/forms/submissions" class="btn btn-outline-secondary">All Submissions</a>
+        <a href="<?= $adminBase ?>/submissions" class="btn btn-outline-secondary">All Submissions</a>
     </div>
 </div>
 

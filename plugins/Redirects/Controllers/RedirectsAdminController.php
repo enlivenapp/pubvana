@@ -19,6 +19,7 @@ class RedirectsAdminController extends AdminController
         $this->render('pubvana/redirects/admin/index', [
             'pageTitle' => 'Redirects',
             'redirects' => $this->app->redirects()->all(),
+            'adminBase' => $this->adminBase(),
         ]);
     }
 
@@ -34,6 +35,7 @@ class RedirectsAdminController extends AdminController
             'prefillSourcePath' => (string) ($request->query->source_path ?? ''),
             'incoming404Id'     => (int) ($request->query->incoming_404_id ?? 0),
             'targetSuggestions' => $this->app->redirects()->getTargetSuggestions(),
+            'adminBase'         => $this->adminBase(),
         ]);
     }
 
@@ -51,7 +53,7 @@ class RedirectsAdminController extends AdminController
         }
 
         $this->app->session()->flash('success', 'Redirect created.');
-        $this->app->redirect('/admin/redirects');
+        $this->app->redirect($this->adminBase());
     }
 
     /**
@@ -62,7 +64,7 @@ class RedirectsAdminController extends AdminController
         $redirect = $this->app->redirects()->find((int) $id);
         if ($redirect === null) {
             $this->app->session()->flash('error', 'Redirect not found.');
-            $this->app->redirect('/admin/redirects');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
@@ -70,6 +72,7 @@ class RedirectsAdminController extends AdminController
             'pageTitle'         => 'Edit Redirect',
             'redirect'          => $redirect,
             'targetSuggestions' => $this->app->redirects()->getTargetSuggestions(),
+            'adminBase'         => $this->adminBase(),
         ]);
     }
 
@@ -83,12 +86,12 @@ class RedirectsAdminController extends AdminController
 
         if ($this->app->redirects()->update((int) $id, $post) === null) {
             $this->app->session()->flash('error', 'Redirect not found.');
-            $this->app->redirect('/admin/redirects');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
         $this->app->session()->flash('success', 'Redirect updated.');
-        $this->app->redirect('/admin/redirects/' . $id . '/edit');
+        $this->app->redirect($this->adminBase() . '/' . $id . '/edit');
     }
 
     /**
@@ -101,6 +104,15 @@ class RedirectsAdminController extends AdminController
         } else {
             $this->app->session()->flash('error', 'Redirect not found.');
         }
-        $this->app->redirect('/admin/redirects');
+        $this->app->redirect($this->adminBase());
+    }
+
+    /**
+     * Full admin URL base for this plugin (adext prepends '/admin' to the
+     * registered route path).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/redirects'), '/');
     }
 }

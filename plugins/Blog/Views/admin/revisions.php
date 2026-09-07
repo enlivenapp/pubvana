@@ -3,13 +3,14 @@
  * Post revision history - admin page.
  *
  * @var string                                       $pageTitle
+ * @var string                                       $adminBase
  * @var \Pubvana\Plugins\Blog\Models\Post            $post
  * @var \Pubvana\Plugins\Blog\Models\PostRevision[]  $revisions
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/blog/<?= (int) $post->id ?>/edit" class="btn btn-outline-secondary">Back to Edit</a>
+    <a href="<?= $adminBase ?>/<?= (int) $post->id ?>/edit" class="btn btn-outline-secondary">Back to Edit</a>
 </div>
 
 <div class="card">
@@ -42,7 +43,7 @@
                             <td><?= htmlspecialchars($r->created_at) ?></td>
                             <td>
                                 <form method="POST"
-                                      action="/admin/blog/<?= (int) $post->id ?>/restore/<?= (int) $r->id ?>"
+                                      action="<?= $adminBase ?>/<?= (int) $post->id ?>/restore/<?= (int) $r->id ?>"
                                       onsubmit="return confirm('Restore this revision? Current content will be saved as a new revision first.')">
                                     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                     <button class="btn btn-sm btn-outline-primary">Restore</button>

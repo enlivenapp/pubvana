@@ -3,18 +3,19 @@
  * Category create/edit - admin form.
  *
  * @var string                                      $pageTitle
+ * @var string                                      $adminBase
  * @var \Pubvana\Plugins\Blog\Models\Category|null  $category
  * @var \Pubvana\Plugins\Blog\Models\Category[]     $categories
  */
 
 $isEdit = $category !== null;
 $action = $isEdit
-    ? '/admin/blog/categories/' . (int) $category->id . '/update'
-    : '/admin/blog/categories/store';
+    ? $adminBase . '/categories/' . (int) $category->id . '/update'
+    : $adminBase . '/categories/store';
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/blog/categories" class="btn btn-outline-secondary">Back</a>
+    <a href="<?= $adminBase ?>/categories" class="btn btn-outline-secondary">Back</a>
 </div>
 
 <form method="POST" action="<?= $action ?>">

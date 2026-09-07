@@ -73,6 +73,9 @@ class SettingsService
     /** @var bool Whether the boot-time autoload query has run */
     protected bool $autoloadLoaded = false;
 
+    /** @var bool True when the bulk load failed (table missing); keeps per-key fallback reads alive */
+    protected bool $bulkLoadFailed = false;
+
     /**
      * Per-request register of keys confirmed absent from the bulk autoload.
      * Prevents a per-key SELECT on every request for prompts the codebase
@@ -300,7 +303,7 @@ class SettingsService
      */
     public function declaredFields(): array
     {
-        if ($this->fieldDeclarations !== null) {
+        if ($this->fieldDeclarations !== null && $this->fieldDeclarations !== []) {
             return $this->fieldDeclarations;
         }
 
@@ -325,6 +328,8 @@ class SettingsService
             }
         }
 
+        // An empty scan is not memoized (guard above skips empty), so the
+        // rescan repeats until declarations register during boot.
         return $this->fieldDeclarations;
     }
 
@@ -391,25 +396,32 @@ class SettingsService
             return $this->rows[$key];
         }
 
-        try {
-            $found = (new Setting($this->app->db()))->findByKey($key);
-        } catch (\Throwable $e) {
-            // Table can be absent on a fresh install (migrations run later
-            // during plugin loading). Resolve down the chain instead.
-            error_log('SettingsService: unable to read "' . $key . '" (' . $e->getMessage() . ')');
-            return null;
+        // The bulk load snapshots the entire settings table, so a key not
+        // in it has no row. No per-key probe needed. Only when the bulk
+        // query failed (fresh install, table not migrated yet) do we fall
+        // back to the per-key read.
+        if ($this->bulkLoadFailed) {
+            try {
+                $found = (new Setting($this->app->db()))->findByKey($key);
+            } catch (\Throwable $e) {
+                error_log('SettingsService: unable to read "' . $key . '" (' . $e->getMessage() . ')');
+                return null;
+            }
+
+            if ($found === null) {
+                $this->negativeCache[$key] = true;
+                return null;
+            }
+
+            $this->rows[$key] = [
+                'value' => $found->value,
+                'type'  => $found->type,
+            ];
+            return $this->rows[$key];
         }
 
-        if ($found === null) {
-            $this->negativeCache[$key] = true;
-            return null;
-        }
-
-        $this->rows[$key] = [
-            'value' => $found->value,
-            'type'  => $found->type,
-        ];
-        return $this->rows[$key];
+        $this->negativeCache[$key] = true;
+        return null;
     }
 
     /**
@@ -434,6 +446,7 @@ class SettingsService
                 ];
             }
         } catch (\Throwable $e) {
+            $this->bulkLoadFailed = true;
             error_log('SettingsService: unable to load settings (' . $e->getMessage() . ')');
         }
     }

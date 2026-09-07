@@ -14,6 +14,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/profiles');
+        $config['route_prefix'] = $prefix;
+
         $app->map('profiles', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {
@@ -27,13 +30,12 @@ class Plugin implements PluginInterface
 
         // Admin routes
         $adext->addRoutes('admin', [
-            ['GET',  '/profile',              [ProfilesAdminController::class, 'index'],  [$authMiddleware]],
-            ['GET',  '/profile/@userId',      [ProfilesAdminController::class, 'show'],   [$authMiddleware]],
-            ['POST', '/profile/@userId/update', [ProfilesAdminController::class, 'update'], [$authMiddleware]],
+            ['GET',  $prefix,                  [ProfilesAdminController::class, 'index'],  [$authMiddleware]],
+            ['GET',  $prefix . '/@userId',     [ProfilesAdminController::class, 'show'],   [$authMiddleware]],
+            ['POST', $prefix . '/@userId/update', [ProfilesAdminController::class, 'update'], [$authMiddleware]],
         ], 'pubvana.profiles');
 
         // Public routes
-        $prefix = $app->pluginLoader()->routePrefix('pubvana/profiles');
         $adext->addRoutes('public', [
             ['GET',  $prefix . '/@username',       [ProfilesPublicController::class, 'show']],
             ['GET',  $prefix . '/@username/edit',  [ProfilesPublicController::class, 'edit']],

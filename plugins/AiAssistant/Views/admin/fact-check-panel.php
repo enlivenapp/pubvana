@@ -5,6 +5,7 @@
  *
  * @var array<string, mixed> $panel  FactCheckService::panelData() row
  * @var int                  $content_id
+ * @var string               $adminBase admin URL base for this plugin
  */
 
 $state = (string) ($panel['state'] ?? 'unsaved');
@@ -29,7 +30,7 @@ $report = is_array($panel['report'] ?? null) ? $panel['report'] : [];
             <?php if (empty($panel['enabled'])): ?>
                 <p class="text-secondary small mb-0">
                     Fact checking is currently off.
-                    <a href="/admin/ai/fact-checks">Review the terms and switch it on</a> to let your AI
+                    <a href="<?= $adminBase ?>/fact-checks">Review the terms and switch it on</a> to let your AI
                     assistant check this <?= ($panel['content_type'] ?? '') === 'page' ? 'page' : 'post' ?>.
                 </p>
             <?php else: ?>
@@ -62,7 +63,7 @@ $report = is_array($panel['report'] ?? null) ? $panel['report'] : [];
                     &middot; prompt v<?= htmlspecialchars((string) ($report['prompt_version'] ?? '')) ?>
                     <?php if (!empty($report['stale'])): ?> &middot; content edited since<?php endif; ?>
                 </span>
-                <a class="btn btn-sm btn-outline-primary" href="/admin/ai/fact-checks/<?= (int) ($report['id'] ?? 0) ?>">Full report</a>
+                <a class="btn btn-sm btn-outline-primary" href="<?= $adminBase ?>/fact-checks/<?= (int) ($report['id'] ?? 0) ?>">Full report</a>
             </div>
         <?php endif; ?>
     </div>

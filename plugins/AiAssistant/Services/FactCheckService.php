@@ -320,12 +320,12 @@ class FactCheckService
         $prompt = $this->currentPrompt();
         $attested = trim((string) ($payload['prompt_version'] ?? ''));
         if ($attested === '') {
-            return $fail(422, 'prompt_version is required. Fetch GET /ai/fact-check/prompt first.');
+            return $fail(422, 'prompt_version is required. Fetch GET ' . $this->apiBase() . '/fact-check/prompt first.');
         }
         if ($attested !== $prompt['version']) {
             return $fail(
                 409,
-                "prompt_version '{$attested}' is not current. Re-fetch GET /ai/fact-check/prompt and run the check under the returned terms."
+                "prompt_version '{$attested}' is not current. Re-fetch GET " . $this->apiBase() . '/fact-check/prompt and run the check under the returned terms.'
             );
         }
 
@@ -813,6 +813,19 @@ class FactCheckService
      */
     public function detectCurrentContent(): ?array
     {
+        // Prefer the SEO context the page render already resolved; it is
+        // set by PublicController before templates (and blocks) render, so
+        // this avoids re-finding the same post or page by slug.
+        try {
+            $context = $this->app->seo()->getContext();
+            $type = (string) ($context['content_type'] ?? '');
+            $id = (int) ($context['content_id'] ?? 0);
+            if (($type === 'post' || $type === 'page') && $id > 0) {
+                return ['content_type' => $type, 'content_id' => $id];
+            }
+        } catch (\Throwable) {
+        }
+
         $url = $this->app->request()->url ?? ($_SERVER['REQUEST_URI'] ?? '/');
         $path = (string) parse_url((string) $url, PHP_URL_PATH);
         $path = trim($path, '/');
@@ -858,6 +871,14 @@ class FactCheckService
             $prefix = $fallback;
         }
         return $prefix;
+    }
+
+    /**
+     * URL prefix for the public API, from the plugin config.
+     */
+    private function apiBase(): string
+    {
+        return rtrim((string) ($this->config['route_prefix'] ?? ''), '/');
     }
 
     protected function now(): string

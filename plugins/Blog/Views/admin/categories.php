@@ -3,12 +3,13 @@
  * Category listing - admin page.
  *
  * @var string                                       $pageTitle
+ * @var string                                       $adminBase
  * @var \Pubvana\Plugins\Blog\Models\Category[]      $categories
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/blog/categories/create" class="btn btn-primary">
+    <a href="<?= $adminBase ?>/categories/create" class="btn btn-primary">
         <i class="ti ti-plus me-1"></i> New Category
     </a>
 </div>
@@ -40,7 +41,7 @@
                     <?php foreach ($categories as $cat): ?>
                         <tr>
                             <td>
-                                <a href="/admin/blog/categories/<?= (int) $cat->id ?>/edit">
+                                <a href="<?= $adminBase ?>/categories/<?= (int) $cat->id ?>/edit">
                                     <?= htmlspecialchars($cat->name) ?>
                                 </a>
                             </td>
@@ -55,8 +56,8 @@
                             <td><?= htmlspecialchars($cat->description ?? '') ?></td>
                             <td>
                                 <div class="btn-list flex-nowrap">
-                                    <a href="/admin/blog/categories/<?= (int) $cat->id ?>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <form method="POST" action="/admin/blog/categories/<?= (int) $cat->id ?>/delete"
+                                    <a href="<?= $adminBase ?>/categories/<?= (int) $cat->id ?>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <form method="POST" action="<?= $adminBase ?>/categories/<?= (int) $cat->id ?>/delete"
                                           class="d-inline" onsubmit="return confirm('Delete this category?')">
                                         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                         <button class="btn btn-sm btn-outline-danger">Delete</button>

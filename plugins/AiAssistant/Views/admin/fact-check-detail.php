@@ -3,6 +3,7 @@
  * One fact-check report in full.
  *
  * @var string $pageTitle
+ * @var string $adminBase admin URL base for this plugin
  * @var array<string, mixed> $report serializeReport() row
  */
 
@@ -12,10 +13,10 @@ $contentUrl = '/' . trim((string) $prefix, '/') . '/';
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <a href="/admin/ai/fact-checks" class="btn btn-outline-secondary">
+    <a href="<?= $adminBase ?>/fact-checks" class="btn btn-outline-secondary">
         <i class="ti ti-arrow-left me-1"></i> All reports
     </a>
-    <form method="POST" action="/admin/ai/fact-checks/<?= (int) $report['id'] ?>/delete"
+    <form method="POST" action="<?= $adminBase ?>/fact-checks/<?= (int) $report['id'] ?>/delete"
           onsubmit="return confirm('Delete this fact-check report?')">
         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
         <button class="btn btn-outline-danger"><i class="ti ti-trash me-1"></i> Delete report</button>

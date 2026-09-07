@@ -23,7 +23,17 @@ class BrokenLinksAdminController extends AdminController
             'grouped'        => $this->app->brokenLinks()->all($showDismissed),
             'total'          => $this->app->brokenLinks()->countBroken(),
             'showDismissed'  => $showDismissed,
+            'adminBase'      => $this->adminBase(),
         ]);
+    }
+
+    /**
+     * Full admin URL base for this plugin (adext prepends '/admin' to the
+     * registered route path).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/brokenlinks'), '/');
     }
 
     /**
@@ -45,7 +55,7 @@ class BrokenLinksAdminController extends AdminController
             )
         );
 
-        $this->app->redirect('/admin/broken-links');
+        $this->app->redirect($this->adminBase());
     }
 
     /**
@@ -57,7 +67,7 @@ class BrokenLinksAdminController extends AdminController
 
         if ($result['error'] === 'Entry not found.') {
             $this->app->session()->flash('error', 'Entry not found.');
-            $this->app->redirect('/admin/broken-links');
+            $this->app->redirect($this->adminBase());
             return;
         }
 
@@ -68,7 +78,7 @@ class BrokenLinksAdminController extends AdminController
             $this->app->session()->flash('error', 'Link is still broken (status: ' . $label . ').');
         }
 
-        $this->app->redirect('/admin/broken-links');
+        $this->app->redirect($this->adminBase());
     }
 
     /**
@@ -82,6 +92,6 @@ class BrokenLinksAdminController extends AdminController
             $this->app->session()->flash('success', 'Entry dismissed permanently.');
         }
 
-        $this->app->redirect('/admin/broken-links');
+        $this->app->redirect($this->adminBase());
     }
 }

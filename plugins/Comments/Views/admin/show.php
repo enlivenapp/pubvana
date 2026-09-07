@@ -4,11 +4,12 @@
  *
  * @var \Pubvana\Plugins\Comments\Models\Comment $comment
  * @var array|null                                 $hostItem
+ * @var string                                     $adminBase
  */
 ?>
 
 <div class="mb-3">
-    <a href="/admin/comments" class="btn btn-outline-secondary">
+    <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">
         <i class="ti ti-arrow-left me-1"></i>Back to Comments
     </a>
 </div>
@@ -84,7 +85,7 @@
                     <?php if ($comment->parent_id): ?>
                         <dt class="col-5">Reply to</dt>
                         <dd class="col-7">
-                            <a href="/admin/comments/<?= (int) $comment->parent_id ?>">Comment #<?= (int) $comment->parent_id ?></a>
+                            <a href="<?= $adminBase ?>/<?= (int) $comment->parent_id ?>">Comment #<?= (int) $comment->parent_id ?></a>
                         </dd>
                     <?php endif; ?>
 
@@ -113,7 +114,7 @@
             <div class="card-body">
                 <div class="d-flex gap-2">
                     <?php if ($comment->status !== 'approved'): ?>
-                        <form method="post" action="/admin/comments/<?= (int) $comment->id ?>/approve">
+                        <form method="post" action="<?= $adminBase ?>/<?= (int) $comment->id ?>/approve">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-outline-success">
                                 <i class="ti ti-check me-1"></i>Approve
@@ -122,7 +123,7 @@
                     <?php endif; ?>
 
                     <?php if ($comment->status !== 'rejected'): ?>
-                        <form method="post" action="/admin/comments/<?= (int) $comment->id ?>/reject">
+                        <form method="post" action="<?= $adminBase ?>/<?= (int) $comment->id ?>/reject">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-outline-warning">
                                 <i class="ti ti-x me-1"></i>Reject
@@ -130,7 +131,7 @@
                         </form>
                     <?php endif; ?>
 
-                    <form method="post" action="/admin/comments/<?= (int) $comment->id ?>/delete" onsubmit="return confirm('Delete this comment permanently?')">
+                    <form method="post" action="<?= $adminBase ?>/<?= (int) $comment->id ?>/delete" onsubmit="return confirm('Delete this comment permanently?')">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-outline-danger">
                             <i class="ti ti-trash me-1"></i>Delete

@@ -35,7 +35,8 @@ class BlogPublicController extends PublicController
         $pageNum = max(1, (int) ($page ?? $this->app->request()->query->page ?? 1));
         $result = $this->app->blog()->listPosts($pageNum, 10, 'published');
 
-        $posts = array_map(fn($post) => $this->formatPost($post), $result['items']);
+        $maps = $this->taxonomyMapsFor($result['items']);
+        $posts = array_map(fn($post) => $this->formatPost($post, $maps['categories'], $maps['tags'], $maps['authors']), $result['items']);
 
         $this->render('home', [
             'posts'      => $posts,
@@ -117,6 +118,17 @@ class BlogPublicController extends PublicController
             'tags'           => $tags,
             'commentable'    => ['type' => 'blog', 'id' => (int) $post->id],
             'allow_comments' => (bool) $post->allow_comments,
+            'seo_context'    => [
+                'content_type' => 'post',
+                'content_id'   => (int) $post->id,
+                'title'        => $post->title,
+                'description'  => $post->excerpt ?? '',
+                'image'        => (string) ($post->featured_image ?? ''),
+                'ai_generated' => !empty($post->ai_generated),
+                'published_at' => $post->published_at,
+                'updated_at'   => $post->updated_at,
+                'og_type'      => 'article',
+            ],
         ];
 
         $this->render('post', $data);
@@ -143,12 +155,14 @@ class BlogPublicController extends PublicController
 
         $page = max(1, (int) ($this->app->request()->query->page ?? 1));
         $result = $this->app->blog()->listPosts($page, 10, 'published');
+
+        $maps = $this->taxonomyMapsFor($result['items']);
         $filtered = [];
 
         foreach ($result['items'] as $post) {
-            $postCatIds = $this->app->blog()->getPostCategoryIds((int) $post->id);
-            if (in_array((int) $category->id, $postCatIds, true)) {
-                $filtered[] = $this->formatPost($post);
+            $catItems = $maps['categories'][(int) $post->id] ?? [];
+            if (in_array((int) $category->id, array_column($catItems, 'id'), true)) {
+                $filtered[] = $this->formatPost($post, $maps['categories'], $maps['tags'], $maps['authors']);
             }
         }
 
@@ -180,12 +194,14 @@ class BlogPublicController extends PublicController
 
         $page = max(1, (int) ($this->app->request()->query->page ?? 1));
         $result = $this->app->blog()->listPosts($page, 10, 'published');
+
+        $maps = $this->taxonomyMapsFor($result['items']);
         $filtered = [];
 
         foreach ($result['items'] as $post) {
-            $postTagNames = $this->app->blog()->getPostTagNames((int) $post->id);
-            if (in_array($tag->name, $postTagNames, true)) {
-                $filtered[] = $this->formatPost($post);
+            $tagItems = $maps['tags'][(int) $post->id] ?? [];
+            if (in_array($tag->name, array_column($tagItems, 'name'), true)) {
+                $filtered[] = $this->formatPost($post, $maps['categories'], $maps['tags'], $maps['authors']);
             }
         }
 
@@ -229,22 +245,62 @@ class BlogPublicController extends PublicController
     /**
      * Format a post record into a template-ready array.
      *
-     * @param Post $post
+     * Listing and archive pages pass prebuilt maps (one batched set of
+     * queries for the whole page); single-content paths omit them and
+     * fall back to per-post lookups.
+     *
+     * @param Post                       $post
+     * @param array<int, mixed>|null     $categoryMap post id => category items
+     * @param array<int, mixed>|null     $tagMap      post id => tag items
+     * @param array<int, mixed>|null     $authorMap   author id => author card
      * @return array<string, mixed>
      */
-    private function formatPost(object $post): array
+    private function formatPost(object $post, ?array $categoryMap = null, ?array $tagMap = null, ?array $authorMap = null): array
     {
+        $prefix = $this->app->pluginLoader()->routePrefix('pubvana/blog');
+
         return [
             'id'             => (int) $post->id,
             'title'          => $post->title,
             'slug'           => $post->slug,
-            'url'            => $this->app->pluginLoader()->routePrefix('pubvana/blog') . '/' . $post->slug,
+            'url'            => $prefix . '/' . $post->slug,
             'excerpt'        => $post->excerpt,
             'featured_image' => $this->publicAssetUrl($post->featured_image),
             'published_at'   => $post->published_at,
-            'author'         => $this->getAuthor($post),
-            'categories'     => $this->getPostCategories((int) $post->id),
-            'tags'           => $this->getPostTags((int) $post->id),
+            'author'         => $authorMap !== null
+                ? ($authorMap[(int) ($post->author_id ?? 0)] ?? null)
+                : $this->getAuthor($post),
+            'categories'     => $categoryMap !== null
+                ? ($categoryMap[(int) $post->id] ?? [])
+                : $this->getPostCategories((int) $post->id, $prefix),
+            'tags'           => $tagMap !== null
+                ? ($tagMap[(int) $post->id] ?? [])
+                : $this->getPostTags((int) $post->id, $prefix),
+        ];
+    }
+
+    /**
+     * Prebuild category, tag, and author maps for a page of posts.
+     *
+     * @param list<Post> $posts
+     * @return array{categories: array<int, list<array<string, mixed>>>, tags: array<int, list<array<string, mixed>>>, authors: array<int, array<string, mixed>|null>}
+     */
+    private function taxonomyMapsFor(array $posts): array
+    {
+        $postIds = array_map(fn($post) => (int) $post->id, $posts);
+        $prefix = $this->app->pluginLoader()->routePrefix('pubvana/blog');
+
+        $authorIds = [];
+        foreach ($posts as $post) {
+            if (!empty($post->author_id)) {
+                $authorIds[] = (int) $post->author_id;
+            }
+        }
+
+        return [
+            'categories' => $this->app->blog()->categoryItemsForPostIds($postIds, $prefix),
+            'tags'       => $this->app->blog()->tagItemsForPostIds($postIds, $prefix),
+            'authors'    => $this->app->blog()->authorItemsForIds($authorIds),
         ];
     }
 
@@ -290,8 +346,9 @@ class BlogPublicController extends PublicController
      *
      * @return array<int, array<string, mixed>>
      */
-    private function getPostCategories(int $postId): array
+    private function getPostCategories(int $postId, ?string $urlPrefix = null): array
     {
+        $prefix = $urlPrefix ?? $this->app->pluginLoader()->routePrefix('pubvana/blog');
         $all = $this->app->blog()->listCategories();
         $ids = $this->app->blog()->getPostCategoryIds($postId);
         $items = [];
@@ -302,7 +359,7 @@ class BlogPublicController extends PublicController
                     'id'   => (int) $category->id,
                     'name' => $category->name,
                     'slug' => $category->slug,
-                    'url'  => $this->app->pluginLoader()->routePrefix('pubvana/blog') . '/category/' . $category->slug,
+                    'url'  => $prefix . '/category/' . $category->slug,
                 ];
             }
         }
@@ -315,8 +372,9 @@ class BlogPublicController extends PublicController
      *
      * @return array<int, array<string, mixed>>
      */
-    private function getPostTags(int $postId): array
+    private function getPostTags(int $postId, ?string $urlPrefix = null): array
     {
+        $prefix = $urlPrefix ?? $this->app->pluginLoader()->routePrefix('pubvana/blog');
         $names = $this->app->blog()->getPostTagNames($postId);
         $all = $this->app->blog()->listTags();
         $items = [];
@@ -326,7 +384,7 @@ class BlogPublicController extends PublicController
                 $items[] = [
                     'name' => $tag->name,
                     'slug' => $tag->slug,
-                    'url'  => $this->app->pluginLoader()->routePrefix('pubvana/blog') . '/tag/' . $tag->slug,
+                    'url'  => $prefix . '/tag/' . $tag->slug,
                 ];
             }
         }

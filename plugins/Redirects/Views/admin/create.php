@@ -6,14 +6,15 @@
  * @var string $prefillSourcePath
  * @var int $incoming404Id
  * @var array $targetSuggestions
+ * @var string $adminBase
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/redirects" class="btn btn-outline-secondary">Back</a>
+    <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">Back</a>
 </div>
 
-<form method="POST" action="/admin/redirects/store">
+<form method="POST" action="<?= $adminBase ?>/store">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
     <input type="hidden" name="incoming_404_id" value="<?= (int) $incoming404Id ?>">
 

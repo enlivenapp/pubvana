@@ -5,6 +5,7 @@
  * @var string $pageTitle
  * @var bool $connected
  * @var array<int, array<string, mixed>> $records
+ * @var string $adminBase
  */
 ?>
 
@@ -14,11 +15,11 @@
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="h3 mb-0">Purchases</h1>
         <div>
-            <form method="POST" action="/admin/marketplace/verify" class="d-inline">
+            <form method="POST" action="<?= $adminBase ?>/verify" class="d-inline">
                 <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                 <button class="btn btn-outline-primary">Verify against pubvanacms.com</button>
             </form>
-            <form method="POST" action="/admin/marketplace/reinstall" class="d-inline">
+            <form method="POST" action="<?= $adminBase ?>/reinstall" class="d-inline">
                 <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                 <button class="btn btn-outline-secondary">Reinstall all</button>
             </form>
@@ -72,7 +73,7 @@
                                 <td><?= htmlspecialchars((string) ($r['installed_version'] ?? '')) ?: '—' ?></td>
                                 <td class="text-end">
                                     <?php if (in_array($r['item_type'] ?? '', ['plugin', 'theme'], true)): ?>
-                                        <form method="POST" action="/admin/marketplace/install" class="d-inline">
+                                        <form method="POST" action="<?= $adminBase ?>/install" class="d-inline">
                                             <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                             <input type="hidden" name="product_id" value="<?= (int) ($r['store_product_id'] ?? 0) ?>">
                                             <input type="hidden" name="item_type" value="<?= htmlspecialchars((string) ($r['item_type'] ?? 'plugin')) ?>">

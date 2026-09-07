@@ -3,6 +3,7 @@
  * Tag listing - admin page.
  *
  * @var string                                 $pageTitle
+ * @var string                                 $adminBase
  * @var \Pubvana\Plugins\Blog\Models\Tag[]     $tags
  */
 ?>
@@ -28,7 +29,7 @@
                             <td><?= htmlspecialchars($tag->name) ?></td>
                             <td><code><?= htmlspecialchars($tag->slug) ?></code></td>
                             <td>
-                                <form method="POST" action="/admin/blog/tags/<?= (int) $tag->id ?>/delete"
+                                <form method="POST" action="<?= $adminBase ?>/tags/<?= (int) $tag->id ?>/delete"
                                       class="d-inline" onsubmit="return confirm('Delete this tag?')">
                                     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                     <button class="btn btn-sm btn-outline-danger">Delete</button>

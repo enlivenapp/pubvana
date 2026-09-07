@@ -48,6 +48,16 @@ class ActivityLogAdminController extends AdminController
             'perPage'      => $perPage,
             'total'        => $total,
             'totalPages'   => $totalPages,
+            'adminBase'    => $this->adminBase(),
         ]);
+    }
+
+    /**
+     * Full admin URL base for this plugin (adext prepends '/admin' to the
+     * registered route path).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/activity-log'), '/');
     }
 }

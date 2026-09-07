@@ -66,6 +66,9 @@ abstract class PublicController
         // SEO integration: when the SEO plugin is enabled, it owns the full
         // head output (title, meta, canonical, structured data). Guarded so a
         // disabled plugin leaves untouched the simple title fallback below.
+        // A controller that already loaded the content passes its SEO context
+        // via $data['seo_context']; detectContent() then never re-queries the
+        // same post/page the controller already fetched.
         $seo = null;
         try {
             $seo = $this->app->seo();
@@ -73,7 +76,12 @@ abstract class PublicController
         }
 
         if ($seo !== null) {
-            $seo->detectContent();
+            $seoContext = $data['seo_context'] ?? null;
+            if (is_array($seoContext)) {
+                $seo->setContext($seoContext);
+            } else {
+                $seo->detectContent();
+            }
             $context = $seo->getContext();
             if (empty($context['title'])) {
                 $context['title'] = $pageTitle;

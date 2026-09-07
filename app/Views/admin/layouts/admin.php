@@ -179,6 +179,41 @@
                             </div>
                         </li>
 
+                        <!-- Plugins -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                               data-bs-auto-close="outside" role="button" aria-expanded="false">
+                                <span class="nav-link-icon"><i class="ti ti-plug"></i></span>
+                                <span class="nav-link-title">Plugins</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <?php if (!empty($menuSlots['plugins'])): ?>
+                                    <?php foreach ($menuSlots['plugins'] as $item): ?>
+                                        <?php if (!empty($item['submenu'])): ?>
+                                            <div class="dropend">
+                                                <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                                                    <i class="ti <?= htmlspecialchars($item['icon'] ?? 'ti-point') ?> me-2"></i><?= htmlspecialchars($item['label']) ?>
+                                                </a>
+                                                <div class="dropdown-menu">
+                                                    <?php foreach ($item['submenu'] as $sub): ?>
+                                                        <a class="dropdown-item" href="<?= htmlspecialchars($sub['url']) ?>">
+                                                            <i class="ti <?= htmlspecialchars($sub['icon'] ?? 'ti-point') ?> me-2"></i><?= htmlspecialchars($sub['label']) ?>
+                                                        </a>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
+                                        <?php else: ?>
+                                            <a class="dropdown-item" href="<?= htmlspecialchars($item['url']) ?>">
+                                                <i class="ti <?= htmlspecialchars($item['icon'] ?? 'ti-point') ?> me-2"></i><?= htmlspecialchars($item['label']) ?>
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <span class="dropdown-header">No plugins installed</span>
+                                <?php endif; ?>
+                            </div>
+                        </li>
+
                         <!-- Tools -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"

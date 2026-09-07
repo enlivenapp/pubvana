@@ -10,7 +10,7 @@
                 "pages": {
                     "label": "Pages",
                     "icon": "ti-file",
-                    "url": "/pages",
+                    "url": "/page",
                     "priority": 20
                 }
             }

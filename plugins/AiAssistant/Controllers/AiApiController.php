@@ -34,6 +34,7 @@ class AiApiController extends PublicController
 
     public function help(): void
     {
+        $helpPath = '/' . $this->getRoutePrepend() . '/help';
         $token = $this->bearerToken();
         if ($token === null) {
             // No key sent: the guide is where new clients start, so the
@@ -48,7 +49,7 @@ class AiApiController extends PublicController
                     'next'    => [
                         'Have a site admin create an API key under Tools > AI Assistant.',
                         'Ask the admin to tick the permissions the assistant is allowed to use.',
-                        'Then call GET /ai/help again with the key to receive the full guide.',
+                        'Then call GET ' . $helpPath . ' again with the key to receive the full guide.',
                     ],
                 ]],
             ], 401);
@@ -83,7 +84,7 @@ class AiApiController extends PublicController
         $catalog = $this->app->ai()->helpCatalog();
         if (!isset($catalog[$permission])) {
             $this->log($key, 'error', null, null, "Unknown permission '{$permission}'.");
-            $this->fail(404, "Unknown permission '{$permission}'. See GET /ai/help for the catalog.");
+            $this->fail(404, "Unknown permission '{$permission}'. See GET /" . $this->getRoutePrepend() . '/help for the catalog.');
         }
 
         $entry = $catalog[$permission];
@@ -443,7 +444,7 @@ class AiApiController extends PublicController
         $this->log($key, 'ok', 'page', (int) $page->id, "Created page #{$page->id}.");
         $this->ok([
             'page' => $this->app->ai()->serializePage($page),
-            'url'  => '/page/' . $page->slug,
+            'url'  => $this->app->pluginLoader()->routePrefix('pubvana/pages') . '/' . $page->slug,
             'id'   => (int) $page->id,
         ]);
     }

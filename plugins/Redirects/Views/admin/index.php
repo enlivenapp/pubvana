@@ -4,11 +4,12 @@
  *
  * @var string $pageTitle
  * @var \Pubvana\Plugins\Redirects\Models\Redirect[] $redirects
+ * @var string $adminBase
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/redirects/create" class="btn btn-primary">
+    <a href="<?= $adminBase ?>/create" class="btn btn-primary">
         <i class="ti ti-plus me-1"></i> New Redirect
     </a>
 </div>
@@ -36,7 +37,7 @@
                         <tr>
                             <td><code><?= htmlspecialchars($redirect->source_path) ?></code></td>
                             <td class="text-break">
-                                <a href="/admin/redirects/<?= (int) $redirect->id ?>/edit">
+                                <a href="<?= $adminBase ?>/<?= (int) $redirect->id ?>/edit">
                                     <?= htmlspecialchars($redirect->target_url) ?>
                                 </a>
                                 <?php if (!empty($redirect->notes)): ?>
@@ -58,8 +59,8 @@
                             <td><?= (int) $redirect->hit_count ?></td>
                             <td>
                                 <div class="btn-list flex-nowrap">
-                                    <a href="/admin/redirects/<?= (int) $redirect->id ?>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <form method="POST" action="/admin/redirects/<?= (int) $redirect->id ?>/delete"
+                                    <a href="<?= $adminBase ?>/<?= (int) $redirect->id ?>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <form method="POST" action="<?= $adminBase ?>/<?= (int) $redirect->id ?>/delete"
                                           class="d-inline" onsubmit="return confirm('Delete this redirect?')">
                                         <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                         <button class="btn btn-sm btn-outline-danger">Delete</button>

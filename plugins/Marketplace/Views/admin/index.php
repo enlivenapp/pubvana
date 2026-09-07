@@ -7,6 +7,7 @@
  * @var string $accountEmail
  * @var array<int, array<string, mixed>> $categories
  * @var array<int, array<string, mixed>> $items
+ * @var string $adminBase
  */
 ?>
 
@@ -28,7 +29,7 @@
                 domain. No payment takes place on this site; checkout happens on
                 pubvanacms.com in a new tab.
             </p>
-            <form method="POST" action="/admin/marketplace/connect" class="row g-2">
+            <form method="POST" action="<?= $adminBase ?>/connect" class="row g-2">
                 <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                 <div class="col-auto">
                     <input type="email" name="email" class="form-control" placeholder="you@example.com" required autofocus>
@@ -49,8 +50,8 @@
             </div>
         </div>
         <div>
-            <a href="/admin/marketplace/purchases" class="btn btn-outline-primary">Purchases</a>
-            <form method="POST" action="/admin/marketplace/disconnect" class="d-inline">
+            <a href="<?= $adminBase ?>/purchases" class="btn btn-outline-primary">Purchases</a>
+            <form method="POST" action="<?= $adminBase ?>/disconnect" class="d-inline">
                 <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                 <button class="btn btn-ghost-secondary">Disconnect</button>
             </form>
@@ -88,7 +89,7 @@
         </div>
 
         <div class="mt-4">
-            <a href="/admin/marketplace/cart-open" target="_blank" class="btn btn-lg btn-success w-100">
+            <a href="<?= $adminBase ?>/cart-open" target="_blank" class="btn btn-lg btn-success w-100">
                 Purchase on pubvanacms.com
             </a>
             <p class="text-secondary small text-center mt-2 mb-0">
@@ -110,7 +111,7 @@
                 fd.append('product_id', id);
                 fd.append('currency', 'USD');
                 fd.append('_csrf_token', '<?= csrf_token() ?>');
-                fetch('/admin/marketplace/cart-add', {
+                fetch('<?= $adminBase ?>/cart-add', {
                     method: 'POST',
                     body: fd,
                     headers: { 'Accept': 'application/json' }

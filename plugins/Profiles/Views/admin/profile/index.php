@@ -2,8 +2,10 @@
 /**
  * Self-service profile page for the current admin user.
  *
- * @var object $profile  Profile entity
- * @var object $user     Authenticated user entity
+ * @var object $profile    Profile entity
+ * @var object $user       Authenticated user entity
+ * @var string $returnUrl
+ * @var string $adminBase
  */
 ?>
 <div class="row row-cards">
@@ -13,7 +15,7 @@
                 <h3 class="card-title">Profile</h3>
             </div>
             <div class="card-body">
-                <form method="post" action="/admin/profile/<?= (int) $user->id ?>/update">
+                <form method="post" action="<?= $adminBase ?>/<?= (int) $user->id ?>/update">
                     <?= csrf_field() ?>
                     <input type="hidden" name="return_url" value="<?= htmlspecialchars($returnUrl) ?>">
 

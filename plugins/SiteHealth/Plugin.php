@@ -22,6 +22,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/sitehealth');
+        $config['route_prefix'] = $prefix;
+
         $app->map('health', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {
@@ -36,8 +39,8 @@ class Plugin implements PluginInterface
         // ─── Admin Routes ──────────────────────────────────────────────
 
         $adext->addRoutes('admin', [
-            ['GET',  '/site-health',       [HealthAdminController::class, 'index'], [$authMiddleware]],
-            ['POST', '/site-health/rerun', [HealthAdminController::class, 'rerun'], [$authMiddleware]],
+            ['GET',  $prefix,              [HealthAdminController::class, 'index'], [$authMiddleware]],
+            ['POST', $prefix . '/rerun',   [HealthAdminController::class, 'rerun'], [$authMiddleware]],
         ], 'pubvana.sitehealth');
 
         // ─── Dashboard ──────────────────────────────────────────────────

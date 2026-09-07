@@ -12,10 +12,11 @@
  * @var string        $captchaSecretKey
  * @var array         $hosts      Comment hosts keyed by contributor key, each with 'label', 'description', 'enabled'
  * @var array<string, array{comments:int, pending:int}> $hostCounts
+ * @var string        $adminBase
  */
 ?>
 
-<form method="POST" action="/admin/comments/settings">
+<form method="POST" action="<?= $adminBase ?>/settings">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
 
     <div class="card mb-3">

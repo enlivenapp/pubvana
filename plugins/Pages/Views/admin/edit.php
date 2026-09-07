@@ -4,18 +4,20 @@
  *
  * @var string $pageTitle
  * @var \Pubvana\Plugins\Pages\Models\Page $editPage
+ * @var string $adminBase
+ * @var string $publicBase
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
-    <a href="/admin/pages" class="btn btn-outline-secondary">Back</a>
-    <a href="/admin/pages/<?= (int) $editPage->id ?>/revisions" class="btn btn-outline-secondary ms-2">Revisions</a>
+    <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">Back</a>
+    <a href="<?= $adminBase ?>/<?= (int) $editPage->id ?>/revisions" class="btn btn-outline-secondary ms-2">Revisions</a>
     <?php if ($editPage->status === 'published'): ?>
-        <a href="/page/<?= htmlspecialchars($editPage->slug) ?>" class="btn btn-outline-success ms-2" target="_blank">View</a>
+        <a href="<?= $publicBase ?>/<?= htmlspecialchars($editPage->slug) ?>" class="btn btn-outline-success ms-2" target="_blank">View</a>
     <?php endif; ?>
 </div>
 
-<form method="POST" action="/admin/pages/<?= (int) $editPage->id ?>/update">
+<form method="POST" action="<?= $adminBase ?>/<?= (int) $editPage->id ?>/update">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
 
     <div class="row">

@@ -2,17 +2,18 @@
 /**
  * @var \Pubvana\Plugins\Forms\Models\Form $form
  * @var string $fieldsJson
+ * @var string $adminBase
  */
 ?>
 
 <div class="d-flex align-items-center justify-content-end mb-4">
     <div class="btn-list">
-        <a href="/admin/forms/<?= (int) $form->id ?>/submissions" class="btn btn-outline-secondary">Submissions</a>
-        <a href="/admin/forms" class="btn btn-outline-secondary">Back</a>
+        <a href="<?= $adminBase ?>/<?= (int) $form->id ?>/submissions" class="btn btn-outline-secondary">Submissions</a>
+        <a href="<?= $adminBase ?>" class="btn btn-outline-secondary">Back</a>
     </div>
 </div>
 
-<form method="POST" action="/admin/forms/<?= (int) $form->id ?>/update">
+<form method="POST" action="<?= $adminBase ?>/<?= (int) $form->id ?>/update">
     <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
 
     <div class="row">

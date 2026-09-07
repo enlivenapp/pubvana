@@ -105,6 +105,21 @@ class Post extends \Pubvana\Models\AbstractModel
             ->findAll();
     }
 
+    /**
+     * Most recent published posts, newest first, no count query.
+     *
+     * @return array<int, Post>
+     */
+    public function publishedRecent(int $limit = 5): array
+    {
+        $query = new self($this->getDatabaseConnection());
+        return $query->eq('status', 'published')
+            ->isNull('deleted_at')
+            ->order('id DESC')
+            ->limit($limit)
+            ->findAll();
+    }
+
     public function countAll(?string $status = null): int
     {
         $query = new self($this->getDatabaseConnection());

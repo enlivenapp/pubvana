@@ -19,7 +19,8 @@ class ProfilesAdminController extends AdminController
             'profile'      => $profile,
             'user'         => $user,
             'avatarPicker' => $avatarPicker,
-            'returnUrl'    => '/admin/profile',
+            'returnUrl'    => $this->adminBase(),
+            'adminBase'    => $this->adminBase(),
         ]);
     }
 
@@ -44,6 +45,7 @@ class ProfilesAdminController extends AdminController
             'user'         => $user,
             'avatarPicker' => $avatarPicker,
             'returnUrl'    => '/admin/users/' . (int) $userId . '/edit',
+            'adminBase'    => $this->adminBase(),
         ]);
     }
 
@@ -57,12 +59,17 @@ class ProfilesAdminController extends AdminController
         }
 
         $post = $this->app->request()->data->getData();
-        $returnUrl = $post['return_url'] ?? '/admin/profile';
+        $returnUrl = $post['return_url'] ?? $this->adminBase();
         unset($post['_csrf_token'], $post['return_url']);
 
         $this->app->profiles()->updateProfile((int) $userId, $post);
 
         $this->app->session()->flash('success', 'Profile updated.');
         $this->app->redirect($returnUrl);
+    }
+
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/profiles'), '/');
     }
 }

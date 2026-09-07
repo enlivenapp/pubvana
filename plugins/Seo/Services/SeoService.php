@@ -499,7 +499,7 @@ class SeoService
         static $metaCache = [];
         $cacheKey = $this->context['content_type'] . ':' . $this->context['content_id'];
 
-        if (!isset($metaCache[$cacheKey])) {
+        if (!array_key_exists($cacheKey, $metaCache)) {
             $metaCache[$cacheKey] = $this->getMeta(
                 $this->context['content_type'],
                 (int) $this->context['content_id']

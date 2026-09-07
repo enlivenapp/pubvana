@@ -82,7 +82,17 @@ final class UpdatesAdminController extends AdminController
             'progress'      => $progress,
             'is_locked'     => $this->isLocked(),
             'changelog_url' => $this->changelogUrl(),
+            'adminBase'     => $this->adminBase(),
         ]);
+    }
+
+    /**
+     * Full admin URL base for this plugin (adext prepends '/admin' to the
+     * registered route path).
+     */
+    private function adminBase(): string
+    {
+        return '/admin' . rtrim((string) $this->app->pluginLoader()->routePrefix('pubvana/updates'), '/');
     }
 
     /**
@@ -108,7 +118,7 @@ final class UpdatesAdminController extends AdminController
             $this->app->session()->flash('danger', 'Check failed: ' . $e->getMessage());
         }
 
-        $this->app->redirect('/admin/updates');
+        $this->app->redirect($this->adminBase());
     }
 
     /**
@@ -226,7 +236,7 @@ final class UpdatesAdminController extends AdminController
             $this->app->session()->flash('danger', 'Invalid version to skip.');
         }
 
-        $this->app->redirect('/admin/updates');
+        $this->app->redirect($this->adminBase());
     }
 
     /**
@@ -247,7 +257,7 @@ final class UpdatesAdminController extends AdminController
             $this->app->session()->flash('success', 'Version ' . $version . ' will be offered again.');
         }
 
-        $this->app->redirect('/admin/updates');
+        $this->app->redirect($this->adminBase());
     }
 
     // ------------------------------------------------------------------

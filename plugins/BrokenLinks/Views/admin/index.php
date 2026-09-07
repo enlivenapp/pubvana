@@ -6,6 +6,7 @@
  * @var array  $grouped
  * @var int    $total
  * @var bool   $showDismissed
+ * @var string $adminBase
  */
 
 $editUrl = function (string $sourceType, int $sourceId): string {
@@ -19,11 +20,11 @@ $editUrl = function (string $sourceType, int $sourceId): string {
     <h1 class="h3 mb-0 text-gray-800"><?= htmlspecialchars($pageTitle) ?></h1>
     <div>
         <?php if ($showDismissed): ?>
-            <a href="/admin/broken-links" class="btn btn-sm btn-outline-secondary me-2">
+            <a href="<?= $adminBase ?>" class="btn btn-sm btn-outline-secondary me-2">
                 <i class="ti ti-eye me-1"></i> Hide Dismissed
             </a>
         <?php else: ?>
-            <a href="/admin/broken-links?dismissed=1" class="btn btn-sm btn-outline-secondary me-2">
+            <a href="<?= $adminBase ?>?dismissed=1" class="btn btn-sm btn-outline-secondary me-2">
                 <i class="ti ti-eye-off me-1"></i> Show Dismissed
             </a>
         <?php endif; ?>
@@ -34,7 +35,7 @@ $editUrl = function (string $sourceType, int $sourceId): string {
 <div class="card shadow mb-4">
     <div class="card-body py-3 d-flex align-items-center justify-content-between flex-wrap">
         <div class="d-flex align-items-center">
-            <form method="POST" action="/admin/broken-links/scan" class="d-inline me-3">
+            <form method="POST" action="<?= $adminBase ?>/scan" class="d-inline me-3">
                 <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                 <button type="submit" class="btn btn-sm btn-primary">
                     <i class="ti ti-search me-1"></i> Run Scan
@@ -115,7 +116,7 @@ $editUrl = function (string $sourceType, int $sourceId): string {
                         </td>
                         <td class="text-end">
                             <form method="POST"
-                                  action="/admin/broken-links/<?= (int) $link->id ?>/recheck"
+                                  action="<?= $adminBase ?>/<?= (int) $link->id ?>/recheck"
                                   class="d-inline">
                                 <input type="hidden" name="_csrf_token"
                                        value="<?= csrf_token() ?>">
@@ -127,7 +128,7 @@ $editUrl = function (string $sourceType, int $sourceId): string {
                             </form>
                             <?php if (!$link->dismissed): ?>
                             <form method="POST"
-                                  action="/admin/broken-links/<?= (int) $link->id ?>/dismiss"
+                                  action="<?= $adminBase ?>/<?= (int) $link->id ?>/dismiss"
                                   class="d-inline ms-1">
                                 <input type="hidden" name="_csrf_token"
                                        value="<?= csrf_token() ?>">

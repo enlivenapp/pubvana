@@ -13,6 +13,9 @@ class Plugin implements PluginInterface
 {
     public function register(Engine $app, Router $router, array $config = []): void
     {
+        $prefix = $app->pluginLoader()->routePrefix('pubvana/media');
+        $config['route_prefix'] = $prefix;
+
         $app->map('media', function () use ($app, $config) {
             static $instance = null;
             if ($instance === null) {
@@ -37,18 +40,18 @@ class Plugin implements PluginInterface
         // ─── Admin Routes ──────────────────────────────────────────────
 
         $adext->addRoutes('admin', [
-            ['GET',  '/media',                  [MediaAdminController::class, 'index'],       [$authMiddleware]],
-            ['GET',  '/media/json',             [MediaAdminController::class, 'json'],        [$authMiddleware]],
-            ['GET',  '/media/capabilities',     [MediaAdminController::class, 'capabilities'],[$authMiddleware]],
-            ['GET',  '/media/@id/editor',       [MediaAdminController::class, 'editor'],      [$authMiddleware]],
-            ['POST', '/media/upload/image',     [MediaAdminController::class, 'uploadImage'], [$authMiddleware]],
-            ['POST', '/media/upload/video',     [MediaAdminController::class, 'uploadVideo'], [$authMiddleware]],
-            ['POST', '/media/embed',            [MediaAdminController::class, 'storeEmbed'],  [$authMiddleware]],
-            ['POST', '/media/@id/poster',       [MediaAdminController::class, 'uploadPoster'],[$authMiddleware]],
-            ['POST', '/media/@id/update',       [MediaAdminController::class, 'update'],      [$authMiddleware]],
-            ['POST', '/media/@id/delete',       [MediaAdminController::class, 'destroy'],     [$authMiddleware]],
-            ['POST', '/media/@id/edit',         [MediaAdminController::class, 'applyEdit'],   [$authMiddleware]],
-            ['POST', '/media/@id/revert',       [MediaAdminController::class, 'revert'],      [$authMiddleware]],
+            ['GET',  $prefix,                       [MediaAdminController::class, 'index'],        [$authMiddleware]],
+            ['GET',  $prefix . '/json',             [MediaAdminController::class, 'json'],         [$authMiddleware]],
+            ['GET',  $prefix . '/capabilities',     [MediaAdminController::class, 'capabilities'], [$authMiddleware]],
+            ['GET',  $prefix . '/@id/editor',       [MediaAdminController::class, 'editor'],       [$authMiddleware]],
+            ['POST', $prefix . '/upload/image',     [MediaAdminController::class, 'uploadImage'],  [$authMiddleware]],
+            ['POST', $prefix . '/upload/video',     [MediaAdminController::class, 'uploadVideo'],  [$authMiddleware]],
+            ['POST', $prefix . '/embed',            [MediaAdminController::class, 'storeEmbed'],   [$authMiddleware]],
+            ['POST', $prefix . '/@id/poster',       [MediaAdminController::class, 'uploadPoster'], [$authMiddleware]],
+            ['POST', $prefix . '/@id/update',       [MediaAdminController::class, 'update'],       [$authMiddleware]],
+            ['POST', $prefix . '/@id/delete',       [MediaAdminController::class, 'destroy'],      [$authMiddleware]],
+            ['POST', $prefix . '/@id/edit',         [MediaAdminController::class, 'applyEdit'],    [$authMiddleware]],
+            ['POST', $prefix . '/@id/revert',       [MediaAdminController::class, 'revert'],       [$authMiddleware]],
         ], 'pubvana.media');
 
         // ─── Dashboard ──────────────────────────────────────────────────
@@ -56,7 +59,7 @@ class Plugin implements PluginInterface
         $adext->register('admin.dashboard', 'cards', 'pubvana.media', [
             'label'    => 'Media',
             'priority' => 40,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $total = $app->media()->countAll();
 
                 return [[
@@ -66,7 +69,7 @@ class Plugin implements PluginInterface
                     'icon'        => 'ti-photo',
                     'tone'        => 'secondary',
                     'group'       => 'media',
-                    'href'        => '/media',
+                    'href'        => $prefix,
                     'description' => 'Assets available in the media library.',
                 ]];
             },
@@ -75,7 +78,7 @@ class Plugin implements PluginInterface
         $adext->register('admin.dashboard', 'sections', 'pubvana.media', [
             'label'    => 'Media',
             'priority' => 50,
-            'callable' => function (array $context) use ($app): array {
+            'callable' => function (array $context) use ($app, $prefix): array {
                 $items = [];
                 foreach ($app->media()->recent(5) as $media) {
                     $format = trim((string) ($media->mime_type ?? '')) ?: ucfirst((string) $media->type);
@@ -104,7 +107,7 @@ class Plugin implements PluginInterface
                     $items[] = [
                         'label'     => $media->title ?: $media->filename,
                         'sub'       => $format . ' · ' . ($ts === false ? '' : date('M j, Y g:ia', $ts)),
-                        'href'      => '/media',
+                        'href'      => $prefix,
                         'thumb'     => $thumb,
                         'thumb_type' => $thumbType,
                     ];
@@ -116,7 +119,7 @@ class Plugin implements PluginInterface
                     'type'        => 'list',
                     'icon'        => 'ti-photo-up',
                     'group'       => 'media',
-                    'href'        => '/media',
+                    'href'        => $prefix,
                     'empty_state' => 'The media library is still empty.',
                     'items'       => $items,
                 ]];
