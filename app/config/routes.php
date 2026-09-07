@@ -19,6 +19,7 @@ use Pubvana\Middleware\SecurityHeadersMiddleware;
 
 use Enlivenapp\FlightCsrf\Middlewares\CsrfMiddleware;
 use Enlivenapp\FlightShield\Middlewares\ForcePasswordResetMiddleware;
+use Enlivenapp\FlightShield\Middlewares\GroupMiddleware;
 use Enlivenapp\FlightShield\Middlewares\RateLimitMiddleware;
 
 $app = $app ?? Flight::app();
@@ -67,18 +68,9 @@ $app->route('GET /assets/@type/@name/@path:.+', function (string $type, string $
 | /admin/pages, /admin/media).
 */
 $app->route('GET /admin', function () use ($app) {
-    // Auth check temporarily disabled for development — see the
-    // Auth Middleware note in core-admin.php for reinstatement.
-    // Shield option once reinstated:
-    //   ->addMiddleware(new PermissionMiddleware($app, 'admin.access'))
-    // $user = $app->auth()->user();
-    // if ($user === null) {
-    //     $app->redirect('/auth/login');
-    //     return;
-    // }
-
     (new \Pubvana\Controllers\Admin\AdminController($app))->index();
-})->addMiddleware(new ForcePasswordResetMiddleware($app));
+})->addMiddleware(new ForcePasswordResetMiddleware($app))
+  ->addMiddleware(new GroupMiddleware($app, 'admin', 'superadmin'));
 
 /*
 |--------------------------------------------------------------------------

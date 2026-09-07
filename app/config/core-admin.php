@@ -30,6 +30,7 @@ use Pubvana\Controllers\Admin\CaptchaAdminController;
 use Pubvana\Controllers\Admin\PluginsController;
 
 use Enlivenapp\FlightShield\Middlewares\ForcePasswordResetMiddleware;
+use Enlivenapp\FlightShield\Middlewares\GroupMiddleware;
 
 /** @var \flight\Engine $app */
 $app = $app ?? Flight::app();
@@ -162,25 +163,18 @@ $adext->register('admin.menu', 'tools', 'pubvana.cms.mail', [
 
 /*
 |--------------------------------------------------------------------------
-| Auth Middleware (Disabled For Development)
+| Auth Middleware
 |--------------------------------------------------------------------------
-| Set to null so admin pages are reachable without a browser session.
+| Blanket group gate on every core admin route: the user must be logged in
+| and belong to the admin or superadmin group.
 |
-| To reinstate protection, swap null for Shield middlewares:
-|
-|   use Enlivenapp\FlightShield\Middlewares\GroupMiddleware;
-|   use Enlivenapp\FlightShield\Middlewares\PermissionMiddleware;
-|
-|   // Blanket group gate on every admin route:
-|   $authMiddleware = new GroupMiddleware($app, 'admin', 'superadmin');
-|
-|   // ...or per-route permission gates matching Shield's seeded perms:
+| For per-route permission gates matching Shield's seeded perms:
 |   ['GET', '/users', [UsersController::class, 'index'],
 |       [new SessionAuthMiddleware($app), new PermissionMiddleware($app, 'users.list')]],
 |
 | adext skips non-object middleware entries, so null placeholders are safe.
 */
-$authMiddleware = null;
+$authMiddleware = new GroupMiddleware($app, 'admin', 'superadmin');
 
 /*
 |--------------------------------------------------------------------------

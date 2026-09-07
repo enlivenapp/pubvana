@@ -6,6 +6,7 @@ namespace Pubvana\Services;
 
 use flight\Engine;
 use flight\net\Router;
+use Enlivenapp\FlightShield\Middlewares\GroupMiddleware;
 use Pubvana\Plugins\Blog\Controllers\BlogPublicController;
 use Pubvana\Plugins\Pages\Controllers\PagesPublicController;
 
@@ -776,6 +777,11 @@ class PluginLoader
     ): void {
         $app = $this->app;
         $middleware = $viewMiddleware !== null ? [$viewMiddleware] : [];
+
+        // Gate every plugin admin route behind an admin/superadmin login.
+        if ($prefix === '/admin') {
+            $middleware[] = new GroupMiddleware($app, 'admin', 'superadmin');
+        }
 
         $this->router->group($prefix, function (Router $router) use ($app, $routesFile, $configPrepend) {
             // require_once: route files register handlers as side effects;
