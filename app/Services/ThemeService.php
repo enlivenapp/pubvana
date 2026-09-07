@@ -24,7 +24,7 @@ class ThemeService
     protected Engine $app;
     protected ?Theme $activeTheme = null;
 
-    /** @var array<int, array<string, string>> Per-request memo of option rows by theme id */
+    /** @var array<int, array<string, string|null>> Per-request memo of option rows by theme id */
     protected array $themeOptionsCache = [];
 
     /** @var array<string, bool> folder => isValid (populated after sync) */

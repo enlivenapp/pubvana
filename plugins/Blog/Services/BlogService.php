@@ -411,8 +411,13 @@ class BlogService
         }
 
         $usersById = [];
-        foreach ((new \Enlivenapp\FlightShield\Models\User($this->pdo))->in('id', $authorIds)->isNull('deleted_at')->findAll() as $user) {
-            $usersById[(int) $user->id] = $user;
+        $placeholders = implode(',', array_fill(0, count($authorIds), '?'));
+        $stmt = $this->pdo->prepare(
+            'SELECT id, username FROM users WHERE id IN (' . $placeholders . ') AND deleted_at IS NULL'
+        );
+        $stmt->execute($authorIds);
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+            $usersById[(int) $row['id']] = (string) $row['username'];
         }
 
         $namesByUserId = [];
@@ -422,13 +427,12 @@ class BlogService
 
         $map = [];
         foreach ($authorIds as $authorId) {
-            $user = $usersById[$authorId] ?? null;
-            if ($user === null) {
+            $username = $usersById[$authorId] ?? null;
+            if ($username === null) {
                 $map[$authorId] = null;
                 continue;
             }
 
-            $username = (string) $user->username;
             $displayName = $namesByUserId[$authorId] ?? '';
             $map[$authorId] = [
                 'id'       => $authorId,

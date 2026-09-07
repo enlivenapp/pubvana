@@ -20,6 +20,16 @@ namespace Pubvana\Plugins\Profiles\Models;
  * @property string|null $updated_at
  *
  * @method self eq(string $field, mixed $value, string $operator = 'AND')
+ * @method self notEq(string $field, mixed $value, string $operator = 'AND')
+ * @method self like(string $field, mixed $value, string $operator = 'AND')
+ * @method self in(string $field, mixed $value, string $operator = 'AND')
+ * @method self isNull(string $field, string $operator = 'AND')
+ * @method self order(string $field)
+ * @method self select(string $field, string ...$fields)
+ * @method self limit(int $limit)
+ * @method self offset(int $offset)
+ * @method self startWrap()
+ * @method self endWrap(string $op)
  */
 class Profile extends \Pubvana\Models\AbstractModel
 {

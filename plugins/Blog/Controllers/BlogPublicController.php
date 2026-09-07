@@ -282,7 +282,7 @@ class BlogPublicController extends PublicController
     /**
      * Prebuild category, tag, and author maps for a page of posts.
      *
-     * @param list<Post> $posts
+     * @param array<int, Post> $posts
      * @return array{categories: array<int, list<array<string, mixed>>>, tags: array<int, list<array<string, mixed>>>, authors: array<int, array<string, mixed>|null>}
      */
     private function taxonomyMapsFor(array $posts): array

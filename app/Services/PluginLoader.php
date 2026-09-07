@@ -891,16 +891,6 @@ class PluginLoader
     }
 
     /**
-     * Run migrations + seeds for FOUNDATION packages, unconditional.
-     *
-     * Foundation packages (enlivenapp/* type flightphp-foundation, pubvana/*
-     * type pubvana-foundation) are the required vendor stack. They run BEFORE
-     * core so the tables core seeds depend on (e.g. Shield's auth_permissions)
-     * exist first. Never gated by plugin_state — they are required by definition.
-     *
-     * @param array<string, array<string, mixed>> $foundation Discovered foundation packages keyed by plugin ID
-     */
-    /**
      * Whether migration and seed checks run on this request.
      *
      * They only run where they can do work:
@@ -925,6 +915,16 @@ class PluginLoader
         return str_starts_with($path, '/admin/');
     }
 
+    /**
+     * Run migrations + seeds for FOUNDATION packages, unconditional.
+     *
+     * Foundation packages (enlivenapp/* type flightphp-foundation, pubvana/*
+     * type pubvana-foundation) are the required vendor stack. They run BEFORE
+     * core so the tables core seeds depend on (e.g. Shield's auth_permissions)
+     * exist first. Never gated by plugin_state — they are required by definition.
+     *
+     * @param array<string, array<string, mixed>> $foundation Discovered foundation packages keyed by plugin ID
+     */
     protected function runFoundationMigrations(array $foundation): void
     {
         if ($foundation === []) {
