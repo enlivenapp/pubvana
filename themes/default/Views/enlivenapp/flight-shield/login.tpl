@@ -39,6 +39,8 @@
     </div>
     {% endif %}
 
+    {% captcha 'login' %}
+
     <button type="submit" class="btn btn-primary auth-submit">Sign In</button>
 </form>
 

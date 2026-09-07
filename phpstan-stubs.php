@@ -95,6 +95,7 @@ namespace flight {
      * @phpstan-method \Pubvana\Services\ContentService content()
      * @phpstan-method \Pubvana\Services\CronService cron()
      * @phpstan-method \Pubvana\Services\AssetService asset()
+     * @phpstan-method \Pubvana\Services\CaptchaService captcha()
      * @phpstan-method \Pubvana\Services\PluginLoader pluginLoader()
      * @phpstan-method \Enlivenapp\FlightSessions\SessionManager session()
      * @phpstan-method \Enlivenapp\FlightShield\Auth auth()
@@ -228,6 +229,14 @@ namespace Pubvana\Services {
     }
 
     class AssetService
+    {
+    }
+
+    class CaptchaService
+    {
+    }
+
+    class CaptchaMiddleware
     {
     }
 

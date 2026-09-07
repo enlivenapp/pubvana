@@ -44,6 +44,14 @@ class Plugin implements PluginInterface
             'priority' => 50,
         ]);
 
+        // Captcha area: the comment form can require a completed captcha
+        // (switched on or off in Settings > Captcha).
+        $adext->register('captcha.area', 'default', 'comments', [
+            'label'       => 'Comment form',
+            'description' => 'Requires a completed captcha before a comment is accepted.',
+            'priority'    => 20,
+        ]);
+
         // ─── Admin Routes ──────────────────────────────────────────────
 
         $adext->addRoutes('admin', [

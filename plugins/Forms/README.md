@@ -47,6 +47,7 @@ Every submission is stored, including the source form (`form_id`), the visitor's
 
 - A hidden honeypot field (`website`): if a bot fills it, the submission is silently dropped and never stored.
 - A per-form session rate limit (default every 10 seconds, `rate_limit_seconds`; `0` disables) between submissions from the same session.
+- Optional captcha: turn on the "Public forms" area under **Settings → Captcha** (hCaptcha or reCAPTCHA v2, configured site-wide). The widget is appended to every published form and the token is verified server-side after the rate limit, before field validation; a rejected captcha is reported like any other validation error.
 - Textarea content is purified with HTMLPurifier when available, otherwise `strip_tags`.
 - `_return_url` is normalized to a same-site path to prevent open redirects.
 

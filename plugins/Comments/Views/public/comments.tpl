@@ -36,9 +36,7 @@
         <input type="email" name="guest_email" placeholder="Email (optional)">
         <input type="text" name="guest_website" placeholder="Website (optional)">
         {% endif %}
-        {% if captcha_provider %}
-        <div class="g-recaptcha" data-sitekey="{{ captcha_site_key }}"></div>
-        {% endif %}
+        {% captcha 'comments' %}
         <button type="submit">Post Comment</button>
     </form>
     {% endif %}

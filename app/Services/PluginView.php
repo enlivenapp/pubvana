@@ -155,6 +155,17 @@ class PluginView extends View
                 return '';
             }
         });
+
+        // Captcha widget for a protected area: prints the provider's div
+        // and script tag, or nothing when that area is not protected.
+        // Usage in a template: {% captcha 'comments' %}
+        $this->visionEngine->tags()->register('captcha', function (string $area) use ($app) {
+            try {
+                return $app->captcha()->snippetFor($area);
+            } catch (\Throwable $e) {
+                return '';
+            }
+        });
     }
 
     /**

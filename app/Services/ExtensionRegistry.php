@@ -82,7 +82,7 @@ class ExtensionRegistry
             // per-field keys: default, options (select), fallback
             // (app-store key), autoload (bool, default true),
             // description.
-            'slots'    => ['general', 'email', 'login_sec'],
+            'slots'    => ['general', 'email', 'login_sec', 'captcha'],
             'required' => ['label', 'fields'],
             'optional' => ['description', 'priority'],
         ],
@@ -300,6 +300,33 @@ class ExtensionRegistry
             'slots'    => ['1m', '4h', '24h'],
             'required' => ['callable'],
             'optional' => ['label', 'priority', 'run_result'],
+        ],
+
+        /*
+        |------------------------------------------------------------------
+        | Captcha Area Type
+        |------------------------------------------------------------------
+        | Plugins (and core) register the areas of the site that can be
+        | protected by captcha. Each area can be switched on or off in
+        | Settings > Captcha; the CaptchaService reads these registrations
+        | to list the switches and to validate the stored list.
+        |
+        | Registration (from a plugin's Plugin.php register()):
+        |   $adext->register('captcha.area', 'default', 'myform', [
+        |       'label'       => 'My form',
+        |       'description' => 'Requires a completed captcha before submission.',
+        |   ]);
+        |
+        | The area key is a short unique token owned by the registering
+        | plugin (e.g. 'comments', 'forms'); core registers 'login' for
+        | the sign-in form. Consumers call CaptchaService::enforcedFor()
+        | with that same token before trusting a submission, and public
+        | templates print the widget with {% captcha 'token' %}.
+        */
+        'captcha.area' => [
+            'slots'    => ['default'],
+            'required' => ['label'],
+            'optional' => ['description', 'priority'],
         ],
 
         /*

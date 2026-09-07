@@ -79,6 +79,14 @@ class Plugin implements PluginInterface
             'priority' => 50,
         ]);
 
+        // Captcha area: public forms can require a completed captcha
+        // (switched on or off in Settings > Captcha).
+        $adext->register('captcha.area', 'default', 'forms', [
+            'label'       => 'Public forms',
+            'description' => 'Requires a completed captcha before a form submission is stored.',
+            'priority'    => 30,
+        ]);
+
         // ─── Block ──────────────────────────────────────────────────────
 
         $adext->register('block', 'available', 'pubvana.forms.form', [

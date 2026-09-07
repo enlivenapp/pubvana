@@ -10,7 +10,7 @@ Forms is a form builder for Pubvana: admins build forms with a JSON field-defini
 - **License:** MIT, matching the main project (repo `composer.json` declares `"license": "MIT"`)
 - **PHP floor:** not declared in the plugin; the main project requires PHP `^8.2` (repo `composer.json`), and the code stays within that floor (`match` at `Services/FormsService.php:308`, `str_starts_with` at `Services/FormsService.php:477`, `mixed` types)
 - **Namespace:** `Pubvana\Plugins\Forms` (`Plugin.php:5`), with `Controllers`, `Services`, `Models`, and `Database\Migrations` sub-namespaces
-- **Runtime dependencies (declared at the app level, not in the plugin):** `flightphp/active-record` (model base), `enlivenapp/migrations` (migration base), `ezyang/htmlpurifier` (optional, guarded by `class_exists` at `Services/FormsService.php:697`), PHPMailer through the core mailer (`$this->app->mailer()->sendHtml()`, `Services/FormsService.php:630`); core engine services used as `$app->forms()`, `db()`, `adext()`, `pluginLoader()`, `request()`, `session()`, `slugify`, `redirect`; core helper `csrf_field()`; config value `flight.base_url`
+- **Runtime dependencies (declared at the app level, not in the plugin):** `flightphp/active-record` (model base), `enlivenapp/migrations` (migration base), `ezyang/htmlpurifier` (optional, guarded by `class_exists` at `Services/FormsService.php:697`), PHPMailer through the core mailer (`$this->app->mailer()->sendHtml()`, `Services/FormsService.php:630`); core engine services used as `$app->forms()`, `db()`, `adext()`, `pluginLoader()`, `request()`, `session()`, `slugify`, `redirect`, `captcha()`; core helper `csrf_field()`; config value `flight.base_url`
 - **Config:** `Config/Config.php`: `routePrepend` (`forms`), `per_page` (25), `submissions_per_page` (25), `rate_limit_seconds` (10)
 - **Docs:** `README.md`
 
@@ -20,7 +20,7 @@ Forms is a form builder for Pubvana: admins build forms with a JSON field-defini
 2. **Field definitions are a delete-then-reinsert sync, never a diff.** `syncFields()` drops all rows for the form and inserts the submitted list in order with `sort_order = index + 1` (`Services/FormsService.php:505-527`). Reason: reordering is how field order is persisted, and the reshuffle is cheaper than tracking per-field changes.
 3. **Render public forms as inline HTML strings, not templates.** `renderPublicForm()` builds the whole `<form>` in PHP, escaping every interpolated value with `htmlspecialchars` (`Services/FormsService.php:219-334`). Reason: form markup must echo the stored field set exactly, and no template layer is involved.
 4. **Never render or accept submissions for non-published forms.** The public submit route, the block provider, and the shortcode resolver all gate on `status === 'published'` (`Controllers/FormsPublicController.php:21`, `Services/FormsService.php:359-376, 535-562`). Reason: drafts are internal artifacts and must stay off the public surface.
-5. **Keep the spam pipeline order unchanged: honeypot, then rate limit, then validation.** A filled honeypot `website` field drops the submission silently and reports success (`Services/FormsService.php:383-386`); the session rate limit fails closed; validation runs per field type with server-side allowed-value checks for `select`/`radio`/`checkbox` (`Services/FormsService.php:388-438`). Reason: bots should not be able to detect the trap, and clients must never be trusted to send clean values.
+5. **Keep the spam pipeline order unchanged: honeypot, then rate limit, then captcha (when the forms area is protected), then validation.** A filled honeypot `website` field drops the submission silently and reports success (`Services/FormsService.php:383-386`); the session rate limit fails closed; captcha delegates to the core CaptchaService (`enforcedFor('forms')` + `verify()`, configured under Settings > Captcha) and reports failure like any validation error; validation runs per field type with server-side allowed-value checks for `select`/`radio`/`checkbox` (`Services/FormsService.php:388-438`). Reason: bots should not be able to detect the trap, and clients must never be trusted to send clean values.
 6. **Sanitize by field type in `sanitizeScalarValue()`.** `textarea` goes through HTMLPurifier (fallback `strip_tags`), `email` through `FILTER_SANITIZE_EMAIL`, everything else is trimmed and `strip_tags`-ed (`Services/FormsService.php:672-693`). Reason: submission payloads are stored raw in JSON and later echoed in the admin; they must arrive clean.
 7. **Never let a mail failure break a submission.** `dispatchNotifications()` swallows every `\Throwable` from the mailer (`Services/FormsService.php:628-634`). Reason: an SMTP hiccup must not lose a visitor's submission.
 8. **Always pass `_return_url` through `normalizeReturnUrl()` before redirecting.** It strips an allowed `flight.base_url` prefix, rejects foreign absolute URLs, and forces a leading `/` (`Services/FormsService.php:467-489`). Reason: raw referrer/return values would otherwise be an open-redirect vector.
@@ -72,7 +72,7 @@ plugins/Forms/
 
 **Render path.** `renderPublicForm()` resolves the field rows from the DB, builds the action URL from `flight.base_url` plus `routePrepend`, and renders each field by type (`text`, `email`, `phone`, `hidden`, `textarea`, `select`, `radio`, `checkbox`). Public styling ships in `assets/css/forms.css` via adext `public.css`. The submit button label and success message come from the `forms` row (`Services/FormsService.php:219-334`).
 
-**Submission path.** The public controller loads the published form, delegates to `submitForm()` (honeypot, rate limit, per-field validation and sanitization), normalizes and redirects to `_return_url`, and stores a session flash so the next render repopulates values or errors (`Controllers/FormsPublicController.php:17-40`, `Services/FormsService.php:378-465`).
+**Submission path.** The public controller loads the published form, delegates to `submitForm()` (honeypot, rate limit, captcha when the forms area is protected, per-field validation and sanitization), normalizes and redirects to `_return_url`, and stores a session flash so the next render repopulates values or errors (`Controllers/FormsPublicController.php:17-40`, `Services/FormsService.php:378-465`).
 
 **Notifications.** If `notification_emails` lists addresses, each submission is emailed via the core mailer with a plain text/HTML body of the payload; failures are swallowed (`Services/FormsService.php:614-635`).
 
@@ -87,6 +87,7 @@ This plugin has no `composer.json` and no test suite, unlike library plugins in 
   - [ ] Create and publish a form; confirm it renders via shortcode, block, and `renderPublicForm()`, and that a draft form renders nothing
   - [ ] Submit valid data; confirm the submission stores IP/UA/referrer and the sanitized JSON payload, and the success message shows
   - [ ] Submit while the honeypot `website` field is filled; confirm no row is stored but the visitor sees success
+  - [ ] Turn on the "Public forms" switch under Settings > Captcha with a configured provider and confirm the widget renders in published forms and an unverified submit is rejected with the captcha error; turn the switch off and confirm submissions pass without a token
   - [ ] Submit twice within `rate_limit_seconds`; confirm the second is rejected with the wait message
   - [ ] Add a `select`/`radio`/`checkbox` field with `options_json`; confirm a tampered option value is rejected server-side
   - [ ] Configure `notification_emails`; confirm the mailer fires and that a forced mail failure still stores the submission
@@ -140,6 +141,6 @@ No coverage is configured for this plugin. `<!-- TODO: add [coverage target] -->
 
 - This is an in-tree application plugin, not a Composer package; no `composer.json` and nothing for Packagist.
 - No file uploads in forms; submissions are text/JSON only.
-- No captcha; spam control is the honeypot plus session rate limiting.
+- Spam control is the honeypot, the session rate limit, and (when switched on) captcha via the core CaptchaService; no additional spam engine of its own.
 - No localization; labels and messages are hardcoded English.
 - No per-field conditional logic or multi-step forms.

@@ -48,17 +48,7 @@
                 <textarea name="body" class="form-control" rows="4" placeholder="Your comment..." required></textarea>
             </div>
 
-            {% if captcha_provider == 'hcaptcha' %}
-            <div class="mb-3">
-                <div class="h-captcha" data-sitekey="{{ captcha_site_key }}"></div>
-                <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-            </div>
-            {% elseif captcha_provider == 'recaptcha' %}
-            <div class="mb-3">
-                <div class="g-recaptcha" data-sitekey="{{ captcha_site_key }}"></div>
-                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-            </div>
-            {% endif %}
+            {% captcha 'comments' %}
 
             <button type="submit" class="btn btn-primary">Post Comment</button>
         </form>

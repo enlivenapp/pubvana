@@ -7,9 +7,6 @@
  * @var bool          $guestComments
  * @var string        $defaultStatus
  * @var int           $maxNestingDepth
- * @var string        $captchaProvider
- * @var string        $captchaSiteKey
- * @var string        $captchaSecretKey
  * @var array         $hosts      Comment hosts keyed by contributor key, each with 'label', 'description', 'enabled'
  * @var array<string, array{comments:int, pending:int}> $hostCounts
  * @var string        $adminBase
@@ -54,33 +51,9 @@
                            min="1" value="<?= (int) $maxNestingDepth ?>">
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card mb-3">
-        <div class="card-header">
-            <h3 class="card-title">Captcha</h3>
-        </div>
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label" for="captcha_provider">Provider</label>
-                    <select class="form-select" id="captcha_provider" name="captcha_provider">
-                        <option value="none" <?= $captchaProvider === 'none' ? 'selected' : '' ?>>None</option>
-                        <option value="hcaptcha" <?= $captchaProvider === 'hcaptcha' ? 'selected' : '' ?>>hCaptcha (privacy respecting)</option>
-                        <option value="recaptcha" <?= $captchaProvider === 'recaptcha' ? 'selected' : '' ?>>reCAPTCHA v2 (Google)</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label" for="captcha_site_key">Site key</label>
-                    <input type="text" class="form-control" id="captcha_site_key" name="captcha_site_key"
-                           value="<?= htmlspecialchars($captchaSiteKey) ?>">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label" for="captcha_secret_key">Secret key</label>
-                    <input type="text" class="form-control" id="captcha_secret_key" name="captcha_secret_key"
-                           value="<?= htmlspecialchars($captchaSecretKey) ?>">
-                </div>
+            <div class="text-secondary small mt-3">
+                Captcha for the comment form is configured site-wide under
+                <a href="/admin/captcha">Settings &gt; Captcha</a>.
             </div>
         </div>
     </div>

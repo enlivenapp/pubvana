@@ -181,6 +181,81 @@ final class Sqlite
         );
 
         /*
+         * Comments plugin tables. Column shapes mirror
+         * plugins/Comments/Database/Migrations/2026-08-26-100002_CreateCommentsTable.php.
+         */
+        $pdo->exec(
+            "CREATE TABLE comments (
+                id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                commentable_type TEXT NOT NULL,
+                commentable_id  INTEGER NOT NULL,
+                parent_id       INTEGER,
+                user_id         INTEGER,
+                guest_name      TEXT,
+                guest_email     TEXT,
+                guest_website   TEXT,
+                body            TEXT NOT NULL,
+                status          TEXT NOT NULL DEFAULT 'pending',
+                ip_address      TEXT,
+                created_at      TEXT,
+                updated_at      TEXT
+            )"
+        );
+
+        /*
+         * Forms plugin tables. Column shapes mirror
+         * plugins/Forms/Database/Migrations/2026-08-29-1000{01,02,03}_*.php.
+         */
+        $pdo->exec(
+            'CREATE TABLE forms (
+                id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+                name                TEXT NOT NULL,
+                slug                TEXT NOT NULL UNIQUE,
+                description         TEXT,
+                status              TEXT NOT NULL DEFAULT \'draft\',
+                submit_label        TEXT NOT NULL DEFAULT \'Submit\',
+                success_message     TEXT,
+                notification_emails TEXT,
+                created_at          TEXT,
+                updated_at          TEXT,
+                deleted_at          TEXT
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE form_fields (
+                id           INTEGER PRIMARY KEY AUTOINCREMENT,
+                form_id      INTEGER NOT NULL,
+                type         TEXT NOT NULL,
+                name         TEXT NOT NULL,
+                label        TEXT NOT NULL,
+                help_text    TEXT,
+                placeholder  TEXT,
+                is_required  INTEGER NOT NULL DEFAULT 0,
+                width        TEXT NOT NULL DEFAULT \'full\',
+                options_json TEXT,
+                sort_order   INTEGER NOT NULL DEFAULT 1,
+                created_at   TEXT,
+                updated_at   TEXT
+            )'
+        );
+
+        $pdo->exec(
+            'CREATE TABLE form_submissions (
+                id           INTEGER PRIMARY KEY AUTOINCREMENT,
+                form_id      INTEGER NOT NULL,
+                status       TEXT NOT NULL DEFAULT \'received\',
+                ip_address   TEXT,
+                user_agent   TEXT,
+                referrer_url TEXT,
+                payload_json TEXT,
+                submitted_at TEXT,
+                created_at   TEXT,
+                updated_at   TEXT
+            )'
+        );
+
+        /*
          * Shield tables. Column shapes mirror the vendor migrations in
          * vendor/enlivenapp/flight-shield/Database/Migrations/ so the auth
          * services and models behave under tests exactly as they do under

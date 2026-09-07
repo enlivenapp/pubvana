@@ -370,6 +370,13 @@ class FormsService
             $html .= '</div>';
         }
 
+        // Captcha snippet before the submit button when the forms area is
+        // protected; the provider's div and script come from the service.
+        $captchaSnippet = $this->app->captcha()->snippetFor('forms');
+        if ($captchaSnippet !== '') {
+            $html .= '<div class="pv-form-field pv-form-captcha">' . $captchaSnippet . '</div>';
+        }
+
         $html .= '<button type="submit" class="pv-form-submit">' . htmlspecialchars((string) ($form->submit_label ?: 'Submit')) . '</button>';
         $html .= '</form>';
 
@@ -442,6 +449,24 @@ class FormsService
                 'errors' => ['Please wait a moment before submitting again.'],
                 'values' => $values,
             ];
+        }
+
+        // Captcha: site-wide service, switched on for forms in Settings >
+        // Captcha. Runs after the rate limit and before field validation;
+        // a rejected captcha looks exactly like any other validation error.
+        $captcha = $this->app->captcha();
+        if ($captcha->enforcedFor('forms')) {
+            $postField = $captcha->postField();
+            $token = is_string($values[$postField] ?? null) ? (string) $values[$postField] : '';
+            unset($values[$postField]);
+
+            if (!$captcha->verify($token, (string) ($requestMeta['ip_address'] ?? ''))) {
+                return [
+                    'ok'     => false,
+                    'errors' => ['Captcha verification failed. Please try again.'],
+                    'values' => $values,
+                ];
+            }
         }
 
         $fields = $this->fields->forForm((int) $form->id);

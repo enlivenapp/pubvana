@@ -25,6 +25,7 @@ use Pubvana\Controllers\Admin\SettingsController;
 use Pubvana\Controllers\Admin\NavigationController;
 use Pubvana\Controllers\Admin\EmailAdminController;
 use Pubvana\Controllers\Admin\LoginSecController;
+use Pubvana\Controllers\Admin\CaptchaAdminController;
 
 use Pubvana\Controllers\Admin\PluginsController;
 
@@ -58,6 +59,13 @@ $adext->register('admin.menu', 'settings', [
         'icon'     => 'ti-login',
         'url'      => '/login-sec',
         'priority' => 2,
+        'core'     => true,
+    ],
+    'pubvana.captcha' => [
+        'label'    => 'Captcha',
+        'icon'     => 'ti-shield-check',
+        'url'      => '/captcha',
+        'priority' => 3,
         'core'     => true,
     ],
     'pubvana.users' => [
@@ -244,6 +252,12 @@ $adext->addRoutes('admin', [
 $adext->addRoutes('admin', [
     ['GET',  '/login-sec',       [LoginSecController::class, 'index'], [$authMiddleware, $forceResetMiddleware]],
     ['POST', '/login-sec/save',  [LoginSecController::class, 'save'],  [$authMiddleware]],
+], 'pubvana.core', true);
+
+// Captcha (site-wide human verification - Settings > Captcha)
+$adext->addRoutes('admin', [
+    ['GET',  '/captcha',       [CaptchaAdminController::class, 'index'], [$authMiddleware, $forceResetMiddleware]],
+    ['POST', '/captcha/save',  [CaptchaAdminController::class, 'save'],  [$authMiddleware]],
 ], 'pubvana.core', true);
 
 // Email (SMTP settings - Tools > Email)
@@ -501,6 +515,68 @@ $adext->register('admin.settings', 'login_sec', 'pubvana.cms.login_sec', [
             'description' => 'New accounts start turned off. New users get an email with an activation link and can sign in only after clicking it. Needs email delivery set up (Tools > Email).',
         ],
     ],
+]);
+
+/*
+|--------------------------------------------------------------------------
+| Captcha Settings Declarations
+|--------------------------------------------------------------------------
+| The standalone Settings > Captcha page (CaptchaAdminController). These
+| Captcha.* keys are the ONLY captcha keys savable through the admin UI.
+| The page also shows a switch per registered 'captcha.area'; the list of
+| switched-on areas is stored as one JSON row (Captcha.protected) written
+| by the controller, not per-key declarations.
+|
+| hCaptcha and reCAPTCHA v2 (checkbox) are the supported providers; their
+| endpoints and widget details live in CaptchaService.
+*/
+$adext->register('admin.settings', 'captcha', 'pubvana.cms.captcha', [
+    'label'       => 'Captcha',
+    'description' => 'Human verification for forms across the site.',
+    'priority'    => 40,
+    'fields'      => [
+        [
+            'key'         => 'Captcha.provider',
+            'label'       => 'Provider',
+            'type'        => 'select',
+            'options'     => [
+                'none'      => 'None',
+                'hcaptcha'  => 'hCaptcha',
+                'recaptcha' => 'reCAPTCHA v2 (Google)',
+            ],
+            'default'     => 'none',
+            'description' => 'Service that checks the visitor is human. Sign up at the provider to get a site key and secret key.',
+        ],
+        [
+            'key'         => 'Captcha.site_key',
+            'label'       => 'Site key',
+            'type'        => 'text',
+            'default'     => '',
+            'description' => 'Public site key from the provider dashboard. Shown in the page with the captcha.',
+        ],
+        [
+            'key'         => 'Captcha.secret_key',
+            'label'       => 'Secret key',
+            'type'        => 'password',
+            'default'     => '',
+            'description' => 'Secret key from the provider dashboard. Used server-side to verify answers. Leave blank to keep the current value.',
+        ],
+    ],
+]);
+
+/*
+|--------------------------------------------------------------------------
+| Captcha Area (Core)
+|--------------------------------------------------------------------------
+| The sign-in form is a captcha-protected area owned by core. Plugins
+| register their own areas (comment forms, public forms) in their
+| Plugin.php. Each area can be switched on or off in Settings > Captcha;
+| CaptchaMiddleware enforces the switch on the login POST.
+*/
+$adext->register('captcha.area', 'default', 'login', [
+    'label'       => 'Sign-in form',
+    'description' => 'Requires a completed captcha before a sign-in attempt is processed.',
+    'priority'    => 10,
 ]);
 
 /*

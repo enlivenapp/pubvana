@@ -79,7 +79,7 @@ class CommentsPublicController extends PublicController
             $data['parent_id'] = (int) $post->parent_id;
         }
 
-        $captchaField = $service->getCaptchaPostField();
+        $captchaField = $this->app->captcha()->postField();
         if ($captchaField !== '') {
             $data['captcha_token'] = (string) ($post->$captchaField ?? '');
         }

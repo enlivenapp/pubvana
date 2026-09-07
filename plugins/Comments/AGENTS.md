@@ -4,13 +4,13 @@ Guidance for AI agents contributing to this plugin, which ships inside the main 
 
 ## Overview
 
-Comments provides nested, moderated site comments with captcha support. Content plugins register themselves as comment hosts through the adext `comments.host` slot; this plugin renders a thread and reply form inside any host's public view.
+Comments provides nested, moderated site comments. Captcha on the comment form is delegated to the core CaptchaService (configured site-wide under Settings > Captcha, with the "Comment form" switch). Content plugins register themselves as comment hosts through the adext `comments.host` slot; this plugin renders a thread and reply form inside any host's public view.
 
 - **Package:** `pubvana/comments` (`pubvana.json:2`), semver `0.1.0`, category `content`
 - **License:** MIT, matching the main project (repo `composer.json` declares `"license": "MIT"`)
 - **PHP floor:** not declared in the plugin; the main project requires PHP `^8.2` (repo `composer.json`), and the code stays within that floor (`str_contains` at `Controllers/CommentsPublicController.php:115`, `mixed` parameter/return types at `Services/CommentService.php:65`, arrow functions at `Plugin.php:121`)
 - **Namespace:** `Pubvana\Plugins\Comments` (`Plugin.php:5`), with `Controllers`, `Services`, `Models`, and `Database\Migrations` sub-namespaces
-- **Runtime dependencies (declared at the app level, not in the plugin):** `flightphp/active-record` (model base), `enlivenapp/migrations` (migration base), `enlivenapp/flight-shield` (`\Enlivenapp\FlightShield\Models\User` at `Services/CommentService.php:674, 793`), `ezyang/htmlpurifier` (optional, guarded by `class_exists` at `Services/CommentService.php:747`); core engine services used as `$app->comments()`, `db()`, `adext()`, `pluginLoader()`, `settings()`, `view()`, `request()`, `session()`; core helper functions `user_id()` and `csrf_field()`; core class `\Pubvana\Services\PluginView` (`Services/CommentService.php:283`)
+- **Runtime dependencies (declared at the app level, not in the plugin):** `flightphp/active-record` (model base), `enlivenapp/migrations` (migration base), `enlivenapp/flight-shield` (`\Enlivenapp\FlightShield\Models\User` at `Services/CommentService.php:674, 793`), `ezyang/htmlpurifier` (optional, guarded by `class_exists` at `Services/CommentService.php:747`); core engine services used as `$app->comments()`, `db()`, `adext()`, `pluginLoader()`, `settings()`, `view()`, `request()`, `session()`, `captcha()`; core helper functions `user_id()` and `csrf_field()`; core class `\Pubvana\Services\PluginView` (`Services/CommentService.php:283`)
 - **Settings storage:** database `settings` table under the `Comments.*` namespace, seeded in `Database/Seeds/Seed.php`
 - **Docs:** `README.md`
 
@@ -22,7 +22,7 @@ Comments provides nested, moderated site comments with captcha support. Content 
 4. **Enforce the nesting limit on every reply.** `create()` checks `getDepth()` against `max_nesting_depth` (default 3) and throws before insert (`Services/CommentService.php:187-195`). Reason: unbounded threading makes threads unreadable and the model walk expensive.
 5. **Route all host lookups through the `comments.host` adext slot.** `hostItems()`, `hostItem()`, `hostTypeMap()`, and `enabledTypes()` all resolve hosts from registered `comments.host` contributions and cache them per request (`Services/CommentService.php:410-647`). Reason: hosts are other plugins by design; the adext registry is the only allowed discovery path and the caches stop per-comment SELECT storms.
 6. **Do not bypass the public gating chain in `dataFor()`.** A thread must render nothing when the system is disabled, the host type is not enabled, or the item disallows comments (`Services/CommentService.php:356-399`). Reason: an empty string is the contract hosts rely on to decide whether to inject anything.
-7. **Verify captcha server-side when a provider is configured.** If `captcha_provider` is set and the secret key is empty, verification must fail closed (`Services/CommentService.php:702-740`). Reason: a missing secret is a misconfiguration, not a hall-pass.
+7. **Delegate captcha to the core CaptchaService.** `create()` checks `CaptchaService::enforcedFor('comments')` (provider configured plus the "Comment form" switch on in Settings > Captcha) and calls `verify()`; the service itself fails closed on a missing secret or an unreachable provider. Templates render the widget with the `captcha` Vision tag, never with hardcoded provider markup. Reason: captcha config is site-wide (shared with forms and the sign-in form); duplicating provider logic here would drift.
 8. **Keep guest attribution split from user attribution.** Comments store either `user_id` or `guest_name`/`guest_email`/`guest_website`, never both (`Controllers/CommentsPublicController.php:87-98`). Reason: the display and admin tooling branch on this split.
 9. **Do not add soft deletes to comments.** `delete()` is a hard delete (`Models/Comment.php:164-174`). Descendants are not cascaded; `buildTree()` promotes orphaned children to the thread root (`Services/CommentService.php:769-777`). Reason: moderation is explicit and a visitor comment must actually disappear, not linger as a tombstone.
 10. **Keep the 3-tier template resolution intact.** `resolveTemplate()` resolves `pubvana/comments/public/comments.tpl` as app/Views override, then theme, then plugin (`Services/CommentService.php:308-344`). Reason: it matches `RegionManager::resolveBlockTemplate` and appends `.tpl` explicitly because `PluginView`'s mutable extension may still be `.php` on early render.
@@ -39,7 +39,7 @@ plugins/Comments/
 │   ├── Migrations/2026-08-26-100002_CreateCommentsTable.php
 │   │                                  comments (commentable_type/id, parent_id, user/guest cols,
 │   │                                  status, ip_address; indexes on host pair, parent, status, user)
-│   └── Seeds/Seed.php                 Seed: 8 "Comments.*" settings rows + comments.moderate permission
+│   └── Seeds/Seed.php                 Seed: 5 "Comments.*" settings rows + comments.moderate permission
 ├── Models/Comment.php                 comments table; find, paginate, count, status updates, depth walk
 ├── Services/CommentService.php        Singleton mapped as $app->comments() (Plugin.php:28-34); lifecycle owner
 ├── assets/css/comments.css            Public styles (registered via adext public.css)
@@ -84,7 +84,7 @@ This plugin has no `composer.json` and no test suite, unlike library plugins in 
   - [ ] With a host enabled, the thread renders; toggle the host off in settings and confirm the thread disappears
   - [ ] With guest comments off, logged-out visitors see existing comments but no form; the store endpoint redirects with `comment_error`
   - [ ] Approve, reject, and delete a comment from the moderation queue; only approved items show publicly
-  - [ ] Configure captcha with a fake site key and confirm unverified submissions are rejected
+  - [ ] Turn on the "Comment form" switch under Settings > Captcha with a configured provider and confirm the widget renders in the form and unverified submissions are rejected; turn the switch off and confirm submissions pass without a token
   - [ ] Delete a comment with replies and confirm orphaned replies still render at the top level
   - [ ] Confirm the recent-comments block lists approved comments linked back to their host content
 
@@ -112,7 +112,8 @@ No coverage is configured for this plugin. `<!-- TODO: add [coverage target] -->
 | Goal | Where to look |
 |------|---------------|
 | Add a comment setting | `Database/Seeds/Seed.php` settings row, `Services/CommentService.php` getter, `Controllers/CommentsAdminController.php` `settingsIndex()`/`settingsSave()` |
-| Add a captcha provider | `CAPTCHA_ENDPOINTS` + `CAPTCHA_POST_FIELDS` constants and `verifyCaptcha()` (`Services/CommentService.php:42-50, 702-740`) |
+| Add a captcha provider | `app/Services/CaptchaService.php` (`PROVIDERS` map), plus the provider select options in `app/config/core-admin.php` and `CaptchaAdminController` |
+| Change comment captcha behavior | Settings > Captcha (provider, keys, "Comment form" switch); enforcement point is `create()` calling `enforcedFor('comments')` |
 | Change the nesting limit | `Comments.max_nesting_depth` setting (database, default 3) |
 | Change moderation page pagination | `Controllers/CommentsAdminController.php:31` |
 | Register a new host side | Read `README.md` "Registering a host" (host plugin's own `Plugin.php`) |

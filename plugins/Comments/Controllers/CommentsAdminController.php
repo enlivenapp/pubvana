@@ -129,9 +129,6 @@ class CommentsAdminController extends AdminController
             'guestComments'     => (bool) $service->setting('allow_guest_comments', false),
             'defaultStatus'     => (string) $service->setting('default_status', 'pending'),
             'maxNestingDepth'   => (int) $service->setting('max_nesting_depth', 3),
-            'captchaProvider'   => (string) $service->setting('captcha_provider', 'none'),
-            'captchaSiteKey'    => (string) $service->setting('captcha_site_key', ''),
-            'captchaSecretKey'  => (string) $service->setting('captcha_secret_key', ''),
             'hosts'             => $service->enabledHosts(true),
             'hostCounts'        => $service->countsByHost(),
             'adminBase'         => $this->adminBase(),
@@ -156,14 +153,6 @@ class CommentsAdminController extends AdminController
         $this->app->settings()->set('Comments.default_status', $defaultStatus);
 
         $this->app->settings()->set('Comments.max_nesting_depth', (string) max(1, (int) ($data['max_nesting_depth'] ?? 3)));
-
-        $captchaProvider = (string) ($data['captcha_provider'] ?? 'none');
-        if (!in_array($captchaProvider, ['none', 'hcaptcha', 'recaptcha'], true)) {
-            $captchaProvider = 'none';
-        }
-        $this->app->settings()->set('Comments.captcha_provider', $captchaProvider);
-        $this->app->settings()->set('Comments.captcha_site_key', (string) ($data['captcha_site_key'] ?? ''));
-        $this->app->settings()->set('Comments.captcha_secret_key', (string) ($data['captcha_secret_key'] ?? ''));
 
         $hostData = is_array($data['host'] ?? null) ? $data['host'] : [];
 

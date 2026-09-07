@@ -41,16 +41,6 @@ class CommentService
      */
     private ?array $hostTypeMapCache = null;
 
-    private const CAPTCHA_ENDPOINTS = [
-        'hcaptcha'  => 'https://api.hcaptcha.com/siteverify',
-        'recaptcha' => 'https://www.google.com/recaptcha/api/siteverify',
-    ];
-
-    private const CAPTCHA_POST_FIELDS = [
-        'hcaptcha'  => 'h-captcha-response',
-        'recaptcha' => 'g-recaptcha-response',
-    ];
-
     /**
      * @param Engine<object> $app
      */
@@ -103,39 +93,6 @@ class CommentService
     public function maxNestingDepth(): int
     {
         return max(1, (int) $this->setting('max_nesting_depth', 3));
-    }
-
-    /**
-     * Whether captcha is enabled in settings.
-     */
-    public function isCaptchaEnabled(): bool
-    {
-        return $this->getCaptchaProvider() !== 'none' && $this->getCaptchaSiteKey() !== '';
-    }
-
-    /**
-     * Get the captcha provider name ('none', 'hcaptcha', 'recaptcha').
-     */
-    public function getCaptchaProvider(): string
-    {
-        $provider = (string) $this->setting('captcha_provider', 'none');
-        return isset(self::CAPTCHA_ENDPOINTS[$provider]) ? $provider : 'none';
-    }
-
-    /**
-     * Get the captcha public site key.
-     */
-    public function getCaptchaSiteKey(): string
-    {
-        return (string) $this->setting('captcha_site_key', '');
-    }
-
-    /**
-     * Get the POST field name for the current captcha provider.
-     */
-    public function getCaptchaPostField(): string
-    {
-        return self::CAPTCHA_POST_FIELDS[$this->getCaptchaProvider()] ?? '';
     }
 
     // -----------------------------------------------------------------
@@ -206,12 +163,14 @@ class CommentService
             }
         }
 
-        // Captcha verification
-        if ($this->isCaptchaEnabled()) {
+        // Captcha verification: delegated to the site-wide captcha service.
+        // Fails closed when the area is protected but the token is missing
+        // or the provider rejects it (including on a missing secret key).
+        if ($this->app->captcha()->enforcedFor('comments')) {
             $token = (string) ($data['captcha_token'] ?? '');
             $ip = (string) ($data['ip_address'] ?? '');
 
-            if ($token === '' || !$this->verifyCaptcha($token, $ip)) {
+            if ($token === '' || !$this->app->captcha()->verify($token, $ip)) {
                 throw new \InvalidArgumentException('Captcha verification failed.');
             }
         }
@@ -405,8 +364,6 @@ class CommentService
             'commentable_id'       => $id,
             'comment_post_url'     => $this->app->pluginLoader()->routePrefix('pubvana/comments') . '/' . $type . '/' . $id,
             'max_nesting_depth'    => $this->maxNestingDepth(),
-            'captcha_provider'     => $this->getCaptchaProvider(),
-            'captcha_site_key'     => $this->getCaptchaSiteKey(),
             'csrf_field'           => function_exists('csrf_field') ? csrf_field() : '',
         ];
     }
@@ -714,49 +671,6 @@ class CommentService
     // -----------------------------------------------------------------
     // Internals
     // -----------------------------------------------------------------
-
-    /**
-     * Verify a captcha token against the configured provider.
-     */
-    public function verifyCaptcha(string $token, string $remoteIp): bool
-    {
-        $provider = $this->getCaptchaProvider();
-
-        if ($provider === 'none' || !isset(self::CAPTCHA_ENDPOINTS[$provider])) {
-            return true;
-        }
-
-        $secret = (string) $this->setting('captcha_secret_key', '');
-
-        if ($secret === '') {
-            return false;
-        }
-
-        $postData = http_build_query([
-            'secret'   => $secret,
-            'response' => $token,
-            'remoteip' => $remoteIp,
-        ]);
-
-        $context = stream_context_create([
-            'http' => [
-                'method'  => 'POST',
-                'header'  => 'Content-Type: application/x-www-form-urlencoded',
-                'content' => $postData,
-                'timeout' => 10,
-            ],
-        ]);
-
-        $response = @file_get_contents(self::CAPTCHA_ENDPOINTS[$provider], false, $context);
-
-        if ($response === false) {
-            return false;
-        }
-
-        $result = json_decode($response, true);
-
-        return isset($result['success']) && $result['success'] === true;
-    }
 
     /**
      * Sanitize HTML content via HTMLPurifier.

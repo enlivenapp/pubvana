@@ -340,6 +340,25 @@ $app->map('mailer', function () use ($app) {
 
 /*
 |--------------------------------------------------------------------------
+| Captcha Service
+|--------------------------------------------------------------------------
+| Site-wide human verification: provider config from the Captcha.* settings
+| namespace, per-area switches driven by the adext 'captcha.area' type, and
+| the widget markup every protected form embeds. hCaptcha and reCAPTCHA v2
+| are supported; server-side verification fails closed on misconfiguration.
+|
+| Access anywhere with: $app->captcha()->enforcedFor('comments')
+*/
+$app->map('captcha', function () use ($app) {
+    static $instance = null;
+    if ($instance === null) {
+        $instance = new \Pubvana\Services\CaptchaService($app);
+    }
+    return $instance;
+});
+
+/*
+|--------------------------------------------------------------------------
 | Content Service
 |--------------------------------------------------------------------------
 | Applies plugin-registered content.render transforms to rich-text bodies.
@@ -476,6 +495,14 @@ foreach ($app->adext()->get('csrf.exempt', 'default') as $exempt) {
 if (!$csrfExempt) {
     $csrf->before();
 }
+
+// Captcha middleware runs immediately after CSRF so a rejected request is
+// first answered by the CSRF gate. Like the CSRF gate, it is invoked inline
+// during boot (after loadPlugins(), so captcha.area registrations exist) and
+// reads the superglobals itself. It only acts on the core-owned sign-in POST;
+// plugins enforce their own captcha areas inside their submission handlers.
+$captchaMiddleware = new \Pubvana\Services\CaptchaMiddleware($app);
+$captchaMiddleware->before();
 
 /*
 |--------------------------------------------------------------------------
