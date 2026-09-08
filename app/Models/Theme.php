@@ -22,7 +22,7 @@ namespace Pubvana\Models;
  * @property string|null $updated_at
  *
  * @method self eq(string $field, mixed $value, string $operator = 'AND')
- * @method self notEq(string $field, mixed $value, string $operator = 'AND')
+ * @method self notEqual(string $field, mixed $value, string $operator = 'AND')
  * @method self order(string $field)
  *
  * @package Pubvana\Models
@@ -104,7 +104,7 @@ class Theme extends AbstractModel
     {
         $pdo = $this->getDatabaseConnection();
 
-        $others = (new self($pdo))->notEq('id', $id)->findAll();
+        $others = (new self($pdo))->notEqual('id', $id)->findAll();
         foreach ($others as $other) {
             $other->is_active = 0;
             $other->save();
