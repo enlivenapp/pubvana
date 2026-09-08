@@ -7,7 +7,7 @@
     "provides": {
         "block": {
             "available": {
-                "pubvana.core-blocks.text": {
+                "text": {
                     "label": "Text",
                     "description": "Free-form text content",
                     "template": "pubvana/core-blocks/blocks/text",
@@ -25,7 +25,7 @@
                         }
                     }
                 },
-                "pubvana.core-blocks.html": {
+                "html": {
                     "label": "HTML",
                     "description": "Free-form HTML content (unescaped)",
                     "template": "pubvana/core-blocks/blocks/html",

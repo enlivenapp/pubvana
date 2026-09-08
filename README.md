@@ -44,36 +44,26 @@ See [Install](INSTALL.md)
 
 ## Features
 
-- Posts and pages with draft/published/scheduled workflow, revision history, categories, tags
-- WYSIWYG editor (Jodit) and RSS/Atom feeds for all content types
-- Media library with GD/Imagick processing, in-browser image editor, video posters, embeds
+- Publishing with drafts, scheduling, revisions, categories, tags, and WYSIWYG editing (Jodit)
+- RSS/Atom feeds, media library with image processing, video posters, embeds
 - Nested moderated comments with captcha and sanitization
 - AI assistant with fact-checking workflow
-- Region and block system with drag-and-drop placement
+- Content blocks in regions with drag-and-drop placement
 - Vision templates for public pages (no PHP execution)
 - Theme system with per-theme options
-- Navigation manager with nested dropdowns
-- Plugin system with enable/disable from the admin panel
+- Nested navigation menus, plugin system with enable/disable
 - Admin dashboard with plugin cards
 - Role-based access control (Shield), user bans, forced password resets
 - Optional email 2FA and email activation
-- Activity log audit trail
-- Site health checks
-- SMTP email with encrypted credentials
-- Cron scheduler with isolated tasks
-- Full-site backup and restore
-- Core update flow with optional auto-updates
-- Marketplace to browse and install packages
-- Digital store with products, orders, and payment webhooks
+- Activity log audit trail, site health checks
+- SMTP email with encrypted credentials, cron scheduler
+- Full-site backup and restore, core update flow
+- Marketplace, digital store with products, orders, and payment webhooks
 - Security headers, CSRF protection, rate-limited login
-- Search across content types with ranked scoring
-- SEO (meta, sitemap, schema, robots per-bot, llms.txt, Open Graph)
+- Search across content types, SEO (sitemap, schema, robots, Open Graph)
 - Redirect manager with 404 tracking and broken-link scanning
-- Form builder with submissions
-- Server-side analytics with daily rollups
-- Public user profiles and site-wide social links
-- Extension registry for hooks, routes, menus, and blocks
-- Dark mode admin UI (Tabler/Bootstrap 5)
+- Form builder, server-side analytics with daily rollups
+- Public user profiles, site-wide social links, dark mode admin UI
 
 
 ## Project Structure
@@ -102,13 +92,13 @@ pubvana/
 
 | Layer | Technology |
 |---|---|
-| [Framework](https://flightphp.com) | FlightPHP 3.0 |
-| [Authentication](https://packagist.org/packages/enlivenapp/flight-shield) | enlivenapp/flight-shield |
-| [Database](https://packagist.org/packages/enlivenapp/flight-active-record) | enlivenapp/flight-active-record |
+| [Framework](build_docs/Bootstrapping.md) | FlightPHP 3.0 |
+| [Authentication](build_docs/Shield.md) | enlivenapp/flight-shield |
+| [Database](build_docs/Architecture.md) | enlivenapp/flight-active-record |
 | [Admin UI](https://tabler.io) | Tabler (Bootstrap 5 + Alpine.js) |
-| [Public Templates](https://packagist.org/packages/enlivenapp/vision) | Vision (no PHP execution) |
+| [Public Templates](build_docs/Vision.md) | Vision (no PHP execution) |
 | [Content Editor](https://jodit.com) | Jodit |
-| [Mail](https://github.com/PHPMailer/PHPMailer) | PHPMailer |
+| [Mail](build_docs/Email.md) | PHPMailer |
 
 ## Security
 

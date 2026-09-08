@@ -398,9 +398,9 @@ final class UpdateServiceTest extends TestCase
             public function get(string $type, string $slot): array
             {
                 return [
-                    'pubvana.blog.recent'                      => ['label' => 'Recent Posts'],
-                    'pubvana/core-blocks.pubvana.core-blocks.text' => ['label' => 'Text'],
-                    'pubvana/core-blocks.pubvana.core-blocks.html' => ['label' => 'HTML'],
+                    'pubvana.blog.recent'                  => ['label' => 'Recent Posts'],
+                    'pubvana/core-blocks.text' => ['label' => 'Text'],
+                    'pubvana/core-blocks.html' => ['label' => 'HTML'],
                 ];
             }
         };

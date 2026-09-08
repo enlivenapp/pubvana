@@ -164,8 +164,8 @@ $wysiwygSelectors = [];
                             <option value="<?= htmlspecialchars($bKey) ?>"><?= htmlspecialchars($bInfo['label'] ?? $bKey) ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <button type="submit" class="btn btn-sm btn-primary">
-                            <i class="ti ti-plus"></i>
+                        <button type="submit" class="btn btn-sm btn-primary" title="Add block">
+                            <i class="ti ti-device-floppy"></i>
                         </button>
                     </div>
                 </form>

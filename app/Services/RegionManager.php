@@ -35,9 +35,7 @@ class RegionManager
 {
     /** @var array<string, array{id: string, label: string, description: string}> Platform regions always available regardless of theme */
     protected const PLATFORM_REGIONS = [
-        'header'         => ['id' => 'header',         'label' => 'Header',         'description' => 'Site header area'],
         'footer'         => ['id' => 'footer',         'label' => 'Footer',         'description' => 'Site footer area'],
-        'navbar'         => ['id' => 'navbar',         'label' => 'Navigation Bar', 'description' => 'Main navigation'],
         'before-content' => ['id' => 'before-content', 'label' => 'Before Content', 'description' => 'Above main content'],
         'after-content'  => ['id' => 'after-content',  'label' => 'After Content',  'description' => 'Below main content'],
     ];

@@ -38,8 +38,8 @@ plugins/CoreBlocks/
 
 **Registration.** All behavior is declarative in `pubvana.json` under `provides.block.available`:
 
-- `pubvana.core-blocks.text` (`pubvana.json:10-27`): label Text, priority 100, options `title` (input, default `''`) and `content` (textarea, default `''`), template `pubvana/core-blocks/blocks/text`.
-- `pubvana.core-blocks.html` (`pubvana.json:28-40`): label HTML, priority 110, option `content` (textarea, default `''`), template `pubvana/core-blocks/blocks/html`.
+- `text` (`pubvana.json:10-27`): label Text, priority 100, options `title` (input, default `''`) and `content` (textarea, default `''`), template `pubvana/core-blocks/blocks/text`.
+- `html` (`pubvana.json:28-40`): label HTML, priority 110, option `content` (textarea, default `''`), template `pubvana/core-blocks/blocks/html`.
 
 **Data flow.** An admin places a block in a region via the core block picker. RegionManager stores the options chosen in the UI, then, because no provider callable exists, feeds those saved options directly to the Vision template as data (`title`/`content`).
 
