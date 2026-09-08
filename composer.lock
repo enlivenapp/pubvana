@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d03588ac4b6896a6b6a0d93872bdd563",
+    "content-hash": "0be2110f17d29ea429b295f7a3ad5252",
     "packages": [
         {
             "name": "adhocore/cli",
@@ -525,16 +525,16 @@
         },
         {
             "name": "flightphp/active-record",
-            "version": "v0.7.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/flightphp/active-record.git",
-                "reference": "9ab4aac44f68ca47f9cb8d27d63fda4ccfe58aad"
+                "reference": "6b3c0234bca1e8b9910be6921a3224bd9b9d0ea8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/flightphp/active-record/zipball/9ab4aac44f68ca47f9cb8d27d63fda4ccfe58aad",
-                "reference": "9ab4aac44f68ca47f9cb8d27d63fda4ccfe58aad",
+                "url": "https://api.github.com/repos/flightphp/active-record/zipball/6b3c0234bca1e8b9910be6921a3224bd9b9d0ea8",
+                "reference": "6b3c0234bca1e8b9910be6921a3224bd9b9d0ea8",
                 "shasum": ""
             },
             "require": {
@@ -547,6 +547,7 @@
                 "rregeer/phpunit-coverage-check": "^0.3.1",
                 "squizlabs/php_codesniffer": "^3.8"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -584,9 +585,9 @@
             ],
             "support": {
                 "issues": "https://github.com/flightphp/active-record/issues",
-                "source": "https://github.com/flightphp/active-record/tree/v0.7.2"
+                "source": "https://github.com/flightphp/active-record/tree/master"
             },
-            "time": "2026-07-16T14:10:11+00:00"
+            "time": "2026-09-04T02:50:14+00:00"
         },
         {
             "name": "flightphp/core",
@@ -6684,7 +6685,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "flightphp/active-record": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

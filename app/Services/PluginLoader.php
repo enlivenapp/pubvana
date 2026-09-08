@@ -1273,9 +1273,10 @@ class PluginLoader
      * the resolved state for this request.
      *
      * Newly discovered plugins get first-discovery defaults (see defaultState()):
-     * required core plugins and shipped local plugins are enabled; everything
-     * else stays disabled until an admin enables it. Existing rows are never
-     * modified here — state only changes through the admin Plugins page.
+     * required core plugins are enabled, everything else stays disabled until
+     * an admin enables it. The shipped-active bundled core plugins are already
+     * enabled by their install-time seed rows, not by this sync. Existing rows
+     * are never modified here — state only changes through the admin Plugins page.
      *
      * @param array<string, array<string, mixed>> $all Discovered plugins keyed by plugin ID (priorities overwritten in place)
      */
@@ -1321,11 +1322,15 @@ class PluginLoader
     /**
      * First-discovery defaults for a plugin with no plugin_state row yet.
      *
+     * Nothing discovered is auto-enabled. The shipped-active bundled core
+     * plugins are enabled only because their plugin_state rows are seeded at
+     * install time (app/Database/Seeds/Seed.php); by the time this runs their
+     * rows exist, so they never hit here.
+     *
      * 1. Required core plugins (sessions/shield/csrf) are enabled + locked.
      * 2. An explicit enabled/priority entry in the app-passed plugin config is inherited.
-     * 3. Local plugins ship with Pubvana, so they are enabled by default.
-     * 4. Anything else starts DISABLED — the pause. Its code runs nothing
-     *    until an admin enables it on the Plugins page.
+     * 3. Anything else starts DISABLED — the pause. Its code runs nothing
+     *    until an admin enables it on the Plugins page, local or vendor alike.
      *
      * @param string               $pluginId Plugin/package ID
      * @param array<string, mixed> $info     Plugin info array (source)
@@ -1345,10 +1350,6 @@ class PluginLoader
             $state['enabled']  = true;
             $state['priority'] = $this->requiredPlugins[$pluginId] ?? (int) ($config['priority'] ?? 50);
             $state['required'] = true;
-        } elseif (!isset($config['enabled'])) {
-            // Never hand-configured: local plugins ship with Pubvana, vendor
-            // packages pause disabled until an admin enables them.
-            $state['enabled'] = ($info['source'] ?? null) === 'local';
         }
 
         return $state;
