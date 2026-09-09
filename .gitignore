@@ -16,6 +16,11 @@ PLAN-multi-language.md
 # Pubvana-only plugins
 /plugins/Pvstore/*
 /plugins/Docs/*
+/plugins/Trust/*
+
+# Free but from PV Store
+/plugins/Import/*
+/plugins/ImportWp/*
 
 #Pubvana's official theme
 /themes/official/*

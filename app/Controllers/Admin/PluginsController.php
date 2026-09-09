@@ -7,7 +7,7 @@ namespace Pubvana\Controllers\Admin;
 use flight\Engine;
 
 /**
- * PluginsController - Plugin management page (Settings > Plugins).
+ * PluginsController - Plugin management page (Plugins > Manage).
  *
  * Lists every discovered plugin (local + vendor) with its database-backed
  * state. The admin can enable/disable a plugin and change its load priority.

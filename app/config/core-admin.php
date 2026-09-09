@@ -90,13 +90,22 @@ $adext->register('admin.menu', 'settings', [
         'priority' => 12,
         'core'     => true,
     ],
-    'pubvana.plugins' => [
-        'label'    => 'Plugins',
-        'icon'     => 'ti-puzzle',
-        'url'      => '/plugins',
-        'priority' => 13,
-        'core'     => true,
-    ],
+]);
+
+/*
+|--------------------------------------------------------------------------
+| Plugins Menu Item
+|--------------------------------------------------------------------------
+| The plugin manager lives under the hardcoded Plugins dropdown in the
+| sidebar, not under Settings. Plugins can add their own entries to this
+| slot; the Manage item is the core management screen.
+*/
+$adext->register('admin.menu', 'plugins', 'pubvana.plugins', [
+    'label'    => 'Manage',
+    'icon'     => 'ti-puzzle',
+    'url'      => '/plugins',
+    'priority' => 10,
+    'core'     => true,
 ]);
 
 

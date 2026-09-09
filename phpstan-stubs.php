@@ -120,6 +120,7 @@ namespace flight {
      * @phpstan-method \Pubvana\Plugins\Redirects\Services\RedirectLinksService redirectLinks()
      * @phpstan-method \Pubvana\Plugins\Analytics\Services\AnalyticsService analytics()
      * @phpstan-method \Pubvana\Plugins\Backups\Services\BackupService backups()
+     * @phpstan-method \Pubvana\Plugins\Import\Services\ImportService import()
      * @phpstan-method \Pubvana\Plugins\SiteHealth\Services\HealthService health()
      * @phpstan-method \Pubvana\Plugins\SocialLinks\Services\SocialLinksService socialLinks()
  * @phpstan-method \Pubvana\Plugins\AiAssistant\Services\AiService ai()
@@ -428,6 +429,12 @@ namespace Enlivenapp\FlightShield\Models {
      * @phpstan-method self|null find($id = null)
      */
     class User
+    {
+    }
+}
+
+namespace Pubvana\Plugins\Import\Services {
+    class ImportService
     {
     }
 }
