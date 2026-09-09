@@ -10,7 +10,7 @@
  * @var bool                 $auto           Auto-update setting
  * @var list<string>         $skipped        Skipped versions
  * @var list<array{name: string, ok: bool, detail: string, hard: bool}> $preflight
- * @var array{themes: list<array{name: string, version: ?string}>, blocks: list<array{name: string, updates_with: string}>, plugins: list<array{name: string, version: ?string}>} $addons
+ * @var array{themes: list<array<string, mixed>>, blocks: list<array{name: string, updates_with: string}>, plugins: list<array<string, mixed>>} $addons
  * @var array<string, mixed>|null $progress  Live progress payload (null when none)
  * @var bool                 $is_locked      Whether an operation is running
  * @var string               $changelog_url  Human changelog link
@@ -251,10 +251,20 @@ $renderConstraints = static function () use ($constraints, $latest): void {
     <a href="<?= htmlspecialchars($changelog_url) ?>" target="_blank" rel="noopener">Full changelog</a>.
 </p>
 
-<button type="button" class="btn btn-primary btn-lg mb-2" id="apply-btn"
-        <?= (!$allHardPass || $is_locked) ? 'disabled' : '' ?>>
-    <i class="ti ti-rocket me-1"></i> Update to version <?= htmlspecialchars($target) ?>
-</button>
+<div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+    <button type="button" class="btn btn-primary btn-lg" id="apply-btn"
+            <?= (!$allHardPass || $is_locked) ? 'disabled' : '' ?>>
+        <i class="ti ti-rocket me-1"></i> Update to version <?= htmlspecialchars($target) ?>
+    </button>
+    <span class="d-inline-flex align-items-center gap-1" title="Standing of this release in the Pubvana trust service cache">
+        <?= trust_badge($trust['status'] ?? 'none', $trust['warning'] ?? null) ?>
+    </span>
+</div>
+<?php if (($trust['status'] ?? 'none') === 'unknown'): ?>
+<p class="text-warning small mb-2">
+    This release hasn't been evaluated by the Pubvana trust service yet. Applying it will ask for a confirmation.
+</p>
+<?php endif; ?>
 <?php if (!$allHardPass): ?>
 <p class="text-danger small">Preflight checks failed.</p>
 <?php endif; ?>
@@ -353,6 +363,7 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
                 <tr>
                     <th class="ps-3">Name</th>
                     <th>Version</th>
+                    <th>Trust</th>
                     <th>Latest</th>
                     <th>Auto-Update</th>
                     <th>Status</th>
@@ -361,9 +372,26 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
             </thead>
             <tbody>
             <?php foreach ($addonRows as $addonRow): ?>
+                <?php
+                $recheckKind = $addonLabel === 'Themes' ? 'theme' : 'plugin';
+                $recheckHandle = $recheckKind === 'theme'
+                    ? (string) ($addonRow['folder'] ?? '')
+                    : (string) ($addonRow['id'] ?? '');
+                ?>
                 <tr>
                     <td class="ps-3"><?= htmlspecialchars($addonRow['name']) ?></td>
                     <td><?= $addonRow['version'] !== null ? htmlspecialchars($addonRow['version']) : '-' ?></td>
+                    <td class="text-nowrap">
+                        <span data-trust-cell><?= trust_badge($addonRow['trust_status'] ?? 'none', $addonRow['trust_warning'] ?? null) ?></span>
+                        <?php if ($recheckHandle !== ''): ?>
+                        <button type="button" class="btn btn-icon btn-sm text-secondary"
+                                data-trust-recheck="<?= $recheckKind ?>"
+                                data-handle="<?= htmlspecialchars($recheckHandle) ?>"
+                                title="Recheck with the Pubvana trust service">
+                            <i class="ti ti-refresh"></i>
+                        </button>
+                        <?php endif; ?>
+                    </td>
                     <td>-</td>
                     <td>-</td>
                     <td><span class="text-muted small">No update source</span></td>
@@ -387,6 +415,10 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
             </div>
             <div class="modal-body">
                 <p>This will backup your site, download the update, and apply it.</p>
+                <p class="d-flex align-items-center gap-2 mb-1">
+                    Trust standing:
+                    <?= trust_badge($trust['status'] ?? 'none', $trust['warning'] ?? null) ?>
+                </p>
                 <p class="small text-muted mb-0">
                     Your <code>.env</code> and <code>app/config/shield.php</code> are never overwritten.
                 </p>
@@ -401,6 +433,60 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
     </div>
 </div>
 <div class="modal-backdrop fade" id="confirm-update-backdrop" style="display:none"></div>
+
+<!-- Trust confirmation modal: applying a release the Pubvana trust service
+     has not evaluated. Confirming resubmits the apply request with force_trust=1. -->
+<div class="modal modal-blur fade" id="trust-confirm-modal" tabindex="-1" style="display:none" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Apply without an evaluation?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <strong>Pubvana</strong>
+                    <span id="trust-confirm-version" class="text-muted"></span>
+                    hasn't been evaluated by the Pubvana trust service.
+                </p>
+                <p class="small text-muted mb-0">Apply anyway?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="trust-apply-anyway">
+                    <i class="ti ti-rocket me-1"></i> Apply Anyway
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade" id="trust-confirm-backdrop" style="display:none"></div>
+
+<!-- Trust blocked modal: the trust service found the release malicious. No
+     proceed path on purpose. -->
+<div class="modal modal-blur fade" id="trust-blocked-modal" tabindex="-1" style="display:none" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="ti ti-alert-triangle text-danger me-2"></i>
+                    Update blocked
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-1">
+                    <strong>Pubvana</strong> has been evaluated by the Pubvana trust service and found to be malicious.
+                </p>
+                <p id="trust-blocked-warning" class="mb-0"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade" id="trust-blocked-backdrop" style="display:none"></div>
 
 <script>
 (function () {
@@ -471,58 +557,97 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
 
     // ------------------------------------------------------------------
     // Apply: button opens the confirmation modal; confirm starts the run.
+    // Gate order is trust first, then breaking changes are already
+    // confirmed by the page (confirm_breaking). The trust answer arrives
+    // as needsConfirm (show the modal, resubmit with force_trust) or
+    // blocked (show the reason, no proceed).
     // ------------------------------------------------------------------
-    var applyBtn     = document.getElementById('apply-btn');
-    var modal        = document.getElementById('confirm-update-modal');
-    var backdrop     = document.getElementById('confirm-update-backdrop');
-    var confirmBtn   = document.getElementById('confirm-update-btn');
-    var applyStarted = false;
+    var applyBtn        = document.getElementById('apply-btn');
+    var modal           = document.getElementById('confirm-update-modal');
+    var backdrop        = document.getElementById('confirm-update-backdrop');
+    var confirmBtn      = document.getElementById('confirm-update-btn');
+    var applyStarted    = false;
+
+    function showModal(m, b) {
+        m.style.display = 'block';
+        m.classList.add('show');
+        m.removeAttribute('aria-hidden');
+        b.style.display = 'block';
+        b.classList.add('show');
+    }
+
+    function hideModal(m, b) {
+        m.style.display = 'none';
+        m.classList.remove('show');
+        m.setAttribute('aria-hidden', 'true');
+        b.style.display = 'none';
+        b.classList.remove('show');
+    }
 
     function openModal() {
-        modal.style.display = 'block';
-        modal.classList.add('show');
-        modal.removeAttribute('aria-hidden');
-        backdrop.style.display = 'block';
-        backdrop.classList.add('show');
+        showModal(modal, backdrop);
     }
 
     function closeModal() {
-        modal.style.display = 'none';
-        modal.classList.remove('show');
-        modal.setAttribute('aria-hidden', 'true');
-        backdrop.style.display = 'none';
-        backdrop.classList.remove('show');
+        hideModal(modal, backdrop);
     }
 
-    function startApply() {
+    var trustModal      = document.getElementById('trust-confirm-modal');
+    var trustBackdrop   = document.getElementById('trust-confirm-backdrop');
+    var trustAnywayBtn  = document.getElementById('trust-apply-anyway');
+    var blockedModal    = document.getElementById('trust-blocked-modal');
+    var blockedBackdrop = document.getElementById('trust-blocked-backdrop');
+
+    function startApply(forceTrust) {
         if (applyStarted) { return; }
         applyStarted = true;
-        showCard();
-        render({percent: 0, phase_label: 'Starting...', phases: []});
 
         var body = new FormData();
         body.append('_csrf_token', '<?= csrf_token() ?>');
         body.append('confirm_breaking', '1');
+        if (forceTrust) { body.append('force_trust', '1'); }
 
-        fetch('<?= $adminBase ?>/apply', {method: 'POST', body: body})
+        fetch('<?= $adminBase ?>/apply', {
+            method: 'POST',
+            body: body,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 if (data.status === 'started' || data.status === 'completed') {
+                    showCard();
+                    render({percent: 0, phase_label: 'Starting...', phases: []});
                     poll();
-                } else {
-                    applyStarted = false;
-                    label.textContent = 'Could not start';
-                    detail.textContent = data.message || '';
-                    bar.classList.remove('progress-bar-animated');
-                    bar.classList.add('bg-danger');
-                    applyBtn.disabled = false;
+                    return;
                 }
+                applyStarted = false;
+                if (data.needsConfirm) {
+                    document.getElementById('trust-confirm-version').textContent = (data.core && data.core.version) ? 'v' + data.core.version : '';
+                    showModal(trustModal, trustBackdrop);
+                    return;
+                }
+                if (data.blocked) {
+                    document.getElementById('trust-blocked-warning').textContent = data.warning || 'No reason provided.';
+                    showModal(blockedModal, blockedBackdrop);
+                    return;
+                }
+                label.textContent = 'Could not start';
+                detail.textContent = data.message || '';
+                updateFailureCard();
             })
             .catch(function () {
                 applyStarted = false;
                 label.textContent = 'Could not start';
                 detail.textContent = 'The request failed. Check the server logs.';
+                updateFailureCard();
             });
+    }
+
+    function updateFailureCard() {
+        showCard();
+        bar.classList.remove('progress-bar-animated');
+        bar.classList.add('bg-danger');
+        applyBtn.disabled = false;
     }
 
     if (applyBtn) {
@@ -531,7 +656,13 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
     if (confirmBtn) {
         confirmBtn.addEventListener('click', function () {
             closeModal();
-            startApply();
+            startApply(false);
+        });
+    }
+    if (trustAnywayBtn) {
+        trustAnywayBtn.addEventListener('click', function () {
+            hideModal(trustModal, trustBackdrop);
+            startApply(true);
         });
     }
     if (modal) {
@@ -540,8 +671,17 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
         });
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape' && modal.style.display === 'block') { closeModal(); }
+            if (event.key === 'Escape' && trustModal.style.display === 'block') { hideModal(trustModal, trustBackdrop); }
+            if (event.key === 'Escape' && blockedModal.style.display === 'block') { hideModal(blockedModal, blockedBackdrop); }
         });
     }
+    [[trustModal, trustBackdrop], [blockedModal, blockedBackdrop]].forEach(function (pair) {
+        pair[0].querySelectorAll('[data-bs-dismiss="modal"]').forEach(function (el) {
+            el.addEventListener('click', function () {
+                hideModal(pair[0], pair[1]);
+            });
+        });
+    });
 
     // ------------------------------------------------------------------
     // Settings save: inline confirmation, no page reload (v2 pattern).
@@ -568,6 +708,53 @@ foreach ($addonSections as $addonLabel => $addonRows): ?>
                 .catch(function () { saveBtn.disabled = false; });
         });
     }
+
+    // ------------------------------------------------------------------
+    // Trust recheck: per-row buttons hit the existing core recheck
+    // endpoints (identity re-derived server-side) and swap the badge in
+    // place. The badge markup mirrors the trust_badge() helper.
+    // ------------------------------------------------------------------
+    var csrfToken = '<?= csrf_token() ?>';
+
+    function badgeHtml(status, warning) {
+        var w = warning ? ' title="' + esc(warning) + '"' : '';
+        switch (status) {
+            case 'trusted':   return '<span class="badge bg-green-lt text-success"><i class="ti ti-shield-check me-1"></i>Trusted</span>';
+            case 'known':     return '<span class="badge bg-azure-lt"' + w + '><i class="ti ti-shield me-1"></i>Known</span>';
+            case 'malicious': return '<span class="badge bg-red-lt text-danger"' + w + '><i class="ti ti-alert-triangle me-1"></i>Malicious</span>';
+            case 'unknown':   return '<span class="badge bg-yellow-lt text-yellow"><i class="ti ti-help me-1"></i>Unknown</span>';
+            default:          return '<span class="badge bg-secondary-lt"><i class="ti ti-circle-dashed me-1"></i>Not checked</span>';
+        }
+    }
+
+    document.querySelectorAll('[data-trust-recheck]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var kind = btn.getAttribute('data-trust-recheck');
+            var cell = btn.closest('td').querySelector('[data-trust-cell]');
+            var body = new FormData();
+            body.append('_csrf_token', csrfToken);
+            body.append(kind === 'theme' ? 'folder' : 'plugin', btn.getAttribute('data-handle'));
+
+            btn.classList.add('disabled');
+            fetch(kind === 'theme' ? '/admin/themes/recheck' : '/admin/plugins/recheck', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: body
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data && data.ok && cell) {
+                        cell.innerHTML = badgeHtml(data.status, data.warning);
+                    }
+                })
+                .catch(function () {
+                    // Leave the badge as it was.
+                })
+                .finally(function () {
+                    btn.classList.remove('disabled');
+                });
+        });
+    });
 
     if (running) {
         showCard();

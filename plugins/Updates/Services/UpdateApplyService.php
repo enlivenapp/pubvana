@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pubvana\Plugins\Updates\Services;
 
 use flight\Engine;
+use Pubvana\Models\TrustCache;
 use Pubvana\Plugins\Backups\Services\ProgressReporter as BackupProgressReporter;
 use RuntimeException;
 use Throwable;
@@ -63,6 +64,12 @@ final class UpdateApplyService
             return false;
         }
 
+        $refusal = $this->trustRefusal($targetVersion, $ignoreBreaking);
+        if ($refusal !== null) {
+            $reporter->error($refusal);
+            return false;
+        }
+
         if ($onProgress !== null) {
             $reporter->onWrite($onProgress);
         }
@@ -97,6 +104,53 @@ final class UpdateApplyService
         } finally {
             $reporter->releaseLock();
         }
+    }
+
+    /**
+     * The trust verdict for a release, same posture as the activation gate.
+     * Malicious is always refused. Un-evaluated releases block automatic
+     * runs only: a manual run is itself the confirmation, and the web apply
+     * carries its own modal gate before reaching this service.
+     *
+     * The cached answer is preferred. The web gate stores it seconds before
+     * the run starts (or hours before, for the auto-update cron); only a
+     * cache miss asks the trust service live. A trust layer outage never
+     * blocks an update: fail closed is for verdicts, not for reachability.
+     */
+    private function trustRefusal(string $targetVersion, bool $manual): ?string
+    {
+        try {
+            $client = $this->app->trustClient();
+            $item   = $client->coreItem($targetVersion);
+        } catch (Throwable) {
+            return null;
+        }
+
+        try {
+            $status  = null;
+            $warning = null;
+            $cached  = $client->getCachedStatus($item['type'], $item['slug'], $item['version'], $item['author']);
+            if ($cached !== null) {
+                $status  = $cached['status'];
+                $warning = $cached['warning'];
+            } else {
+                $answer  = $client->checkAddon($item['type'], $item['slug'], $item['version'], $item['author'], $item['origin']);
+                $status  = $answer['status'];
+                $warning = $answer['warning'];
+            }
+        } catch (Throwable) {
+            return null;
+        }
+
+        if ($status === TrustCache::STATUS_MALICIOUS) {
+            return 'The Pubvana trust service found this release to be malicious'
+                . ($warning !== null && $warning !== '' ? ': ' . $warning : '.');
+        }
+        if ($status === TrustCache::STATUS_UNKNOWN && !$manual) {
+            return 'The Pubvana trust service has not evaluated this release yet, so an automatic update cannot apply it.';
+        }
+
+        return null;
     }
 
     /**

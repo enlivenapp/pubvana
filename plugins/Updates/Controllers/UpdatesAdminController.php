@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pubvana\Plugins\Updates\Controllers;
 
 use Pubvana\Controllers\Admin\AdminController;
+use Pubvana\Models\TrustCache;
 use Pubvana\Plugins\Updates\Services\UpdateApplyService;
 use Pubvana\Plugins\Updates\Services\UpdateProgress;
 use Pubvana\Plugins\Updates\Services\UpdateService;
@@ -72,18 +73,126 @@ final class UpdatesAdminController extends AdminController
 
         $targetVersion = (string) ($state['target_version'] ?? '');
 
+        // The target release's standing in the trust cache, shown next to
+        // the Update button and restated in the confirm modal. Cache reads
+        // only: the live ask happens on the apply request and on the
+        // "Check for updates" action. One map read answers every lookup
+        // on this page; a trust-layer failure degrades to 'not checked'.
+        $trust = ['status' => 'none', 'warning' => null];
+        $statusMap = [];
+        try {
+            $statusMap = $this->app->trustClient()->statusesForAll();
+        } catch (Throwable) {
+            $statusMap = [];
+        }
+
+        if ($targetVersion !== '') {
+            try {
+                $item = $this->app->trustClient()->coreItem($targetVersion);
+                $cached = $statusMap[TrustCache::compositeKey(
+                    $item['type'],
+                    $item['slug'],
+                    $item['version'],
+                    $item['author']
+                )] ?? null;
+                if ($cached !== null) {
+                    $trust = ['status' => $cached['status'], 'warning' => $cached['warning']];
+                }
+            } catch (Throwable) {
+                $trust = ['status' => 'none', 'warning' => null];
+            }
+        }
+
+        // Stamp each addon inventory row with its trust standing (cache
+        // reads only; the live ask belongs to the apply paths).
+        $addons = $service->addons();
+        try {
+            foreach ($addons['themes'] as $index => $row) {
+                $addons['themes'][$index] = $this->stampAddonTrust(
+                    $row,
+                    $row['folder'] !== null ? $this->app->trustClient()->themeItem($row['folder']) : null,
+                    $statusMap
+                );
+            }
+
+            $discovered = array_merge(
+                $this->app->pluginLoader()->discoverLocal(),
+                $this->app->pluginLoader()->discoverVendor()
+            );
+            foreach ($addons['plugins'] as $index => $row) {
+                $addons['plugins'][$index] = $this->stampAddonTrust(
+                    $row,
+                    $this->trustItemForPlugin($row['id'], $discovered[$row['id']] ?? []),
+                    $statusMap
+                );
+            }
+        } catch (Throwable) {
+            // Rows without a stamped standing render as 'not checked'.
+        }
+
         $this->render('pubvana/updates/admin/index', [
             'pageTitle'     => 'Updates',
             'state'         => $state,
             'auto'          => $service->autoUpdateEnabled(),
             'skipped'       => $service->skippedVersions(),
             'preflight'     => $targetVersion !== '' ? $service->preFlight($targetVersion) : [],
-            'addons'        => $service->addons(),
+            'addons'        => $addons,
             'progress'      => $progress,
             'is_locked'     => $this->isLocked(),
             'changelog_url' => $this->changelogUrl(),
             'adminBase'     => $this->adminBase(),
+            'trust'         => $trust,
         ]);
+    }
+
+    /**
+     * Copy the addon row and attach its trust standing, defaulting to
+     * 'not checked' when the addon has no checkable identity. Lookups run
+     * against the page-level status map, not the cache table directly.
+     *
+     * @param array<string, mixed> $row
+     * @param array{type: string, slug: string, version: string, author: string, origin: string}|null $item
+     * @param array<string, array{status: string, warning: ?string, checked_at: string}> $statusMap
+     * @return array<string, mixed>
+     */
+    private function stampAddonTrust(array $row, ?array $item, array $statusMap): array
+    {
+        $row['trust_status'] = 'none';
+        $row['trust_warning'] = null;
+
+        if ($item === null) {
+            return $row;
+        }
+
+        $cached = $statusMap[TrustCache::compositeKey(
+            $item['type'],
+            $item['slug'],
+            $item['version'],
+            $item['author']
+        )] ?? null;
+
+        if ($cached !== null) {
+            $row['trust_status'] = $cached['status'];
+            $row['trust_warning'] = $cached['warning'];
+        }
+
+        return $row;
+    }
+
+    /**
+     * @param array<string, mixed> $info
+     * @return array{type: string, slug: string, version: string, author: string, origin: string}|null
+     */
+    private function trustItemForPlugin(string $id, array $info): ?array
+    {
+        if ($info === []) {
+            return null;
+        }
+        try {
+            return $this->app->trustClient()->pluginItem($id, $info);
+        } catch (Throwable) {
+            return null;
+        }
     }
 
     /**
@@ -106,6 +215,18 @@ final class UpdatesAdminController extends AdminController
 
         try {
             $state = $this->service()->check(true);
+
+            // Same action refreshes trust standings: the target release
+            // (named by the fresh state) plus every installed addon, one
+            // batch. A trust outage must not mask the feed result.
+            if ($state['status'] !== 'error') {
+                try {
+                    $target = (string) ($state['target_version'] ?? '');
+                    $this->app->trustClient()->recheckAll($target !== '' ? $target : null);
+                } catch (Throwable) {
+                    // Page re-renders with the previous or 'not checked' badges.
+                }
+            }
 
             if ($state['status'] === 'available') {
                 $this->app->session()->flash('info', 'Version ' . $state['target_version'] . ' is available.');
@@ -148,6 +269,22 @@ final class UpdatesAdminController extends AdminController
 
         if ($target === '') {
             $this->app->json(['status' => 'error', 'message' => 'No update is available to apply.']);
+            return;
+        }
+
+        // Trust gate, same posture as the activation gates in core: trusted
+        // proceeds, unknown needs the admin's modal confirmation (force_trust
+        // on the confirmed resubmit), malicious is refused outright.
+        $isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
+        $refusal = $this->trustGate(
+            $this->app->trustClient()->coreItem($target),
+            'core',
+            ['name' => 'Pubvana', 'version' => $target],
+            isset($data['force_trust']),
+            $isAjax
+        );
+        if ($refusal !== null) {
+            $this->app->json(['status' => 'error', 'message' => 'Update ' . $refusal]);
             return;
         }
 

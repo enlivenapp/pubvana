@@ -96,12 +96,14 @@ namespace flight {
      * @phpstan-method \Pubvana\Services\CronService cron()
      * @phpstan-method \Pubvana\Services\AssetService asset()
      * @phpstan-method \Pubvana\Services\CaptchaService captcha()
+     * @phpstan-method \Pubvana\Services\TrustClientService trustClient()
      * @phpstan-method \Pubvana\Services\PluginLoader pluginLoader()
      * @phpstan-method \Enlivenapp\FlightSessions\SessionManager session()
      * @phpstan-method \Enlivenapp\FlightShield\Auth auth()
      *
      * Plugin service facades, registered by each plugin's Plugin.php.
      *
+     * @phpstan-method \Pubvana\Plugins\Trust\Services\TrustService trust()
      * @phpstan-method \Pubvana\Plugins\Pages\Services\PagesService pages()
      * @phpstan-method \Pubvana\Plugins\Docs\Services\DocsService docs()
      * @phpstan-method \Pubvana\Plugins\Media\Services\MediaService media()
@@ -237,6 +239,10 @@ namespace Pubvana\Services {
     {
     }
 
+    class TrustClientService
+    {
+    }
+
     class CaptchaMiddleware
     {
     }
@@ -276,6 +282,12 @@ namespace Ahc\Cli\IO {
 
 namespace Pubvana\Plugins\Pages\Services {
     class PagesService
+    {
+    }
+}
+
+namespace Pubvana\Plugins\Trust\Services {
+    class TrustService
     {
     }
 }

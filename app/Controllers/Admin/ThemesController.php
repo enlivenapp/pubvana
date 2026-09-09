@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pubvana\Controllers\Admin;
 
+use Pubvana\Models\TrustCache;
 use Pubvana\Services\RegionManager;
 use Pubvana\Services\ThemeService;
 use Pubvana\Models\Theme;
@@ -43,6 +44,10 @@ class ThemesController extends AdminController
 
     /**
      * Theme listing — syncs filesystem, shows all themes with activate buttons.
+     *
+     * Trust statuses come from the shared trust cache; any theme with no
+     * cache row is live-checked first (one batch) so fresh installs show real
+     * answers. A trust-layer failure degrades to 'no data' badges.
      */
     public function index(): void
     {
@@ -51,26 +56,106 @@ class ThemesController extends AdminController
 
         $themes = (new Theme($this->app->db()))->getAll();
 
+        $trust = [];
+        $maliciousActive = [];
+        try {
+            $this->app->trustClient()->ensureCacheForAll();
+            $statuses = $this->app->trustClient()->statusesForAll();
+            foreach ($themes as $theme) {
+                $folder = (string) $theme->folder;
+                $trust[$folder] = ['status' => 'none', 'warning' => null];
+
+                $item = $this->app->trustClient()->themeItem($folder);
+                if ($item !== null) {
+                    $cached = $statuses[TrustCache::compositeKey(
+                        $item['type'],
+                        $item['slug'],
+                        $item['version'],
+                        $item['author']
+                    )] ?? null;
+                    if ($cached !== null) {
+                        $trust[$folder] = ['status' => $cached['status'], 'warning' => $cached['warning']];
+                    }
+                }
+
+                if (!empty($theme->is_active) && $trust[$folder]['status'] === TrustCache::STATUS_MALICIOUS) {
+                    $maliciousActive[] = [
+                        'name'    => (string) $theme->name,
+                        'warning' => $trust[$folder]['warning'],
+                    ];
+                }
+            }
+        } catch (\Throwable) {
+            foreach ($themes as $theme) {
+                $trust[(string) $theme->folder] = ['status' => 'none', 'warning' => null];
+            }
+        }
+
         $theme_info = [];
         foreach ($themes as $theme) {
             $theme_info[$theme->folder] = $this->readThemeInfo($theme->folder);
         }
 
         $this->render('admin/themes/index', [
-            'pageTitle'  => 'Themes',
-            'themes'     => $themes,
-            'validation' => $service->getValidationResults(),
-            'theme_info' => $theme_info,
+            'pageTitle'       => 'Themes',
+            'themes'          => $themes,
+            'validation'      => $service->getValidationResults(),
+            'theme_info'      => $theme_info,
+            'trust'           => $trust,
+            'maliciousActive' => $maliciousActive,
         ]);
     }
 
     /**
      * Activate a theme.
+     *
+     * The trust gate runs before activation: a malicious theme is refused, an
+     * unknown one needs the admin's confirmation in the modal (force=1 on the
+     * confirmed resubmit), a known or trusted one proceeds untouched.
      */
     public function activate(string $id): void
     {
         $service = $this->service();
+        $theme = new Theme($this->app->db());
+        $theme->eq('id', (int) $id)->find();
+
+        if (!$theme->isHydrated()) {
+            $this->app->redirect('/admin/themes');
+            return;
+        }
+
+        $data = $this->app->request()->data->getData();
+        $isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
+        $force = !empty($data['force']);
+
+        $refusal = $this->themeTrustVerdict($theme, $force, $isAjax);
+        if ($refusal !== null) {
+            if (method_exists($this->app, 'session')) {
+                $this->app->session()->flash('error', 'Theme ' . $refusal);
+            }
+            $this->app->redirect('/admin/themes');
+            return;
+        }
+
         $status = $service->activate((int) $id);
+
+        if ($isAjax) {
+            if ($status === 'activated') {
+                $this->app->jsonHalt(['ok' => true]);
+            }
+            $errorText = match ($status) {
+                'not_found' => 'Theme not found.',
+                'disabled'  => 'Theme is disabled and cannot be activated.',
+                'invalid'   => 'Theme failed validation (PHP detected in template files).',
+                default     => 'Could not activate theme.',
+            };
+            // Flash also: the JS reloads after the JSON answer and the flash
+            // is how the error reaches the fresh page.
+            if (method_exists($this->app, 'session')) {
+                $this->app->session()->flash('error', $errorText);
+            }
+            $this->app->jsonHalt(['ok' => false, 'error' => $errorText]);
+        }
 
         $flash = match ($status) {
             'activated' => ['success', 'Theme activated.'],
@@ -85,6 +170,77 @@ class ThemesController extends AdminController
         }
 
         $this->app->redirect('/admin/themes');
+    }
+
+    /**
+     * Manual recheck of one theme by folder (AJAX), for screens that list
+     * themes by folder rather than by DB id (the Updates screen inventory).
+     */
+    public function recheckByFolder(): void
+    {
+        $folder = (string) ($this->app->request()->data->getData()['folder'] ?? '');
+        if ($folder === '') {
+            $this->app->jsonHalt(['ok' => false, 'error' => 'No theme given.'], 422);
+        }
+
+        try {
+            $item = $this->app->trustClient()->themeItem($folder);
+        } catch (\Throwable) {
+            $item = null;
+        }
+
+        if ($item === null) {
+            $this->app->jsonHalt(['ok' => false, 'error' => 'This theme has no version to check.'], 422);
+        }
+
+        $result = $this->trustLiveStatus($item);
+
+        if (!$result['answered']) {
+            $this->app->jsonHalt(['ok' => false, 'error' => 'The trust service could not be reached.'], 503);
+        }
+
+        $this->app->jsonHalt([
+            'ok'      => true,
+            'status'  => $result['status'],
+            'warning' => $result['warning'],
+        ]);
+    }
+
+    /**
+     * Manual recheck of one theme (AJAX). Re-derives the theme's identity
+     * from its manifest, asks the trust service live, updates the cache, and
+     * answers with the fresh status so the page can update the badge.
+     */
+    public function recheck(string $id): void
+    {
+        $theme = new Theme($this->app->db());
+        $theme->eq('id', (int) $id)->find();
+
+        if (!$theme->isHydrated()) {
+            $this->app->jsonHalt(['ok' => false, 'error' => 'Unknown theme.'], 404);
+        }
+
+        try {
+            $item = $this->app->trustClient()->themeItem((string) $theme->folder);
+        } catch (\Throwable) {
+            $item = null;
+        }
+
+        if ($item === null) {
+            $this->app->jsonHalt(['ok' => false, 'error' => 'This theme has no version to check.'], 422);
+        }
+
+        $result = $this->trustLiveStatus($item);
+
+        if (!$result['answered']) {
+            $this->app->jsonHalt(['ok' => false, 'error' => 'The trust service could not be reached.'], 503);
+        }
+
+        $this->app->jsonHalt([
+            'ok'      => true,
+            'status'  => $result['status'],
+            'warning' => $result['warning'],
+        ]);
     }
 
     /**
@@ -336,6 +492,29 @@ class ThemesController extends AdminController
     {
         $config = \HTMLPurifier_Config::createDefault();
         return (new \HTMLPurifier($config))->purify($html);
+    }
+
+    /**
+     * The trust verdict for a theme activation, via the shared admin gate.
+     */
+    private function themeTrustVerdict(Theme $theme, bool $force, bool $isAjax): ?string
+    {
+        try {
+            $item = $this->app->trustClient()->themeItem((string) $theme->folder);
+        } catch (\Throwable) {
+            $item = null;
+        }
+        if ($item === null) {
+            return null;
+        }
+
+        $payload = [
+            'id'      => (int) $theme->id,
+            'name'    => (string) $theme->name,
+            'version' => $item['version'],
+        ];
+
+        return $this->trustGate($item, 'theme', $payload, $force, $isAjax);
     }
 
     /**

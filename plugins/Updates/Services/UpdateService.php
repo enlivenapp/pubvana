@@ -875,11 +875,12 @@ class UpdateService
     /**
      * Inventory of installed themes, blocks, and plugins for the Updates
      * page. Read-only, no network: update sources do not exist yet (the
-     * Marketplace will register them), so themes/plugins carry name and
-     * version ("No update source" on the page) and blocks carry who
-     * updates them.
+     * Marketplace will register them), so themes/plugins carry name, id,
+     * and version ("No update source" on the page) and blocks carry who
+     * updates them. Themes carry the folder and plugins the package id so
+     * the admin screen can stamp each row with its trust standing.
      *
-     * @return array{themes: list<array{name: string, version: ?string}>, blocks: list<array{name: string, updates_with: string}>, plugins: list<array{name: string, version: ?string}>}
+     * @return array{themes: list<array{name: string, folder: ?string, version: ?string}>, blocks: list<array{name: string, updates_with: string}>, plugins: list<array{name: string, id: string, version: ?string}>}
      */
     public function addons(): array
     {
@@ -891,7 +892,7 @@ class UpdateService
     }
 
     /**
-     * @return list<array{name: string, version: ?string}>
+     * @return list<array{name: string, folder: ?string, version: ?string}>
      */
     private function inventoryThemes(): array
     {
@@ -912,6 +913,7 @@ class UpdateService
 
             $rows[] = [
                 'name'    => $name,
+                'folder'  => is_string($theme['folder'] ?? null) ? $theme['folder'] : null,
                 'version' => is_string($version) && $version !== '' ? $version : null,
             ];
         }
@@ -1019,11 +1021,11 @@ class UpdateService
     }
 
     /**
-     * @return list<array{name: string, version: ?string}>
+     * @return list<array{name: string, id: string, version: ?string}>
      */
     private function inventoryPlugins(): array
     {
-        /** @var array<string, array{name: string, version: ?string}> $rows */
+        /** @var array<string, array{name: string, id: string, version: ?string}> $rows */
         $rows = [];
         $names = $this->pluginDisplayNames();
 
@@ -1038,6 +1040,7 @@ class UpdateService
 
             $rows[$pluginId] = [
                 'name'    => $names[$pluginId] ?? $pluginId,
+                'id'      => (string) $pluginId,
                 'version' => is_string($version) && $version !== '' ? $version : null,
             ];
         }
@@ -1057,6 +1060,7 @@ class UpdateService
 
             $rows[$packageId] = [
                 'name'    => $names[$packageId] ?? $packageId,
+                'id'      => (string) $packageId,
                 'version' => is_string($version) && $version !== '' ? $version : null,
             ];
         }

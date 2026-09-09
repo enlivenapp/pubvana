@@ -235,6 +235,8 @@ $adext->addRoutes('admin', [
 $adext->addRoutes('admin', [
     ['GET',    '/themes',                      [ThemesController::class, 'index'],            [$authMiddleware]],
     ['POST',   '/themes/@id/activate',         [ThemesController::class, 'activate'],         [$authMiddleware]],
+    ['POST',   '/themes/@id/recheck',          [ThemesController::class, 'recheck'],          [$authMiddleware]],
+    ['POST',   '/themes/recheck',              [ThemesController::class, 'recheckByFolder'],  [$authMiddleware]],
     ['GET',    '/themes/@id/options',          [ThemesController::class, 'options'],          [$authMiddleware]],
     ['POST',   '/themes/@id/options',          [ThemesController::class, 'saveOptions'],      [$authMiddleware]],
     ['GET',    '/themes/regions',              [ThemesController::class, 'regions'],          [$authMiddleware]],
@@ -270,10 +272,11 @@ $adext->addRoutes('admin', [
     ['POST', '/email/test',  [EmailAdminController::class, 'test'],  [$authMiddleware]],
 ], 'pubvana.core', true);
 
-// Plugins (enable/disable + priority)
+// Plugins (enable/disable + priority, trust status, forced recheck)
 $adext->addRoutes('admin', [
-    ['GET',  '/plugins',      [PluginsController::class, 'index'], [$authMiddleware, $forceResetMiddleware]],
-    ['POST', '/plugins/save', [PluginsController::class, 'save'], [ $authMiddleware]],
+    ['GET',  '/plugins',           [PluginsController::class, 'index'],  [$authMiddleware, $forceResetMiddleware]],
+    ['POST', '/plugins/save',      [PluginsController::class, 'save'],   [ $authMiddleware]],
+    ['POST', '/plugins/recheck',   [PluginsController::class, 'recheck'], [$authMiddleware]],
 ], 'pubvana.core', true);
 
 // Navigation
@@ -759,5 +762,16 @@ $adext->register('admin.dashboard', 'sections', 'pubvana.admin', [
                 ],
             ],
         ]];
+    },
+]);
+
+// Trust check (4h cron). The service self-throttles to one full batch per
+// 24h and honors home-site malicious findings on every tick, so the cron
+// cadence bounds discovery time without flooding pubvanacms.com.
+$adext->register('cron', '4h', 'pubvana.core', [
+    'label'    => 'Trust check against pubvanacms.com',
+    'priority' => 60,
+    'callable' => function () use ($app): void {
+        $app->trustClient()->checkIfDue();
     },
 ]);

@@ -2,6 +2,8 @@
     "display_name": "Default",
     "description": "Pubvana's free default theme built on Bootswatch Flatly (Bootstrap 5). See Tools -> Marketplace -> Catalog for more options",
     "category": "presentation",
+    "author": "pubvana",
+    "slug": "default",
     "icon": "icon.svg",
     "semver": "1.4.12",
     "provides": {

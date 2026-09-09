@@ -304,4 +304,109 @@ class AdminController
     {
         return $this->app->get($this->configPrepend . '.' . $key) ?? $default;
     }
+
+    // -----------------------------------------------------------------
+    // Trust gate (shared by PluginsController and ThemesController)
+    // -----------------------------------------------------------------
+
+    /**
+     * Cached trust status for an addon, null on cache miss or trust-layer
+     * failure. A trust outage must never disable an admin page.
+     *
+     * @param array{type: string, slug: string, version: string, author: string, origin: string} $item
+     * @return array{status: string, warning: ?string, checked_at: string}|null
+     */
+    protected function trustCachedStatus(array $item): ?array
+    {
+        try {
+            return $this->app->trustClient()->getCachedStatus(
+                $item['type'],
+                $item['slug'],
+                $item['version'],
+                $item['author']
+            );
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * Live trust status for an addon. answered=false marks a network
+     * failure: status is the placeholder 'unknown' and nothing was asked.
+     * The catch is for trust-layer code failures.
+     *
+     * @param array{type: string, slug: string, version: string, author: string, origin: string} $item
+     * @return array{status: string, warning: ?string, answered: bool}
+     */
+    protected function trustLiveStatus(array $item): array
+    {
+        try {
+            return $this->app->trustClient()->checkAddon(
+                $item['type'],
+                $item['slug'],
+                $item['version'],
+                $item['author'],
+                $item['origin']
+            );
+        } catch (\Throwable) {
+            return ['status' => 'unknown', 'warning' => null, 'answered' => false];
+        }
+    }
+
+    /**
+     * The trust gate for enabling a plugin or activating a theme.
+     *
+     * Returns null to proceed with the transition. On refusal it either
+     * answers the AJAX caller (needsConfirm for the confirmation modal, or
+     * blocked for a malicious verdict) and halts, or returns a failure
+     * reason for the non-AJAX flash message.
+     *
+     * A confirmed resubmit carries force=1: the live call is skipped, but a
+     * cached malicious verdict still refuses. Malicious is never forceable.
+     * The non-AJAX fallback has no modal, so there a cached malicious
+     * verdict is the only hard stop.
+     *
+     * @param array{type: string, slug: string, version: string, author: string, origin: string}|null $item
+     * @param array<string, mixed> $payload Context for the needsConfirm JSON (id, name, version)
+     */
+    protected function trustGate(?array $item, string $payloadKey, array $payload, bool $force, bool $isAjax): ?string
+    {
+        if ($item === null) {
+            return null;
+        }
+
+        if ($force) {
+            // The admin already confirmed the unknown case in the modal. The
+            // cached answer still rules: malicious is never forceable.
+            $cached = $this->trustCachedStatus($item);
+            if ($cached !== null && $cached['status'] === \Pubvana\Models\TrustCache::STATUS_MALICIOUS) {
+                if ($isAjax) {
+                    $this->app->jsonHalt(['blocked' => true, 'warning' => $cached['warning']]);
+                }
+                return 'has been found malicious by the Pubvana trust service';
+            }
+            return null;
+        }
+
+        if ($isAjax) {
+            $result = $this->trustLiveStatus($item);
+
+            if ($result['status'] === \Pubvana\Models\TrustCache::STATUS_MALICIOUS) {
+                $this->app->jsonHalt(['blocked' => true, 'warning' => $result['warning']]);
+            }
+            if ($result['status'] === \Pubvana\Models\TrustCache::STATUS_UNKNOWN) {
+                $this->app->jsonHalt(['needsConfirm' => true, $payloadKey => $payload]);
+            }
+            return null;
+        }
+
+        // Non-AJAX fallback: a cached malicious verdict is the only hard
+        // stop. Anything else proceeds; the badge already shows the status.
+        $cached = $this->trustCachedStatus($item);
+        if ($cached !== null && $cached['status'] === \Pubvana\Models\TrustCache::STATUS_MALICIOUS) {
+            return 'has been found malicious by the Pubvana trust service';
+        }
+
+        return null;
+    }
 }

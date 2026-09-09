@@ -36,6 +36,11 @@ if (!defined('PROJECT_ROOT')) {
     define('PROJECT_ROOT', dirname(__DIR__, 2));
 }
 
+// Global view helpers (guard-guarded, safe to load once per boot). Required
+// here so both boot paths (web bootstrap.php and the CLI, which loads this
+// file directly) carry them.
+require(__DIR__ . $ds . '..' . $ds . 'Support' . $ds . 'helpers.php');
+
 // Ensure config values are loaded into the app. There is no single config
 // file anymore, so $config is never populated under either boot path;
 // values come from env-overrides.php below.
@@ -444,6 +449,26 @@ if (is_file($shieldConfigFile)) {
         $app->set('plugins', $plugins);
     }
 }
+
+/*
+|--------------------------------------------------------------------------
+| Trust Client
+|--------------------------------------------------------------------------
+| Client for the Pubvana trust service at pubvanacms.com. Collects the
+| addons installed here, asks the check API for each one's standing, and
+| caches the answers in trust_cache. The 4h cron (registered in
+| core-admin.php) runs the TTL-gated batch; the admin plugins/themes pages
+| and the activation gate read the cache or check live.
+|
+| Access anywhere with: $app->trustClient()->checkAddon(...)
+*/
+$app->map('trustClient', function () use ($app) {
+    static $instance = null;
+    if ($instance === null) {
+        $instance = new \Pubvana\Services\TrustClientService($app->db(), $app);
+    }
+    return $instance;
+});
 
 /*
 |--------------------------------------------------------------------------

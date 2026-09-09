@@ -378,5 +378,85 @@ final class Sqlite
                 permission_id INTEGER NOT NULL
             )'
         );
+
+        /*
+         * Trust plugin tables. Column shapes mirror
+         * plugins/Trust/Database/Migrations/2026-09-09-223538_CreateTrustAddonsTables.php
+         * (which supersedes the flat table from 054540) and 0{54539,54542}.
+         */
+        $pdo->exec(
+            'CREATE TABLE trust_instances (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                base_url      TEXT NOT NULL UNIQUE,
+                pv_version    TEXT NOT NULL,
+                last_check_at TEXT,
+                created_at    TEXT,
+                updated_at    TEXT
+            )'
+        );
+
+        $pdo->exec(
+            "CREATE TABLE trust_addons (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                type      TEXT NOT NULL,
+                author    TEXT NOT NULL,
+                slug      TEXT NOT NULL,
+                status    TEXT NOT NULL,
+                warning   TEXT,
+                created_at TEXT,
+                updated_at TEXT,
+                UNIQUE (type, author, slug)
+            )"
+        );
+
+        $pdo->exec(
+            "CREATE TABLE trust_addon_versions (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                addon_id   INTEGER NOT NULL,
+                version    TEXT NOT NULL,
+                status     TEXT NOT NULL,
+                warning    TEXT,
+                checked_at TEXT,
+                created_at TEXT,
+                updated_at TEXT,
+                UNIQUE (addon_id, version)
+            )"
+        );
+
+        $pdo->exec(
+            "CREATE TABLE trust_requests (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                type          TEXT NOT NULL,
+                slug          TEXT NOT NULL,
+                version       TEXT NOT NULL,
+                author        TEXT NOT NULL,
+                author_email  TEXT NOT NULL,
+                status        TEXT NOT NULL DEFAULT 'pending',
+                decision_note TEXT,
+                zip_path      TEXT NOT NULL,
+                created_at    TEXT,
+                updated_at    TEXT
+            )"
+        );
+
+        /*
+         * Trust client cache. Column shapes mirror
+         * app/Database/Migrations/2026-09-09-172135_CreateTrustCacheTable.php.
+         */
+        $pdo->exec(
+            "CREATE TABLE trust_cache (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                type       TEXT NOT NULL,
+                slug       TEXT NOT NULL,
+                version    TEXT NOT NULL,
+                author     TEXT NOT NULL,
+                status     TEXT NOT NULL,
+                warning    TEXT,
+                checked_at TEXT NOT NULL,
+                created_at TEXT,
+                updated_at TEXT,
+                UNIQUE (type, slug, version, author)
+            )"
+        );
     }
 }

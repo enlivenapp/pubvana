@@ -415,21 +415,16 @@ final class UpdateServiceTest extends TestCase
 
         $addons = $service->addons();
 
-        self::assertSame([['name' => 'Default', 'version' => '1.0.0']], $addons['themes']);
+        self::assertSame([['name' => 'Default', 'folder' => 'default', 'version' => '1.0.0']], $addons['themes']);
         self::assertSame([
             ['name' => 'Recent Posts', 'updates_with' => 'Blog'],
             ['name' => 'Text', 'updates_with' => 'Core Blocks'],
             ['name' => 'HTML', 'updates_with' => 'Core Blocks'],
         ], $addons['blocks']);
         self::assertSame([
-            ['name' => 'enlivenapp/flight-sessions', 'version' => '0.1.0'],
-            ['name' => 'Blog', 'version' => '1.2.0'],
-            ['name' => 'Core Blocks', 'version' => '1.0.0'],
-        ], $addons['plugins']);
-        self::assertSame([
-            ['name' => 'enlivenapp/flight-sessions', 'version' => '0.1.0'],
-            ['name' => 'Blog', 'version' => '1.2.0'],
-            ['name' => 'Core Blocks', 'version' => '1.0.0'],
+            ['name' => 'enlivenapp/flight-sessions', 'id' => 'enlivenapp/flight-sessions', 'version' => '0.1.0'],
+            ['name' => 'Blog', 'id' => 'pubvana/blog', 'version' => '1.2.0'],
+            ['name' => 'Core Blocks', 'id' => 'pubvana/core-blocks', 'version' => '1.0.0'],
         ], $addons['plugins']);
     }
 
