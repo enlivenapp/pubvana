@@ -836,6 +836,20 @@ class PluginLoader
     }
 
     /**
+     * Get the sessionless API route prefix for a plugin.
+     *
+     * Machine-facing endpoints hang off '/api', then the plugin's own
+     * route prefix, e.g. 'pubvana/ai' becomes '/api/ai'.
+     *
+     * @param string $pluginId Plugin ID (e.g. 'pubvana/ai')
+     * @return string API prefix with leading slash (e.g. '/api/ai')
+     */
+    public function apiPrefix(string $pluginId): string
+    {
+        return '/api' . $this->routePrefix($pluginId);
+    }
+
+    /**
      * Check if a plugin is enabled.
      *
      * The source of truth is the plugin_state table (DB-backed). A plugin is

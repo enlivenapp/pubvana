@@ -30,13 +30,13 @@ Guidance for AI agents contributing to this plugin, the buy-side companion for t
 
 ### Store API surface (server-to-server, no CORS)
 
-- `GET {store}/api/categories` - categories
-- `GET {store}/api/items?currency=` - marketplace-listed items
-- `POST {store}/api/cart/add` - push item into account-bound cart
-- `GET {store}/api/purchases?domain=` - owned products + license state for this domain
-- `POST {store}/api/license/validate` - returns a download URL for a valid license
-- `POST {store}/api/license/transfer-request` - begin a domain move
-- `POST {store}/api/auth/token` - exchange email for account token
+- `GET {store}/api/store/categories` - categories
+- `GET {store}/api/store/items?currency=` - marketplace-listed items
+- `POST {store}/api/store/cart/add` - push item into account-bound cart
+- `GET {store}/api/store/purchases?domain=` - owned products + license state for this domain
+- `POST {store}/api/store/license/validate` - returns a download URL for a valid license
+- `POST {store}/api/store/license/transfer-request` - begin a domain move
+- `POST {store}/api/store/auth/token` - exchange email for account token
 
 Auth is a `Marketplace.account_token` setting sent as a `Bearer` header (and echoed in the query for GETs).
 

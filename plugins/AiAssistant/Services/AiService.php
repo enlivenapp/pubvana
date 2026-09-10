@@ -239,7 +239,7 @@ class AiService
     // -----------------------------------------------------------------
 
     /**
-     * Append one audit entry for a request to the /ai/* API.
+     * Append one audit entry for a request to the /api/ai/* API.
      *
      * Tolerant by design: if the table is absent (fresh install before
      * migrations run) the attempt is logged to error_log instead and the
@@ -321,7 +321,7 @@ class AiService
     /**
      * The complete grant catalog: permission => route/label/description.
      *
-     * Also drives /ai/help, the admin Help page, and grant-form rendering,
+     * Also drives /api/ai/help, the admin Help page, and grant-form rendering,
      * so the catalog is a single source of truth. `label` is the plain
      * English name shown to site admins; `summary` is the one-liner.
      *

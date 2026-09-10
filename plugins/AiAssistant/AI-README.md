@@ -1,6 +1,6 @@
 # AI Assistant Integration Guide
 
-This file is written for the AI itself. Use it to call the Pubvana CMS via the `/ai/*` REST API.
+This file is written for the AI itself. Use it to call the Pubvana CMS via the `/api/ai/*` REST API.
 
 ## Setup
 
@@ -22,7 +22,7 @@ Every request:
 
 On failure `data` is `null` and `errors` is a list like `[{"code": 422, "message": "title is required."}]`.
 
-You may call `GET /ai/help` for the live grant catalog and `GET /ai/help/{permission}` for details on one grant.
+You may call `GET /api/ai/help` for the live grant catalog and `GET /api/ai/help/{permission}` for details on one grant.
 
 ## Grants
 
@@ -30,41 +30,41 @@ Grants are deny-all and per key. A request that needs an ungranted permission fa
 
 | Grant | Purpose |
 | --- | --- |
-| `posts.read` | `GET /ai/posts` lists posts; `GET /ai/posts/{slug}` fetches one with full content |
-| `posts.create` | `POST /ai/posts` creates a draft post |
-| `posts.update` | `POST /ai/posts/{id}/update` |
-| `posts.delete` | `POST /ai/posts/{id}/delete` |
+| `posts.read` | `GET /api/ai/posts` lists posts; `GET /api/ai/posts/{slug}` fetches one with full content |
+| `posts.create` | `POST /api/ai/posts` creates a draft post |
+| `posts.update` | `POST /api/ai/posts/{id}/update` |
+| `posts.delete` | `POST /api/ai/posts/{id}/delete` |
 | `posts.publish` | status `published` on create/update |
 | `posts.schedule` | status `scheduled` + `publish_on` on create/update |
-| `posts.tags.read` | `GET /ai/posts/tags` |
-| `posts.categories.read` | `GET /ai/posts/categories` |
-| `pages.read` | `GET /ai/pages` lists pages; `GET /ai/pages/{slug}` fetches one with full content |
-| `pages.create` | `POST /ai/pages` creates a draft page |
-| `pages.update` | `POST /ai/pages/{id}/update` |
-| `pages.delete` | `POST /ai/pages/{id}/delete` |
+| `posts.tags.read` | `GET /api/ai/posts/tags` |
+| `posts.categories.read` | `GET /api/ai/posts/categories` |
+| `pages.read` | `GET /api/ai/pages` lists pages; `GET /api/ai/pages/{slug}` fetches one with full content |
+| `pages.create` | `POST /api/ai/pages` creates a draft page |
+| `pages.update` | `POST /api/ai/pages/{id}/update` |
+| `pages.delete` | `POST /api/ai/pages/{id}/delete` |
 | `pages.publish` | status `published` on create/update |
-| `comments.read` | `GET /ai/comments?status=pending\|approved\|rejected&page=1&per_page=25` (status optional) |
-| `comments.approve` | `POST /ai/comments/{id}/approve` |
-| `comments.reject` | `POST /ai/comments/{id}/reject` |
-| `comments.delete` | `POST /ai/comments/{id}/delete` |
-| `redirects.read` | `GET /ai/redirects` |
-| `redirects.create` | `POST /ai/redirects` |
-| `redirects.update` | `POST /ai/redirects/{id}/update` |
-| `redirects.delete` | `POST /ai/redirects/{id}/delete` |
-| `navigation.read` | `GET /ai/navigation` |
-| `navigation.create` | `POST /ai/navigation` |
-| `navigation.update` | `POST /ai/navigation/{id}/update` |
-| `navigation.delete` | `POST /ai/navigation/{id}/delete` |
+| `comments.read` | `GET /api/ai/comments?status=pending\|approved\|rejected&page=1&per_page=25` (status optional) |
+| `comments.approve` | `POST /api/ai/comments/{id}/approve` |
+| `comments.reject` | `POST /api/ai/comments/{id}/reject` |
+| `comments.delete` | `POST /api/ai/comments/{id}/delete` |
+| `redirects.read` | `GET /api/ai/redirects` |
+| `redirects.create` | `POST /api/ai/redirects` |
+| `redirects.update` | `POST /api/ai/redirects/{id}/update` |
+| `redirects.delete` | `POST /api/ai/redirects/{id}/delete` |
+| `navigation.read` | `GET /api/ai/navigation` |
+| `navigation.create` | `POST /api/ai/navigation` |
+| `navigation.update` | `POST /api/ai/navigation/{id}/update` |
+| `navigation.delete` | `POST /api/ai/navigation/{id}/delete` |
 
 Fact checking has no per-key grants. Its endpoints open to every authenticated key when the site admin accepts the fact-checking terms and switches the service on, and they refuse everything when it is off or the terms were updated without re-acceptance.
 
-`GET /ai/broken-links` and `GET /ai/analytics` are stubs and return `501`.
+`GET /api/ai/broken-links` and `GET /api/ai/analytics` are stubs and return `501`.
 
 ## Reading content
 
 Both lists and single fetches need the matching read grant.
 
-`GET /ai/posts` and `GET /ai/pages` return paginated lists over **every** status, so drafts count too. Query params:
+`GET /api/ai/posts` and `GET /api/ai/pages` return paginated lists over **every** status, so drafts count too. Query params:
 
 - `page` (default `1`), `per_page` (default `25`, max `100`).
 - `status`: posts allow `draft|published|scheduled`; pages allow `draft|published`.
@@ -83,11 +83,11 @@ List items are light (no body). Post items also carry their `excerpt` so a plain
 }
 ```
 
-`GET /ai/posts/{slug}` (and `/ai/pages/{slug}`) return the full record. The `content` field is returned as Markdown (converted from the stored HTML), so you can edit and resubmit it without fighting HTML. Use the list to find a slug, then fetch the piece you want to work on.
+`GET /api/ai/posts/{slug}` (and `/api/ai/pages/{slug}`) return the full record. The `content` field is returned as Markdown (converted from the stored HTML), so you can edit and resubmit it without fighting HTML. Use the list to find a slug, then fetch the piece you want to work on.
 
 ## Creating a post
 
-`POST /ai/posts` requires `title` plus either `content_md` (markdown, converted to sanitized HTML) or `content` (already-rendered HTML).
+`POST /api/ai/posts` requires `title` plus either `content_md` (markdown, converted to sanitized HTML) or `content` (already-rendered HTML).
 
 - `status`: `draft` (default), `published`, or `scheduled`.
   - `published` requires `posts.publish` and stamps the current time.
@@ -98,7 +98,7 @@ List items are light (no body). Post items also carry their `excerpt` so a plain
 - Optional `seo`: a nested SEO metadata object (see below).
 
 ```bash
-curl -X POST /ai/posts \
+curl -X POST /api/ai/posts \
   -H "Authorization: Bearer pvai1_..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -119,23 +119,23 @@ curl -X POST /ai/posts \
 
 Response `data` contains the serialized post plus `id` and a public `url`. The serialized post includes a `seo` block (or `seo: null` when no SEO meta exists).
 
-Updating (`POST /ai/posts/{id}/update`) is a partial update; only present fields change. Re-applying `published` keeps the original `published_at` if the post was already published; asking for `published` or `scheduled` on an existing post also requires the corresponding grant.
+Updating (`POST /api/ai/posts/{id}/update`) is a partial update; only present fields change. Re-applying `published` keeps the original `published_at` if the post was already published; asking for `published` or `scheduled` on an existing post also requires the corresponding grant.
 
 ## Creating a page
 
-`POST /ai/pages` uses the same content rule (`content_md` or `content`) plus optional `allow_comments`. Slugs are generated from the title. `status` is `draft` or `published`. Pages also accept the same optional `seo` object.
+`POST /api/ai/pages` uses the same content rule (`content_md` or `content`) plus optional `allow_comments`. Slugs are generated from the title. `status` is `draft` or `published`. Pages also accept the same optional `seo` object.
 
 ## Fact checking
 
 Fact checking lets you verify the claims in a post or page and file a structured report that the site shows in its admin and, if placed, on the public page. The flow:
 
-1. `GET /ai/fact-check/prompt` and read the returned `prompt.text`. These terms govern every check you perform. Fetch it before **every** check; the version can change.
+1. `GET /api/ai/fact-check/prompt` and read the returned `prompt.text`. These terms govern every check you perform. Fetch it before **every** check; the version can change.
 2. Fetch the content with your existing read grant (`posts.read` or `pages.read`).
 3. Check the claims under the prompt's terms: real sources, facts vs opinion, no guessing.
 4. Submit:
 
 ```
-POST /ai/posts/{id}/fact-check     (or /ai/pages/{id}/fact-check)
+POST /api/ai/posts/{id}/fact-check     (or /api/ai/pages/{id}/fact-check)
 ```
 
 ```json
@@ -173,8 +173,8 @@ Rules the API enforces:
 
 Reading reports back (needs the gate open, no extra grant):
 
-- `GET /ai/fact-checks?page=1&per_page=25&content_type=post&content_id=5` lists reports, newest first.
-- `GET /ai/fact-checks/{id}` returns one report, claims and counts included.
+- `GET /api/ai/fact-checks?page=1&per_page=25&content_type=post&content_id=5` lists reports, newest first.
+- `GET /api/ai/fact-checks/{id}` returns one report, claims and counts included.
 - A report marked `stale: true` means the content was edited after the check was made.
 
 Submitting also requires the matching read grant (`posts.read` or `pages.read`): you cannot file a report about content your key cannot pull through the API.
@@ -199,11 +199,11 @@ Both posts and pages accept a nested `seo` object on create and update. Only the
 
 ## Redirects
 
-`POST /ai/redirects` needs `source_path` (normalized: leading slash, no trailing slash) and `target_url`. Optional: `status_code` (301/302), `enabled`, `notes`.
+`POST /api/ai/redirects` needs `source_path` (normalized: leading slash, no trailing slash) and `target_url`. Optional: `status_code` (301/302), `enabled`, `notes`.
 
 ## Navigation
 
-`POST /ai/navigation` needs `label` and `url`; optional `nav_group` (default `primary`), `parent_id`, `sort_order`, `target` (`_self`/`_blank`). `GET /ai/navigation` returns items grouped by menu group. Updates are partial.
+`POST /api/ai/navigation` needs `label` and `url`; optional `nav_group` (default `primary`), `parent_id`, `sort_order`, `target` (`_self`/`_blank`). `GET /api/ai/navigation` returns items grouped by menu group. Updates are partial.
 
 ## Content safety
 

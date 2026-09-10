@@ -20,11 +20,11 @@ Guidance for AI agents contributing to this plugin, which ships inside the main 
 
 1. **Never weaken the key security model.** Only an HMAC-SHA256 hash of a token is stored (`AiService.php:827`), keyed by a domain key derived from `SESSION_ENCRYPTION_KEY` (`AiService.php:835`). The plaintext token is revealed exactly once at creation (`AiAdminController.php:60`). Never log, store, or cache a plaintext token.
 2. **Grants are deny-all.** A key with no grants can authenticate but nothing else. Every grant decision flows through `helpCatalog()` as the single source of truth (`AiService.php:321`) and `requireGrant()` as the hard gate (`AiApiController.php:821`). Do not add an ungated endpoint or a "grant everything" escape hatch.
-3. **Fact checking is site-level, and the toggle is the grant.** Fact-check endpoints open to every authenticated key when the admin has accepted the current prompt's terms and switched the service on (`FactCheckService::gateStatus()`), and refuse everything otherwise. They appear in no per-key grant form and in no `helpCatalog()` row. The prompt endpoint (`GET /ai/fact-check/prompt`) is the one exception: any authenticated key may read the terms even while the service is off. Submissions must attest to the current prompt version (`409` otherwise), and post/page submissions additionally require the matching `posts.read`/`pages.read` grant.
+3. **Fact checking is site-level, and the toggle is the grant.** Fact-check endpoints open to every authenticated key when the admin has accepted the current prompt's terms and switched the service on (`FactCheckService::gateStatus()`), and refuse everything otherwise. They appear in no per-key grant form and in no `helpCatalog()` row. The prompt endpoint (`GET /api/ai/fact-check/prompt`) is the one exception: any authenticated key may read the terms even while the service is off. Submissions must attest to the current prompt version (`409` otherwise), and post/page submissions additionally require the matching `posts.read`/`pages.read` grant.
 4. **Every request goes through the audit log.** `AiService::log()` records ok/denied/error outcomes including unauthenticated attempts (`AiService.php:239`). New endpoints must log with the same shape. Logging is tolerant by design: a missing table must not break the request (`AiService.php:256`).
 5. **Keep the response envelope.** All public API responses are `{status, data, errors}` via `ok()` and `fail()` (`AiApiController.php:844`, `AiApiController.php:853`). Do not return a different shape from a new endpoint.
 6. **Reuse peer plugin services instead of writing SQL.** Content operations go through `$this->svc('blog')`, `svc('pages')`, `svc('comments')`, `svc('redirects')`, `svc('navigation')`. When a peer plugin is unavailable the request fails with 503 (`AiApiController.php:834`). Direct DB work belongs only in this plugin's own models (`AiKey`, `AiKeyGrant`, `AiLog`, `AiFactCheck`).
-7. **Path-order matters in route registration.** Static taxonomy routes (`/ai/posts/tags`, `/ai/posts/categories`) must stay registered before the parameterized `/ai/posts/@slug` route (`Plugin.php:68`). Flight matches in order; moving the static routes below the parameterized ones breaks them.
+7. **Path-order matters in route registration.** Static taxonomy routes (`/api/ai/posts/tags`, `/api/ai/posts/categories`) must stay registered before the parameterized `/api/ai/posts/@slug` route (`Plugin.php:68`). Flight matches in order; moving the static routes below the parameterized ones breaks them.
 
 ## Repository layout
 
@@ -40,7 +40,7 @@ AiAssistant/
   Controllers/
     AiAdminController.php       # Admin: manage, createKey, updateGrants, toggleKey, deleteKey, saveAuthor, help
     AiFactCheckAdminController.php # Admin: fact-checks index/show, acceptTerms, toggle, delete
-    AiApiController.php         # Sessionless REST: /ai/* endpoints, auth, grants, audit logging, helpers
+    AiApiController.php         # Sessionless REST: /api/ai/* endpoints, auth, grants, audit logging, helpers
   Services/
     AiService.php               # Keys, grants, auth, audit log, help catalog, content serializers
     FactCheckService.php        # Fact-checking gate, prompt fetch, report validation/storage, staleness, panel + block data
@@ -68,7 +68,7 @@ AiAssistant/
 
 `Plugin.php:31` maps three singletons on the app engine: `ai` (an `AiService` wired to `$app->db()`, the engine, and the plugin config), `aiFactCheck` (a `FactCheckService` with the same wiring), and `aiMarkdown` (a `MarkdownService` with the plugin config). Admin routes are registered under `pubvana.ai` and gated by a `PermissionMiddleware` for the seeded `ai.manage` permission (`Plugin.php:53`). Public REST routes hang off `routePrefix('pubvana/ai')` so the URL prefix is configurable (`Plugin.php:50`).
 
-The CSRF middleware skips `/ai/*` (noted at `Plugin.php:23`), because these endpoints carry no session; auth is per-request bearer keys instead.
+The CSRF middleware skips `/api/ai/*` (noted at `Plugin.php:23`), because these endpoints carry no session; auth is per-request bearer keys instead.
 
 ### Authentication and grants
 
@@ -115,7 +115,7 @@ vendor/bin/phpunit tests/Unit/Plugins/AiAssistant/FactCheckServiceTest.php
 - Generate a key end to end, confirm the plaintext shows once, then disable/delete it from the admin row actions.
 - Exercise the public API with a bearer token and confirm 401 (no key), 403 (no grant), 422 (bad input), and the `{status, data, errors}` envelope.
 - Confirm a request against a disabled key clicks up `failed_attempts` and blocks when the threshold is crossed, and that a sessionless request still works (no CSRF token involved).
-- Fact checking end to end: accept terms, toggle on, `GET /ai/fact-check/prompt`, submit a report, see it in the history and editor panel, edit the content and confirm the stale badge, toggle off and confirm endpoints refuse.
+- Fact checking end to end: accept terms, toggle on, `GET /api/ai/fact-check/prompt`, submit a report, see it in the history and editor panel, edit the content and confirm the stale badge, toggle off and confirm endpoints refuse.
 - Coverage: `tests/Unit/Plugins/AiAssistant/FactCheckServiceTest.php` covers the service; controllers and views stay manual. `<!-- TODO: add [coverage target] -->`
 
 ## Coding standards
@@ -126,7 +126,7 @@ Steps that go beyond the repo-wide style, derived from the existing code:
 1. `declare(strict_types=1);` first line in every class file.
 2. Class name, file name, and namespace must align: `Pubvana\Plugins\AiAssistant\Services\AiService` lives in `Services/AiService.php`.
 3. Endpoints keep the sequence: authenticate, require grant, validate input, act, log, respond through `ok()`/`fail()`. On validation failure, log a specific `error` detail before `fail()`.
-4. Every new permission must be added to `helpCatalog()` (`AiService.php:321`) with its route group, label, summary, and endpoints. The catalog drives `/ai/help`, the admin help page, and grant-form rendering, so it is the point of truth for grants.
+4. Every new permission must be added to `helpCatalog()` (`AiService.php:321`) with its route group, label, summary, and endpoints. The catalog drives `/api/ai/help`, the admin help page, and grant-form rendering, so it is the point of truth for grants.
 5. All API reads return display-safe arrays; HTML content is served as Markdown and never raw. Serializers (`serializePost`, `serializePage`, `serializeComment`, `serializeRedirect`, `serializeNavigationItem`) must stay in `AiService`.
 6. Keep pagination bounded: `per_page` is clamped to `[1, 100]` and `page` to `>= 1` for every list endpoint (`AiApiController.php:106`). Do not introduce an unbounded list.
 7. Grant-check before acting: posting a `published` status requires the `publish` grant, not the bare create/update grant. Do not publish or schedule under the write grant alone.
@@ -138,7 +138,7 @@ Steps that go beyond the repo-wide style, derived from the existing code:
 | Resource | Use for |
 |----------|---------|
 | [AI-README.md](./AI-README.md) | The complete endpoint reference, grant list, and request/response examples for the AI caller |
-| [README.md](./README.md) | Human-facing intro and pointing reader to the AI guide and live `/ai/help` |
+| [README.md](./README.md) | Human-facing intro and pointing reader to the AI guide and live `/api/ai/help` |
 | [help.php](./Views/admin/help.php) | Admin-facing plain-language description of each grant |
 | [helpCatalog()](./Services/AiService.php) | Single source of truth for grant semantics |
 

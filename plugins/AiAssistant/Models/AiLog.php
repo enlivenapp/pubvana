@@ -7,7 +7,7 @@ namespace Pubvana\Plugins\AiAssistant\Models;
 /**
  * AiLog - AI Assistant audit entry (ai_logs table).
  *
- * One row per request to the /ai/* API, including authentication
+ * One row per request to the /api/ai/* API, including authentication
  * failures and denied (ungranted) attempts. Key identity is snapshotted
  * by name so the audit trail survives key deletion.
  *
@@ -16,7 +16,7 @@ namespace Pubvana\Plugins\AiAssistant\Models;
  *   key_id      - FK to ai_keys.id (nullable on failures)
  *   key_name    - Snapshot of the key name (survives key deletion)
  *   method      - HTTP method (GET/POST)
- *   endpoint    - Request path under /ai/*
+ *   endpoint    - Request path under /api/ai/*
  *   entity_type - Entity acted on (post, page, comment, redirect, ...)
  *   entity_id   - Target entity id when applicable
  *   outcome     - 'ok', 'denied', or 'error'

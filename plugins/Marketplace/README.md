@@ -6,7 +6,7 @@ Package: `pubvana/marketplace`. It is a separate plugin from the Digital Store a
 
 ## What it does
 
-1. **Connect a Pubvana account.** Under Tools > Marketplace, enter your email to create or sign in to your Pubvana account at pubvanacms.com. This site's store token is exchanged for an account API token. The connect screen discloses that this site phones home to pubvanacms.com about every two weeks to verify purchases and licenses.
+1. **Connect a Pubvana account.** Under Tools > Marketplace, sign in with your admin email and a password for the pubvanacms.com store account (email plus password are sent together). If no account exists for that email, the store creates one and you activate it by email before connecting. Your admin email is used automatically, so each admin can connect their own store account. The connect screen discloses that this site phones home to pubvanacms.com about every two weeks to verify purchases and licenses.
 2. **Browse the catalog.** The store's marketplace-listed products are fetched over a server-to-server API (no CORS) and rendered here. Add any item to your account-bound cart.
 3. **Purchase on the Pubvana website.** "Purchase on pubvanacms.com" opens the store checkout in a new tab with the cart already loaded. No payment happens on this site.
 4. **Purchases.** "Purchases" verifies which owned products license this domain and lists each one with its license state (valid, scope, expiry/renewal), plus whether it is installed and its version.

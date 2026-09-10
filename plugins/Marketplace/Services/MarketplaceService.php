@@ -14,7 +14,8 @@ use flight\Engine;
  * pubvanacms.com. It talks to the store over a server-to-server API using an
  * account token, never a hand-entered key:
  *
- *   1. The admin links this site to a Pubvana account (create or sign-in).
+ *   1. The admin links this site to a Pubvana account using their admin
+ *      email plus a password (create or sign-in on the store).
  *   2. The catalog is browsed here and items are pushed to the account-bound
  *      cart at the store.
  *   3. "Purchase on pubvanacms.com" opens the checkout in a new tab with the
@@ -62,26 +63,41 @@ class MarketplaceService
     }
 
     /**
-     * Bind this site to a Pubvana account by exchanging an email for an API token.
+     * Bind this site to a Pubvana account by signing in with the store email
+     * + password, or creating a new account (email activation) and returning
+     * the token that links this site to the account.
      *
-     * A production store ties the exchange to a one-time code from its own
-     * login flow; for local development the store's /store/api/auth/token
-     * accepts an email directly. Returns a result array with 'ok' and
-     * 'reason'.
+     * Returns a result array with 'ok' and 'reason'.
      *
      * @return array{ok: bool, reason?: string}
      */
-    public function connectAccount(string $email): array
+    public function connectAccount(string $email, string $password, string $passwordConf): array
     {
         $email = strtolower(trim($email));
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return ['ok' => false, 'reason' => 'A valid email address is required.'];
         }
+        if ($password === '') {
+            return ['ok' => false, 'reason' => 'A password is required.'];
+        }
+        if ($passwordConf === '' || $passwordConf !== $password) {
+            return ['ok' => false, 'reason' => 'The passwords do not match.'];
+        }
 
-        $body = $this->httpPostJson($this->apiUrl('auth/token'), ['email' => $email]);
+        $body = $this->httpPostJson($this->apiUrl('auth/token'), [
+            'email'         => $email,
+            'password'      => $password,
+            'password_conf' => $passwordConf,
+        ]);
         $data = $this->decode($body);
-        if (!is_array($data) || empty($data['ok']) || empty($data['token'])) {
-            return ['ok' => false, 'reason' => 'Could not connect to the Pubvana account. Please try again.'];
+        if (!is_array($data)) {
+            return ['ok' => false, 'reason' => 'The store could not be reached. Please try again.'];
+        }
+        if (!empty($data['activation_required'])) {
+            return ['ok' => false, 'reason' => 'A new Pubvana account (' . $email . ') needs activation. Check your inbox for the activation email, then connect again.'];
+        }
+        if (empty($data['ok']) || empty($data['token'])) {
+            return ['ok' => false, 'reason' => (string) ($data['reason'] ?? 'Could not connect to the Pubvana account. Please try again.')];
         }
 
         $this->app->settings()->set('Marketplace.account_token', (string) $data['token']);
@@ -636,7 +652,7 @@ class MarketplaceService
     protected function apiUrl(string $path): string
     {
         $base = rtrim((string) ($this->config['store_url'] ?? ''), '/');
-        return $base . '/api/' . $path . ($this->connected() ? '?token=' . urlencode((string) $this->app->settings()->get('Marketplace.account_token')) : '');
+        return $base . '/api/store/' . $path . ($this->connected() ? '?token=' . urlencode((string) $this->app->settings()->get('Marketplace.account_token')) : '');
     }
 
     /**
@@ -669,9 +685,8 @@ class MarketplaceService
                     CURLOPT_USERAGENT      => $this->userAgent(),
                 ]);
                 $body = curl_exec($handle);
-                $status = (int) curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
                 curl_close($handle);
-                return is_string($body) && $body !== '' && $status === 200 ? $body : null;
+                return is_string($body) && $body !== '' ? $body : null;
             }
         }
 

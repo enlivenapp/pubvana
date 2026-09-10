@@ -5,6 +5,7 @@
  * @var string $pageTitle
  * @var bool $connected
  * @var string $accountEmail
+ * @var string $prefillEmail
  * @var array<int, array<string, mixed>> $categories
  * @var array<int, array<string, mixed>> $items
  * @var string $adminBase
@@ -18,23 +19,33 @@
         </div>
         <div class="card-body">
             <p>
-                The Marketplace is the companion app for the Pubvana Digital Store at
-                pubvanacms.com. Link this site to your Pubvana account to browse the
-                catalog, push items into your account-bound cart, and install and
-                reinstall what you buy.
-            </p>
-            <p class="alert alert-warning">
-                Periodic verification: about every two weeks this site connects to
-                pubvanacms.com to verify your purchases and license status for this
-                domain. No payment takes place on this site; checkout happens on
-                pubvanacms.com in a new tab.
+                The Marketplace is your easy access connection to the Pubvana Digital Store at
+                pubvanacms.com. It's an easy way to purchase and install themes
+                and plugins without downloading from us and uploading to your
+                server.  It uses your login email here for you to login or create an account 
+                on the Pubvana CMS website, new accounts receive an activation email. Once 
+                logged in, you can browse the catalog, send items to a cart, checkout 
+                your cart(on the Pubvana CMS website) and install and 
+                reinstall items you've purchased.
             </p>
             <form method="POST" action="<?= $adminBase ?>/connect" class="row g-2">
                 <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
-                <div class="col-auto">
-                    <input type="email" name="email" class="form-control" placeholder="you@example.com" required autofocus>
+                <div class="col-12">
+                    <label class="form-label">Pubvana account email</label>
+                    <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($prefillEmail) ?>" readonly>
+                    <div class="form-hint">
+                        Uses your admin email. A new account is created if none exists, and you will need to activate it by email first.
+                    </div>
                 </div>
                 <div class="col-auto">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" autocomplete="new-password" required>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Confirm password</label>
+                    <input type="password" name="password_conf" class="form-control" autocomplete="new-password" required>
+                </div>
+                <div class="col-12">
                     <button class="btn btn-primary">Create or sign in</button>
                 </div>
             </form>
@@ -46,7 +57,7 @@
             <h1 class="h3 mb-0 mb-2">Marketplace</h1>
             <div class="text-secondary">
                 Connected as <strong><?= htmlspecialchars($accountEmail) ?></strong>.
-                Purchases are bound to this domain.
+                Some purchases may be bound to this domain, multiple damains or free to use anywhere. We let you know before purchase.
             </div>
         </div>
         <div>
@@ -68,12 +79,21 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <span class="badge bg-secondary-lt"><?= htmlspecialchars((string) ($item['item_type'] ?? '')) ?></span>
-                                <?php if (!empty($item['is_free'])): ?>
-                                    <span class="badge bg-success-lt">Free</span>
+                                <?php if (!empty($item['is_free']) || ($item['license_scope'] ?? '') === 'none'): ?>
+                                    <span class="badge bg-success-lt">Free to use anywhere</span>
+                                <?php else: ?>
+                                    <span class="badge bg-warning-lt">
+                                        <?= htmlspecialchars(($item['license_scope'] ?? 'single_site') === 'multi_site' ? 'Multi-site license' : '1-site license') ?>
+                                    </span>
                                 <?php endif; ?>
                             </div>
                             <h3 class="card-title mb-1"><?= htmlspecialchars((string) ($item['name'] ?? '')) ?></h3>
                             <p class="card-text text-secondary"><?= htmlspecialchars((string) ($item['summary'] ?? '')) ?></p>
+                            <?php if (empty($item['is_free']) && ($item['license_scope'] ?? '') !== 'none'): ?>
+                                <p class="text-secondary small">
+                                    <?= htmlspecialchars(($item['license_scope'] ?? 'single_site') === 'multi_site' ? 'Licensed to a set of registered domains.' : 'Licensed to one domain; moving it needs an email-confirmed transfer.') ?>
+                                </p>
+                            <?php endif; ?>
                             <div class="d-flex align-items-center justify-content-between mt-3">
                                 <strong><?= htmlspecialchars((string) ($item['currency'] ?? 'USD')) ?> <?= number_format((float) ($item['price'] ?? 0), 2) ?></strong>
                                 <button type="button" class="btn btn-primary"

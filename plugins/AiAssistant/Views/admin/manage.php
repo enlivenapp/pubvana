@@ -14,7 +14,7 @@
 
 $session = \Flight::app()->session();
 $plainToken = $session->pullFlash('plain_token');
-$apiBase = rtrim((string) \Flight::app()->pluginLoader()->routePrefix('pubvana/ai'), '/');
+$apiBase = rtrim((string) \Flight::app()->pluginLoader()->apiPrefix('pubvana/ai'), '/');
 ?>
 
 <div class="d-flex justify-content-end mb-3">

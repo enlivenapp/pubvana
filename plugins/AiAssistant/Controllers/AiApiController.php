@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Pubvana\Plugins\AiAssistant\Controllers;
 
-use Pubvana\Controllers\Public\PublicController;
+use Pubvana\Controllers\Api\ApiBaseController;
 use Pubvana\Plugins\AiAssistant\Models\AiKey;
 
 /**
- * AiApiController - Sessionless REST endpoints under /ai/*.
+ * AiApiController - Sessionless REST endpoints under /api/ai/*.
  *
  * Every endpoint authenticates the caller with a bearer API key and runs
  * each request through the audit log. Grants are deny-all: an ungranted
@@ -21,7 +21,7 @@ use Pubvana\Plugins\AiAssistant\Models\AiKey;
  *
  * @package Pubvana\Plugins\AiAssistant\Controllers
  */
-class AiApiController extends PublicController
+class AiApiController extends ApiBaseController
 {
     public function __construct(\flight\Engine $app)
     {
@@ -34,7 +34,7 @@ class AiApiController extends PublicController
 
     public function help(): void
     {
-        $helpPath = '/' . $this->getRoutePrepend() . '/help';
+        $helpPath = $this->apiPrefix('pubvana/ai') . '/help';
         $token = $this->bearerToken();
         if ($token === null) {
             // No key sent: the guide is where new clients start, so the
@@ -65,7 +65,7 @@ class AiApiController extends PublicController
             }
         }
 
-        // /ai/help doubles as the interactive grant guide, but presumably
+        // /api/ai/help doubles as the interactive grant guide, but presumably
         // callers hold more grants than the catalog shows by default. List
         // everything so the caller can request grants precisely.
         $this->log($key, 'ok', null, null, 'Grant guide requested.');
@@ -84,7 +84,7 @@ class AiApiController extends PublicController
         $catalog = $this->app->ai()->helpCatalog();
         if (!isset($catalog[$permission])) {
             $this->log($key, 'error', null, null, "Unknown permission '{$permission}'.");
-            $this->fail(404, "Unknown permission '{$permission}'. See GET /" . $this->getRoutePrepend() . '/help for the catalog.');
+            $this->fail(404, "Unknown permission '{$permission}'. See GET " . $this->apiPrefix('pubvana/ai') . '/help for the catalog.');
         }
 
         $entry = $catalog[$permission];
@@ -1021,49 +1021,6 @@ class AiApiController extends PublicController
             'data'   => null,
             'errors' => [['code' => $status, 'message' => $message]],
         ], $status);
-    }
-
-    protected function bearerToken(): ?string
-    {
-        $header = $this->app->request()->getHeader('Authorization');
-
-        // Apache/mod_php does not always expose Authorization in
-        // $_SERVER['HTTP_AUTHORIZATION']; getallheaders() sees it reliably.
-        if ($header === '' && function_exists('getallheaders')) {
-            $all = getallheaders();
-            $header = (string) ($all['Authorization'] ?? $all['authorization'] ?? '');
-        }
-
-        if (preg_match('/^Bearer\s+(\S+)$/i', trim($header), $matches)) {
-            return $matches[1];
-        }
-        return null;
-    }
-
-    protected function method(): string
-    {
-        return $this->app->request()->method;
-    }
-
-    protected function path(): string
-    {
-        $url = $this->app->request()->url ?? '/';
-        return (string) parse_url($url, PHP_URL_PATH);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    /**
-     * @return array<string, mixed>
-     */
-    protected function payload(): array
-    {
-        try {
-            return $this->app->request()->data->getData();
-        } catch (\Throwable $e) {
-            return [];
-        }
     }
 
     /**

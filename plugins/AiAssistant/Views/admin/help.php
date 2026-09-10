@@ -11,7 +11,7 @@
  * @var array  $helpGroups AiService::helpGroups() display groups
  */
 
-$apiBase = rtrim((string) \Flight::app()->pluginLoader()->routePrefix('pubvana/ai'), '/');
+$apiBase = rtrim((string) \Flight::app()->pluginLoader()->apiPrefix('pubvana/ai'), '/');
 ?>
 
 <div class="alert alert-info" role="alert">

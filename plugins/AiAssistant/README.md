@@ -38,4 +38,4 @@ AI-created posts and pages are attributed to a user you choose on the Manage pag
 ## Where to go next
 
 - `AI-README.md` is the technical reference for the AI and developers.
-- The live guide is at `GET /ai/help`, and the Quick Start & Help button on the Manage page summarizes the setup.
+- The live guide is at `GET /api/ai/help`, and the Quick Start & Help button on the Manage page summarizes the setup.

@@ -36,25 +36,46 @@ class MarketplaceAdminController extends AdminController
     {
         $svc = $this->app->marketplace();
         $this->render('pubvana/marketplace/admin/index', [
-            'pageTitle'   => 'Marketplace',
-            'connected'   => $svc->connected(),
+            'pageTitle'    => 'Marketplace',
+            'connected'    => $svc->connected(),
             'accountEmail' => $svc->accountEmail(),
-            'categories'  => $svc->connected() ? $svc->categories() : [],
-            'items'       => $svc->connected() ? $svc->items() : [],
-            'adminBase'   => $this->adminBase(),
+            'prefillEmail' => $this->currentUserEmail(),
+            'categories'   => $svc->connected() ? $svc->categories() : [],
+            'items'        => $svc->connected() ? $svc->items() : [],
+            'adminBase'    => $this->adminBase(),
         ]);
     }
 
     public function connect(): void
     {
-        $email = (string) ($this->app->request()->data->email ?? '');
-        $result = $this->app->marketplace()->connectAccount($email);
+        $email = $this->currentUserEmail();
+        if ($email === '') {
+            $this->app->session()->flash('danger', 'No logged-in admin email is available to connect with.');
+            $this->app->redirect($this->adminBase());
+            return;
+        }
+        $password = (string) ($this->app->request()->data->password ?? '');
+        $passwordConf = (string) ($this->app->request()->data->password_conf ?? '');
+        $result = $this->app->marketplace()->connectAccount($email, $password, $passwordConf);
         if (!empty($result['ok'])) {
             $this->app->session()->flash('success', 'Connected to the Pubvana account. Browse the catalog below.');
         } else {
             $this->app->session()->flash('danger', $result['reason'] ?? 'Could not connect.');
         }
         $this->app->redirect($this->adminBase());
+    }
+
+    /**
+     * The pubvanacms account email for the account connecting: the current
+     * admin's email, so each admin owns their own store account.
+     */
+    private function currentUserEmail(): string
+    {
+        $user = $this->app->auth()->user();
+        if ($user === null) {
+            return '';
+        }
+        return (string) ($this->app->auth()->users()->getEmail($user) ?? '');
     }
 
     public function disconnect(): void

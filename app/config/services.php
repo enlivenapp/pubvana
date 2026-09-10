@@ -504,7 +504,7 @@ $app->set('migrations', $pluginLoader->getMigrationConfig());
 // must use the DB-backed session service from enlivenapp/flight-sessions.
 //
 // Sessionless API and webhook paths registered under the csrf.exempt
-// extension type (e.g. the AI Assistant's /ai/* API) are excluded because
+// extension type (e.g. the AI Assistant's /api/ai/* API) are excluded because
 // they authenticate with per-request bearer keys or gateway signatures and
 // cannot present a session CSRF token. Admin child pages still start with
 // /admin and remain protected.

@@ -2,7 +2,7 @@
 
 return [
     'routePrepend'    => 'marketplace',
-    'store_url'       => 'https://pubvanacms.com/store',
+    'store_url'       => 'http://localhost',
     'api_timeout'     => 10,
     'catalog_cache_ttl' => 3600,
     'verify_days'     => 14,
